@@ -1,9 +1,5 @@
 import { MintWorks } from "./mint_works.ts";
-import * as log from "https://deno.land/std/log/mod.ts";
-
-log.setup({});
-
-const logger = log.getLogger();
+import { logger } from "./logger.ts";
 
 // Learn more at https://deno.land/manual/examples/module_metadata#concepts
 if (import.meta.main) {
