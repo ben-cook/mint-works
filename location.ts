@@ -6,8 +6,13 @@ export class Slot {
     this.basePrice = basePrice;
     this.tokens = tokens;
   }
+
   public available(): boolean {
     return this.tokens < 1;
+  }
+
+  public fill(n: number): void {
+    this.tokens = n;
   }
 }
 
@@ -25,6 +30,7 @@ export class LocationCard {
     this.effect = effect;
     this.slots = slots;
   }
+
   public available(): boolean {
     return this.slots.some((slot) => slot.available());
   }

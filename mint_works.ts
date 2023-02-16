@@ -29,11 +29,25 @@ export class MintWorks {
   }
 
   /** Simulate taking a turn */
-  private simulateTurn(turn: Turn) {}
+  private simulateTurn(turn: Turn) {
+    const playerTokens = this.players[turn.playerId].tokens;
+    if (turn.action._type === "Build") {
+      if (playerTokens < 2) {
+        throw new Error(
+          `Player ${turn.playerId} does not have sufficient tokens to build. Tokens: ${playerTokens}. Required tokens: 2`
+        );
+      }
+    }
+  }
 
-  public playRound() {
+  public async playRound() {
     for (const player of this.players) {
-      const turn = player.player.takeTurn();
+      const turn = await player.player.takeTurn();
+      try {
+        this.simulateTurn(turn);
+      } catch (err) {
+        logger.error(`Invalid turn! Error: ${err}`);
+      }
     }
   }
 
