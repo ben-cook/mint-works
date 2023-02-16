@@ -1,6 +1,7 @@
-import { Player } from "./player";
-import { RandomPlayer } from "./players/random_player";
-import { Round } from "./Round";
+import { Player } from "./player.ts";
+import { RandomPlayer } from "./players/random_player.ts";
+import { Round } from "./Round.ts";
+import { Turn } from "./turn.ts";
 
 export class MintWorks {
   rounds: Array<Round>;
@@ -12,6 +13,8 @@ export class MintWorks {
     } else {
       this.players = [new RandomPlayer(), new RandomPlayer()];
     }
+
+    this.rounds = [];
   }
 
   /** Simulate taking a turn */
