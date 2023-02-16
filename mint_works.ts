@@ -53,10 +53,7 @@ export class MintWorks {
   }
 
   public async playRound() {
-    logger.info(`players: ${this.players.length}`);
     for (let i = 0; i < this.players.length; i++) {
-      logger.info(`i = ${i}`);
-      logger.info(this.players);
       const player = this.players[i]!;
       logger.info(`Player ${i}: (${player.label}'s turn)`);
 
@@ -101,10 +98,10 @@ export class MintWorks {
     };
   }
 
-  public play() {
+  public async play() {
     while (!this.somebodyHasWon()) {
       logger.info(`Round ${this.roundNumber}`);
-      this.playRound();
+      await this.playRound();
       this.roundNumber++;
     }
   }
