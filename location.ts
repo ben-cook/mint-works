@@ -1,4 +1,4 @@
-class Slot {
+export class Slot {
   basePrice: number;
   tokens: number;
 
@@ -11,9 +11,9 @@ class Slot {
   }
 }
 
-type LocationType = "Core" | "Deed" | "Advanced";
+export type LocationType = "Core" | "Deed" | "Advanced";
 
-class LocationCard {
+export class LocationCard {
   name: string;
   type: LocationType;
   effect: string;

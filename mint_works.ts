@@ -1,6 +1,6 @@
 import { Player } from "./player.ts";
 import { RandomPlayer } from "./players/random_player.ts";
-import { Round } from "./Round.ts";
+import { Round } from "./round.ts";
 import { Turn } from "./turn.ts";
 
 interface PlayerWithTokens {
