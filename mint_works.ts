@@ -2,6 +2,9 @@ import { Player } from "./player.ts";
 import { RandomPlayer } from "./players/random_player.ts";
 import { Round } from "./round.ts";
 import { Turn } from "./turn.ts";
+import * as log from "https://deno.land/std/log/mod.ts";
+
+const logger = log.getLogger();
 
 interface PlayerWithTokens {
   player: Player;
@@ -9,7 +12,7 @@ interface PlayerWithTokens {
 }
 
 export class MintWorks {
-  rounds: Array<Round>;
+  roundNumber;
   // TODO: location cards
   locations: any;
   players: Array<PlayerWithTokens>;
@@ -24,7 +27,7 @@ export class MintWorks {
       ];
     }
 
-    this.rounds = [];
+    this.roundNumber = 0;
   }
 
   /** Simulate taking a turn */
@@ -38,12 +41,12 @@ export class MintWorks {
 
   public play() {
     while (!this.somebodyHasWon()) {
-      console.debug(`Round ${0}`);
+      logger.debug(`Round ${0}`);
       this.playRound();
     }
   }
 
   private somebodyHasWon() {
-    return false;
+    return true;
   }
 }
