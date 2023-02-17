@@ -30,6 +30,7 @@ export class MintWorks {
   players: Array<PlayerWithInformation>;
   deck: Array<Plan> = [];
   planSupply: Array<Plan> = [];
+  planSupplySize = 3;
 
   constructor() {
     // Set up players of the game
@@ -51,18 +52,19 @@ export class MintWorks {
     // Set up the plan deck
     const deck = plans.slice();
     shuffleArray(deck);
+    logger.info(deck);
     this.deck = deck;
+
+    // Set up the plan supply
+    this.refillPlanSupply();
   }
 
-  /** Simulate taking a turn */
-  private simulateTurn(turn: Turn) {
-    const playerTokens = this.players[turn.playerId].tokens;
-    if (turn.action._type === "Build") {
-      if (playerTokens < 2) {
-        throw new Error(
-          `Player ${turn.playerId} does not have sufficient tokens to build. Tokens: ${playerTokens}. Required tokens: 2`
-        );
-      }
+  public async play() {
+    while (!this.somebodyHasWon()) {
+      logger.info(`Starting round ${this.roundNumber}`);
+      logger.debug(this.planSupply);
+      await this.playRound();
+      this.roundNumber++;
     }
   }
 
@@ -76,6 +78,18 @@ export class MintWorks {
         this.simulateTurn(turn);
       } catch (err) {
         logger.error(`Invalid turn! Error: ${err}`);
+      }
+    }
+  }
+
+  /** Simulate taking a turn */
+  private simulateTurn(turn: Turn) {
+    const playerTokens = this.players[turn.playerId].tokens;
+    if (turn.action._type === "Build") {
+      if (playerTokens < 2) {
+        throw new Error(
+          `Player ${turn.playerId} does not have sufficient tokens to build. Tokens: ${playerTokens}. Required tokens: 2`
+        );
       }
     }
   }
@@ -112,15 +126,18 @@ export class MintWorks {
     };
   }
 
-  public async play() {
-    while (!this.somebodyHasWon()) {
-      logger.info(`Round ${this.roundNumber}`);
-      await this.playRound();
-      this.roundNumber++;
-    }
-  }
-
   private somebodyHasWon() {
     return this.roundNumber > 6;
+  }
+
+  /** Refills the plan supply with plans from the top of the deck */
+  private refillPlanSupply() {
+    while (this.planSupply.length < 3) {
+      const plan = this.deck.pop();
+      if (!plan) {
+        break;
+      }
+      this.planSupply.push(plan);
+    }
   }
 }
