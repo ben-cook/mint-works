@@ -1,6 +1,5 @@
 import { Player } from "./player.ts";
 import { RandomPlayer } from "./players/random_player.ts";
-import { Round } from "./round.ts";
 import { Turn } from "./turn.ts";
 import { logger } from "./logger.ts";
 import { Building, HandPlan, isHandPlan, Plan } from "./plan.ts";
@@ -38,13 +37,13 @@ export class MintWorks {
       {
         player: new RandomPlayer(),
         tokens: 0,
-        label: "Ben",
+        label: "Bob",
         neighbourhood: [],
       },
       {
         player: new RandomPlayer(),
         tokens: 0,
-        label: "Ryan",
+        label: "Alice",
         neighbourhood: [],
       },
     ];
@@ -60,7 +59,7 @@ export class MintWorks {
   }
 
   public async play() {
-    while (!this.somebodyHasWon()) {
+    while (true) {
       logger.info(`Starting round ${this.roundNumber}`);
       logger.debug(this.planSupply);
       await this.playRound();
@@ -68,7 +67,19 @@ export class MintWorks {
     }
   }
 
-  public async playRound() {
+  /** Each round consists of the Development phase followed by the Upkeep phase */
+  private async playRound() {
+    await this.development();
+    await this.upkeep();
+  }
+
+  /**
+   * # Development Phase
+   * - The player currently holding the Starting Player Token takes the first turn.
+   * - A player has two options on their turn. They may choose either the Place or Pass action. After completing one of these actions , the turn is passed clockwise to the next player.
+   * - The Development phase repeats until all players consecutively pass, ending the phase. Then proceed to the Upkeep phase.
+   */
+  private async development() {
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i]!;
       logger.info(`Player ${i}: (${player.label}'s turn)`);
@@ -80,6 +91,35 @@ export class MintWorks {
         logger.error(`Invalid turn! Error: ${err}`);
       }
     }
+  }
+
+  /**
+   * # Upkeep Phase
+   * - If any player has seven or more stars provided by Buildings in their Neighbourhood, the game ends and Scoring takes place.
+   * - Refill the plan supply to three face up cards from the Plan Deck. If it is not possible to completely refill the Plan Supply, the game ends and Scoring takes place.
+   * - Resolve all 'Upkeep' effects on Buildings.
+   */
+  private async upkeep() {
+    if (this.players.some((p) => p.tokens >= 7)) {
+      this.scoring();
+    }
+
+    if (!this.refillPlanSupply) {
+      this.scoring();
+    }
+
+    // TODO: Remove this
+    if (this.roundNumber > 4) {
+      this.scoring();
+    }
+  }
+
+  /** # Scoring
+   * Decide who the winner is.
+   */
+  private scoring() {
+    logger.info("Apparenlty somebody won");
+    Deno.exit();
   }
 
   /** Simulate taking a turn */
@@ -126,18 +166,17 @@ export class MintWorks {
     };
   }
 
-  private somebodyHasWon() {
-    return this.roundNumber > 6;
-  }
-
-  /** Refills the plan supply with plans from the top of the deck */
+  /** Refills the plan supply with plans from the top of the deck.
+   * @returns a boolean indicating whether or not the refill was successful
+   */
   private refillPlanSupply() {
-    while (this.planSupply.length < 3) {
+    while (this.planSupply.length < this.planSupplySize) {
       const plan = this.deck.pop();
       if (!plan) {
-        break;
+        return false;
       }
       this.planSupply.push(plan);
     }
+    return true;
   }
 }
