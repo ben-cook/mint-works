@@ -14,6 +14,10 @@ export class Slot {
   public fill(n: number): void {
     this.tokens = n;
   }
+
+  public empty() {
+    this.tokens = 0;
+  }
 }
 
 export type LocationType = "Core" | "Deed" | "Advanced";
@@ -33,5 +37,11 @@ export class LocationCard {
 
   public available(): boolean {
     return this.slots.some((slot) => slot.available());
+  }
+
+  public emptySlots() {
+    for (const slot of this.slots) {
+      slot.empty();
+    }
   }
 }

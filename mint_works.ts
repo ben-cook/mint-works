@@ -5,6 +5,7 @@ import { logger } from "./logger.ts";
 import { Building, HandPlan, isHandPlan, Plan } from "./plan.ts";
 import { State } from "./state.ts";
 import { plans } from "./plans.ts";
+import { LocationCard } from "./location.ts";
 
 interface PlayerInformation {
   tokens: number;
@@ -25,7 +26,7 @@ const shuffleArray = <T>(array: Array<T>) => {
 
 export class MintWorks {
   roundNumber = 1;
-  locations: Array<Location> = [];
+  locations: Array<LocationCard> = [];
   players: Array<PlayerWithInformation>;
   deck: Array<Plan> = [];
   planSupply: Array<Plan> = [];
@@ -98,12 +99,18 @@ export class MintWorks {
    * - If any player has seven or more stars provided by Buildings in their Neighbourhood, the game ends and Scoring takes place.
    * - Refill the plan supply to three face up cards from the Plan Deck. If it is not possible to completely refill the Plan Supply, the game ends and Scoring takes place.
    * - Resolve all 'Upkeep' effects on Buildings.
+   * - If there are any Mint Tokens on Deed Locations, the Owners of those Locations gain the indicated amount of Mint Tokens from the Mint Supply.
+   * - Return all Mint Tokens on Locations to the Mint Supply.
+   * - Each player gains one Mint Token.
+   * - Proceed to the next Development phase.
    */
   private async upkeep() {
+    // If any player has seven or more stars provided by Buildings in their Neighbourhood, the game ends and Scoring takes place.
     if (this.players.some((p) => p.tokens >= 7)) {
       this.scoring();
     }
 
+    // Refill the plan supply to three face up cards from the Plan Deck. If it is not possible to completely refill the Plan Supply, the game ends and Scoring takes place.
     if (!this.refillPlanSupply) {
       this.scoring();
     }
@@ -112,13 +119,29 @@ export class MintWorks {
     if (this.roundNumber > 4) {
       this.scoring();
     }
+
+    // Resolve all 'Upkeep' effects on Buildings.
+
+    // If there are any Mint Tokens on Deed Locations, the Owners of those Locations gain the indicated amount of Mint Tokens from the Mint Supply.
+
+    // Return all Mint Tokens on Locations to the Mint Supply.
+    for (const location of this.locations) {
+      location.emptySlots();
+    }
+
+    // Each player gains one Mint Token.
+    for (const player of this.players) {
+      player.tokens++;
+    }
+
+    // Proceed to the next Development phase.
   }
 
   /** # Scoring
    * Decide who the winner is.
    */
   private scoring() {
-    logger.info("Apparenlty somebody won");
+    logger.info("Apparently somebody won");
     Deno.exit();
   }
 
