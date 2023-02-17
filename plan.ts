@@ -1,11 +1,15 @@
 /** Represents a plan in the deck */
 export interface Plan {
+  /** The name of this plan */
+  name: string;
   /** The cost (in mint tokens) of this plan */
   cost: number;
   /** The base number of stars that this plan is worth. */
   stars: number;
   /** A hook that is executed during the "upkeep" game phase */
-  upkeepHook: () => void;
+  upkeepHook?: () => void;
+  /** Other effects eg. pay less at supplier? */
+  effect?: () => void;
 }
 
 /** Represents a plan that has come from the Lotto - therefore, it should be hidden to other players before it has been built */
