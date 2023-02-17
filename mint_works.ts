@@ -5,6 +5,7 @@ import { Turn } from "./turn.ts";
 import { logger } from "./logger.ts";
 import { Building, HandPlan, isHandPlan, Plan } from "./plan.ts";
 import { State } from "./state.ts";
+import { plans } from "./plans.ts";
 
 interface PlayerInformation {
   tokens: number;
@@ -16,6 +17,13 @@ interface PlayerWithInformation extends PlayerInformation {
   player: Player;
 }
 
+const shuffleArray = <T>(array: Array<T>) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+};
+
 export class MintWorks {
   roundNumber = 1;
   locations: Array<Location> = [];
@@ -24,6 +32,7 @@ export class MintWorks {
   planSupply: Array<Plan> = [];
 
   constructor() {
+    // Set up players of the game
     this.players = [
       {
         player: new RandomPlayer(),
@@ -38,6 +47,11 @@ export class MintWorks {
         neighbourhood: [],
       },
     ];
+
+    // Set up the plan deck
+    const deck = plans.slice();
+    shuffleArray(deck);
+    this.deck = deck;
   }
 
   /** Simulate taking a turn */
@@ -107,6 +121,6 @@ export class MintWorks {
   }
 
   private somebodyHasWon() {
-    return Math.random() < 0.2;
+    return this.roundNumber > 6;
   }
 }
