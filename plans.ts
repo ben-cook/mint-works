@@ -63,4 +63,4 @@ const plans = [
   },
 ] satisfies Array<Plan>;
 
-export const createPlans = () => structuredClone(plans);
+export const createPlans = () => [...plans];

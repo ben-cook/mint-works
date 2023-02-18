@@ -107,17 +107,17 @@ export class MintWorks {
   private upkeep() {
     // If any player has seven or more stars provided by Buildings in their Neighbourhood, the game ends and Scoring takes place.
     if (this.players.some((p) => p.neighbourhood.stars() >= 7)) {
-      this.scoring();
+      this.findWinner();
     }
 
     // Refill the plan supply to three face up cards from the Plan Deck. If it is not possible to completely refill the Plan Supply, the game ends and Scoring takes place.
     if (!this.planSupply.refill()) {
-      this.scoring();
+      this.findWinner();
     }
 
     // TODO: Remove this
     if (this.roundNumber > 4) {
-      this.scoring();
+      this.findWinner();
     }
 
     // Resolve all 'Upkeep' effects on Buildings.
@@ -141,6 +141,14 @@ export class MintWorks {
    * Decide who the winner is.
    */
   private scoring() {
+    this.findWinner();
+    Deno.exit();
+  }
+
+  /** Finds the winner */
+  public findWinner() {
+    let winner;
+
     /** Sort the players in descending order */
     const playersDescendingStars = this.players.sort((a, b) => {
       if (a.neighbourhood.stars() > b.neighbourhood.stars()) return -1;
@@ -158,6 +166,7 @@ export class MintWorks {
     /** If only 1 player has the highest score they win */
     if (playersHighestStars.length !== 1) {
       logger.info(playersHighestStars[0].label + " won!");
+      winner = playersHighestStars[0].label;
     } else {
       let tiebreaker1 = [] as Array<PlayerWithInformation>;
       if (lowestPlansTiebreaker) {
@@ -193,11 +202,12 @@ export class MintWorks {
       /** If only 1 player has the highest plans they win */
       if (tiebreaker1Players.length === 1) {
         logger.info(tiebreaker1Players[0].label + " won!");
+        winner = tiebreaker1Players[0].label;
       }
     }
 
     logger.info("Apparently somebody won");
-    Deno.exit();
+    return winner;
   }
 
   /** Simulate taking a turn */
