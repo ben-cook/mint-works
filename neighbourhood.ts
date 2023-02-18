@@ -1,5 +1,5 @@
 import { Building, HandPlan, isHandPlan } from "./plan.ts";
-import { createPlans } from "./plans.ts";
+import { createPlans, PlanName } from "./plans.ts";
 
 export class Neighbourhood {
   public plans: Array<HandPlan> = [];
@@ -7,17 +7,17 @@ export class Neighbourhood {
   public buildings: Array<Building> = [];
 
   /** Search for a plan by name and return it if it exists */
-  public getPlan(name: string): HandPlan | undefined {
+  public getPlan(name: PlanName): HandPlan | undefined {
     return this.plans.find((plan) => plan.name === name);
   }
 
   /** Search for a building by name and return it if it exists */
-  public getBuilding(name: string): Building | undefined {
+  public getBuilding(name: PlanName): Building | undefined {
     return this.buildings.find((plan) => plan.name === name);
   }
 
   /** Add a plan to the neighbourhood */
-  public addPlan(name: string, hidden?: boolean): void {
+  public addPlan(name: PlanName, hidden?: boolean): void {
     const plans = createPlans();
     const plan = (plans.find((p) => p.name === name)) as HandPlan | undefined;
     if (!plan) throw new Error("Plan not found" + name);
@@ -30,19 +30,19 @@ export class Neighbourhood {
   }
 
   /** Remove a plan from the neighbourhood */
-  public removePlan(name: string): void {
+  public removePlan(name: PlanName): void {
     this.plans = this.plans.filter((plan) => plan.name !== name);
   }
 
   /** Remove a building from the neighbourhood */
-  public removeBuilding(name: string): void {
+  public removeBuilding(name: PlanName): void {
     this.buildings = this.buildings.filter((building) =>
       building.name !== name
     );
   }
 
   /** Convert a plan into a building */
-  public build(name: string): void {
+  public build(name: PlanName): void {
     const plan = this.getPlan(name);
     if (plan) {
       const building = {
@@ -50,7 +50,7 @@ export class Neighbourhood {
         additionalStars: 0,
         internalState: {},
       } as Building;
-      this.removePlan(plan.name);
+      this.removePlan(plan.name as PlanName);
       this.buildings.push(building);
     }
   }

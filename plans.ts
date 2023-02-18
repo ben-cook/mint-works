@@ -1,5 +1,7 @@
 import { Plan } from "./plan.ts";
 
+export type PlanName = typeof plans[number]["name"];
+
 const plans = [
   // Green Cards
   {
@@ -61,6 +63,6 @@ const plans = [
     // TODO: implement pay less at supplier
     effect: undefined,
   },
-] satisfies Array<Plan>;
+] as const satisfies ReadonlyArray<Plan>;
 
-export const createPlans = () => [...plans];
+export const createPlans = (): Array<Plan> => [...plans];
