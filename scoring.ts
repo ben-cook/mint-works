@@ -151,6 +151,20 @@ export const scoreBoard = (
     plans: p.neighbourhood.size(),
     tokens: p.tokens,
   }));
+  //sort scores by stars then plans then tokens
+  scores.sort((a, b) => {
+    if (a.stars > b.stars) return -1;
+    else if (a.stars < b.stars) return 1;
+    else {
+      if (a.plans > b.plans) return -1;
+      else if (a.plans < b.plans) return 1;
+      else {
+        if (a.tokens > b.tokens) return -1;
+        else if (a.tokens < b.tokens) return 1;
+        else return 0;
+      }
+    }
+  });
   return {
     winner: winner.label,
     winType: winner.winType,
