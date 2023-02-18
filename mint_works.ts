@@ -6,11 +6,12 @@ import { Building, HandPlan, isHandPlan, Plan } from "./plan.ts";
 import { State } from "./state.ts";
 import { plans } from "./plans.ts";
 import { LocationCard } from "./location.ts";
+import { Neighbourhood } from "./neighbourhood.ts";
 
 interface PlayerInformation {
   tokens: number;
   label: string;
-  neighbourhood: Array<HandPlan | Building>;
+  neighbourhood: Neighbourhood;
 }
 
 interface PlayerWithInformation extends PlayerInformation {
@@ -39,13 +40,13 @@ export class MintWorks {
         player: new RandomPlayer(),
         tokens: 0,
         label: "Bob",
-        neighbourhood: [],
+        neighbourhood: new Neighbourhood(),
       },
       {
         player: new RandomPlayer(),
         tokens: 0,
         label: "Alice",
-        neighbourhood: [],
+        neighbourhood: new Neighbourhood(),
       },
     ];
 
@@ -141,6 +142,7 @@ export class MintWorks {
    * Decide who the winner is.
    */
   private scoring() {
+    const winners = this.players.filter((p) => p.neighbourhood.st);
     logger.info("Apparently somebody won");
     Deno.exit();
   }
