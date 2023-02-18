@@ -21,9 +21,14 @@ Deno.test("Neighbourhood", async (t) => {
   ];
   await t.step("Add plan", async (t) => {
     mintWorks.players[0].neighbourhood.addPlan("Windmill");
+    mintWorks.players[0].neighbourhood.addPlan("Statue");
     assertEquals(
       mintWorks.players[0].neighbourhood.getPlan("Windmill")?.name,
       "Windmill",
+    );
+    assertEquals(
+      mintWorks.players[0].neighbourhood.getPlan("Statue")?.name,
+      "Statue",
     );
     await t.step("Build Plan", async (t) => {
       mintWorks.players[0].neighbourhood.build("Windmill");
@@ -44,49 +49,16 @@ Deno.test("Neighbourhood", async (t) => {
       });
     });
   });
-});
 
-Deno.test("Remove plan", () => {
-  const mintWorks = new MintWorks();
-  mintWorks.players = [
-    {
-      label: "Test Player 1",
-      neighbourhood: new Neighbourhood(),
-      player: new RandomPlayer(),
-      tokens: 5,
-    },
-    {
-      label: "Test Player 2",
-      neighbourhood: new Neighbourhood(),
-      player: new RandomPlayer(),
-      tokens: 5,
-    },
-  ];
-  mintWorks.players[0].neighbourhood.addPlan("Windmill");
-  mintWorks.players[0].neighbourhood.removePlan("Windmill");
-  assertEquals(
-    mintWorks.players[0].neighbourhood.getPlan("Windmill")?.name,
-    undefined,
-  );
-});
-
-Deno.test("Star total", () => {
-  const mintWorks = new MintWorks();
-  mintWorks.players = [
-    {
-      label: "Test Player 1",
-      neighbourhood: new Neighbourhood(),
-      player: new RandomPlayer(),
-      tokens: 5,
-    },
-    {
-      label: "Test Player 2",
-      neighbourhood: new Neighbourhood(),
-      player: new RandomPlayer(),
-      tokens: 5,
-    },
-  ];
-  mintWorks.players[0].neighbourhood.addPlan("Windmill");
-  mintWorks.players[0].neighbourhood.build("Windmill");
-  assertEquals(mintWorks.players[0].neighbourhood.stars(), 1);
+  await t.step("Remove plan", () => {
+    assertEquals(
+      mintWorks.players[0].neighbourhood.getPlan("Statue")?.name,
+      "Statue",
+    );
+    mintWorks.players[0].neighbourhood.removePlan("Statue");
+    assertEquals(
+      mintWorks.players[0].neighbourhood.getPlan("Statue")?.name,
+      undefined,
+    );
+  });
 });
