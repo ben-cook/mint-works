@@ -8,12 +8,14 @@ Deno.test("Has plans", () => {
   mintWorks.players = [
     {
       label: "Test Player 1",
+      age: 21,
       neighbourhood: new Neighbourhood(),
       player: new RandomPlayer(),
       tokens: 5,
     },
     {
       label: "Test Player 2",
+      age: 34,
       neighbourhood: new Neighbourhood(),
       player: new RandomPlayer(),
       tokens: 5,

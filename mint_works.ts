@@ -12,6 +12,7 @@ import { findWinner } from "./scoring.ts";
 interface PlayerInformation {
   tokens: number;
   label: string;
+  age: number;
   neighbourhood: Neighbourhood;
 }
 
@@ -39,12 +40,14 @@ export class MintWorks {
         player: new RandomPlayer(),
         tokens: 0,
         label: "Bob",
+        age: 34,
         neighbourhood: new Neighbourhood(),
       },
       {
         player: new RandomPlayer(),
         tokens: 0,
         label: "Alice",
+        age: 21,
         neighbourhood: new Neighbourhood(),
       },
     ];
