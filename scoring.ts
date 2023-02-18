@@ -3,10 +3,31 @@ import type { PlayerWithInformation } from "./mint_works.ts";
 
 const lowestPlansTiebreaker = false;
 
+type WinType =
+  | "Stars"
+  | "Lowest Plans"
+  | "Highest Plans"
+  | "Tokens"
+  | "Age"
+  | "Random";
+export interface ScoreBoard {
+  winner: string;
+  winType: WinType;
+  scores: Array<
+    { label: string; stars: number; plans: number; tokens: number }
+  >;
+}
+
+export interface Winner {
+  label: string;
+  winType: WinType;
+  score: number;
+}
+
 /** Finds the winner from a list of players */
 export const findWinner = (
   players: Array<PlayerWithInformation>,
-): string | undefined => {
+): Winner | undefined => {
   /** Sort the players in descending order */
   const playersDescendingStars = players.sort((a, b) => {
     if (a.neighbourhood.stars() > b.neighbourhood.stars()) return -1;
@@ -22,7 +43,13 @@ export const findWinner = (
   );
 
   /** If only 1 player has the highest score they win */
-  if (playersHighestStars.length === 1) return playersHighestStars[0].label;
+  if (playersHighestStars.length === 1) {
+    return {
+      label: playersHighestStars[0].label,
+      winType: "Stars",
+      score: playersHighestStars[0].neighbourhood.stars(),
+    };
+  }
 
   let tiebreaker1 = [] as Array<PlayerWithInformation>;
   if (lowestPlansTiebreaker) {
@@ -52,7 +79,13 @@ export const findWinner = (
   );
 
   /** If only 1 player has the highest plans they win */
-  if (tiebreaker1Players.length === 1) return tiebreaker1Players[0].label;
+  if (tiebreaker1Players.length === 1) {
+    return {
+      label: tiebreaker1[0].label,
+      winType: lowestPlansTiebreaker ? "Lowest Plans" : "Highest Plans",
+      score: tiebreaker1[0].neighbourhood.size(),
+    };
+  }
 
   /** Tiebreaker 2 (Most Tokens) */
   const tiebreaker2 = tiebreaker1Players.sort((a, b) => {
@@ -66,7 +99,13 @@ export const findWinner = (
   );
 
   /** If only 1 player has the most tokens they win */
-  if (tiebreaker2Players.length === 1) return tiebreaker2Players[0].label;
+  if (tiebreaker2Players.length === 1) {
+    return {
+      label: tiebreaker2[0].label,
+      winType: "Tokens",
+      score: tiebreaker2[0].tokens,
+    };
+  }
 
   /** Tiebreaker 3 (Age) */
   // Closest to 42 wins
@@ -83,10 +122,38 @@ export const findWinner = (
   );
 
   /** If only 1 player has the closest age they win */
-  if (tiebreaker3Players.length === 1) return tiebreaker3Players[0].label;
+  if (tiebreaker3Players.length === 1) {
+    return {
+      label: tiebreaker2[0].label,
+      winType: "Age",
+      score: tiebreaker2[0].age,
+    };
+  }
 
   /** Tiebreaker 4 (Random) */
-  return tiebreaker3Players[
+  const randomWinner = tiebreaker3Players[
     Math.floor(Math.random() * tiebreaker3Players.length)
-  ].label;
+  ];
+  return {
+    label: randomWinner.label,
+    winType: "Random",
+    score: 0,
+  };
+};
+
+export const scoreBoard = (
+  players: Array<PlayerWithInformation>,
+  winner: Winner,
+): ScoreBoard => {
+  const scores = players.map((p) => ({
+    label: p.label,
+    stars: p.neighbourhood.stars(),
+    plans: p.neighbourhood.size(),
+    tokens: p.tokens,
+  }));
+  return {
+    winner: winner.label,
+    winType: winner.winType,
+    scores,
+  };
 };

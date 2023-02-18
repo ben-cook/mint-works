@@ -27,8 +27,8 @@ Deno.test("Scoring", () => {
     },
   ];
   mintWorks.players.find((p) => p.label === playerOneName)!.neighbourhood
-    .addPlan("Windmill");
+    .addBuilding("Windmill");
   mintWorks.players.find((p) => p.label === playerTwoName)!.neighbourhood
-    .addPlan("Statue");
-  assertEquals(findWinner(mintWorks.players), playerTwoName);
+    .addBuilding("Statue");
+  assertEquals(findWinner(mintWorks.players)?.label, playerTwoName);
 });
