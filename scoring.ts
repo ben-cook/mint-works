@@ -12,7 +12,6 @@ type WinType =
   | "Random";
 export interface ScoreBoard {
   winner: string;
-  winType: WinType;
   scores: Array<
     { label: string; stars: number; plans: number; tokens: number }
   >;
@@ -143,7 +142,6 @@ export const findWinner = (
 
 export const scoreBoard = (
   players: Array<PlayerWithInformation>,
-  winner: Winner,
 ): ScoreBoard => {
   const scores = players.map((p) => ({
     label: p.label,
@@ -166,8 +164,7 @@ export const scoreBoard = (
     }
   });
   return {
-    winner: winner.label,
-    winType: winner.winType,
+    winner: scores[0].label,
     scores,
   };
 };

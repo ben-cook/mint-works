@@ -2,7 +2,7 @@ import { MintWorks } from "./mint_works.ts";
 import { assertEquals } from "https://deno.land/std@0.177.0/testing/asserts.ts";
 import { Neighbourhood } from "./neighbourhood.ts";
 import { RandomPlayer } from "./players/random_player.ts";
-import { findWinner } from "./scoring.ts";
+import { findWinner, scoreBoard, Winner } from "./scoring.ts";
 
 Deno.test("Scoring", () => {
   const mintWorks = new MintWorks();
@@ -31,4 +31,9 @@ Deno.test("Scoring", () => {
   mintWorks.players.find((p) => p.label === playerTwoName)!.neighbourhood
     .addBuilding("Statue");
   assertEquals(findWinner(mintWorks.players)?.label, playerTwoName);
+  assertEquals(
+    scoreBoard(mintWorks.players)
+      ?.winner,
+    playerTwoName,
+  );
 });
