@@ -7,8 +7,7 @@ import { createPlans } from "./plans.ts";
 import { LocationCard } from "./location.ts";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 import { PlanSupply } from "./plan_supply.ts";
-
-const lowestPlansTiebreaker = false;
+import { findWinner } from "./scoring.ts";
 
 interface PlayerInformation {
   tokens: number;
@@ -16,7 +15,7 @@ interface PlayerInformation {
   neighbourhood: Neighbourhood;
 }
 
-interface PlayerWithInformation extends PlayerInformation {
+export interface PlayerWithInformation extends PlayerInformation {
   player: Player;
 }
 
@@ -107,17 +106,17 @@ export class MintWorks {
   private upkeep() {
     // If any player has seven or more stars provided by Buildings in their Neighbourhood, the game ends and Scoring takes place.
     if (this.players.some((p) => p.neighbourhood.stars() >= 7)) {
-      this.findWinner();
+      this.scoring();
     }
 
     // Refill the plan supply to three face up cards from the Plan Deck. If it is not possible to completely refill the Plan Supply, the game ends and Scoring takes place.
     if (!this.planSupply.refill()) {
-      this.findWinner();
+      this.scoring();
     }
 
     // TODO: Remove this
     if (this.roundNumber > 4) {
-      this.findWinner();
+      this.scoring();
     }
 
     // Resolve all 'Upkeep' effects on Buildings.
@@ -141,73 +140,13 @@ export class MintWorks {
    * Decide who the winner is.
    */
   private scoring() {
-    this.findWinner();
-    Deno.exit();
-  }
-
-  /** Finds the winner */
-  public findWinner() {
-    let winner;
-
-    /** Sort the players in descending order */
-    const playersDescendingStars = this.players.sort((a, b) => {
-      if (a.neighbourhood.stars() > b.neighbourhood.stars()) return -1;
-      else if (a.neighbourhood.stars() < b.neighbourhood.stars()) return 1;
-      else return 0;
-    });
-
-    /** Identify the player/s with the highest score (index 0 is highest) */
-    const playersHighestStars = playersDescendingStars.filter(
-      (p) =>
-        p.neighbourhood.stars() ===
-          playersDescendingStars[0].neighbourhood.stars(),
-    );
-
-    /** If only 1 player has the highest score they win */
-    if (playersHighestStars.length !== 1) {
-      logger.info(playersHighestStars[0].label + " won!");
-      winner = playersHighestStars[0].label;
+    const winner = findWinner(this.players);
+    if (winner) {
+      logger.info(`The winner is ${winner}`);
     } else {
-      let tiebreaker1 = [] as Array<PlayerWithInformation>;
-      if (lowestPlansTiebreaker) {
-        /** Tiebreaker 1 (Lowest Plans)*/
-        tiebreaker1 = playersHighestStars.sort((a, b) => {
-          if (a.neighbourhood.plans.length < b.neighbourhood.plans.length) {
-            return -1;
-          } else if (
-            a.neighbourhood.plans.length > b.neighbourhood.plans.length
-          ) {
-            return 1;
-          } else return 0;
-        });
-      } else {
-        /** Tiebreaker 1 (Highest Plans) */
-        tiebreaker1 = playersHighestStars.sort((a, b) => {
-          if (a.neighbourhood.plans.length > b.neighbourhood.plans.length) {
-            return -1;
-          } else if (
-            a.neighbourhood.plans.length < b.neighbourhood.plans.length
-          ) {
-            return 1;
-          } else return 0;
-        });
-      }
-
-      const tiebreaker1Players = tiebreaker1.filter(
-        (p) =>
-          p.neighbourhood.plans.length ===
-            tiebreaker1[0].neighbourhood.plans.length,
-      );
-
-      /** If only 1 player has the highest plans they win */
-      if (tiebreaker1Players.length === 1) {
-        logger.info(tiebreaker1Players[0].label + " won!");
-        winner = tiebreaker1Players[0].label;
-      }
+      logger.warning("No winner was found");
     }
-
-    logger.info("Apparently somebody won");
-    return winner;
+    Deno.exit();
   }
 
   /** Simulate taking a turn */
