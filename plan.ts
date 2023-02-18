@@ -5,7 +5,7 @@ export interface Plan {
   /** The cost (in mint tokens) of this plan */
   cost: number;
   /** The base number of stars that this plan is worth. */
-  stars: number;
+  baseStars: number;
   /** A hook that is executed during the "upkeep" game phase */
   upkeepHook?: () => void;
   /** Other effects eg. pay less at supplier? */
@@ -21,8 +21,14 @@ export const isHandPlan = (plan: Plan): plan is HandPlan => {
   return "hidden" in plan;
 };
 
+export const isBuilding = (plan: Plan): plan is Building => {
+  return "internalState" in plan;
+};
+
 /** Represents a plan that has been built. Buildings are face-up for all players. */
 export interface Building extends Plan {
+  /** The additional stars from card effects */
+  additionalStars?: number;
   // deno-lint-ignore no-explicit-any
   internalState: any;
 }
