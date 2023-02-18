@@ -142,7 +142,26 @@ export class MintWorks {
    * Decide who the winner is.
    */
   private scoring() {
-    const winners = this.players.filter((p) => p.neighbourhood.st);
+    const winners = this.players
+      .filter((p) => p.neighbourhood.stars() >= 7)
+      .sort((a, b) => {
+        if (a.neighbourhood.stars() > b.neighbourhood.stars()) {
+          return -1;
+        } else if (a.neighbourhood.stars() < b.neighbourhood.stars()) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    if (winners.length === 0) throw new Error("No winners found");
+
+    const topWinners = winners.filter(
+      (w) => w.neighbourhood.stars() === winners[0].neighbourhood.stars()
+    );
+
+    if (topWinners.length === 1) logger.info(topWinners[0].label + " won!");
+    else logger.info("TIE");
+
     logger.info("Apparently somebody won");
     Deno.exit();
   }
