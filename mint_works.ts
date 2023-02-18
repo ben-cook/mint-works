@@ -142,24 +142,21 @@ export class MintWorks {
    * Decide who the winner is.
    */
   private scoring() {
-    const winners = this.players
-      .filter((p) => p.neighbourhood.stars() >= 7)
-      .sort((a, b) => {
-        if (a.neighbourhood.stars() > b.neighbourhood.stars()) {
-          return -1;
-        } else if (a.neighbourhood.stars() < b.neighbourhood.stars()) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-    if (winners.length === 0) throw new Error("No winners found");
+    const sortedPlayers = this.players.sort((a, b) => {
+      if (a.neighbourhood.stars() > b.neighbourhood.stars()) {
+        return -1;
+      } else if (a.neighbourhood.stars() < b.neighbourhood.stars()) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
 
-    const topWinners = winners.filter(
-      (w) => w.neighbourhood.stars() === winners[0].neighbourhood.stars()
+    const topPlayers = sortedPlayers.filter(
+      (p) => p.neighbourhood.stars() === sortedPlayers[0].neighbourhood.stars()
     );
 
-    if (topWinners.length === 1) logger.info(topWinners[0].label + " won!");
+    if (topPlayers.length === 1) logger.info(topPlayers[0].label + " won!");
     else logger.info("TIE");
 
     logger.info("Apparently somebody won");
