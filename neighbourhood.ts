@@ -29,6 +29,12 @@ export class Neighbourhood {
     this.plans.push(handPlan);
   }
 
+  /** Add a plan to the neighbourhood and convert it into a building */
+  public addBuilding(name: string): void {
+    this.addPlan(name);
+    this.build(name);
+  }
+
   /** Remove a plan from the neighbourhood */
   public removePlan(name: PlanName): void {
     this.plans = this.plans.filter((plan) => plan.name !== name);
@@ -62,6 +68,11 @@ export class Neighbourhood {
         (total, plan) => total + plan.baseStars + (plan.additionalStars ?? 0),
         0,
       );
+  }
+
+  /** Calculate the number of plans and buildings in the neighbourhood */
+  public size(): number {
+    return this.plans.length + this.buildings.length;
   }
 }
 
