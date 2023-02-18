@@ -7,18 +7,22 @@ export class Neighbourhood {
     this.plans = initialPlans ?? [];
   }
 
+  /** Search for a plan by name and return it if it exists */
   public getPlan(name: string): HandPlan | Building | undefined {
-    return this.plans.find((building) => building.name === name);
+    return this.plans.find((plan) => plan.name === name);
   }
 
-  public addPlan(building: Building): void {
-    this.plans.push(building);
+  /** Add a plan to the neighbourhood */
+  public addPlan(plan: HandPlan | Building): void {
+    this.plans.push(plan);
   }
 
+  /** Remove a plan from the neighbourhood */
   public removePlan(name: string): void {
-    this.plans = this.plans.filter((building) => building.name !== name);
+    this.plans = this.plans.filter((plan) => plan.name !== name);
   }
 
+  /** Calculate the current stars in the neighbourhood */
   public stars(): number {
     return this.plans.reduce((sum, plan) => {
       if (isBuilding(plan)) {

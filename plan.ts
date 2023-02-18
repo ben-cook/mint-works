@@ -6,6 +6,8 @@ export interface Plan {
   cost: number;
   /** The base number of stars that this plan is worth. */
   baseStars: number;
+  /** Descriptive plan text */
+  description?: string;
   /** A hook that is executed during the "upkeep" game phase */
   upkeepHook?: () => void;
   /** Other effects eg. pay less at supplier? */

@@ -8,6 +8,8 @@ import { plans } from "./plans.ts";
 import { LocationCard } from "./location.ts";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 
+const lowestPlansTiebreaker = false;
+
 interface PlayerInformation {
   tokens: number;
   label: string;
@@ -142,22 +144,55 @@ export class MintWorks {
    * Decide who the winner is.
    */
   private scoring() {
-    const sortedPlayers = this.players.sort((a, b) => {
-      if (a.neighbourhood.stars() > b.neighbourhood.stars()) {
-        return -1;
-      } else if (a.neighbourhood.stars() < b.neighbourhood.stars()) {
-        return 1;
-      } else {
-        return 0;
-      }
+    /** Sort the players in descending order */
+    const playersDescendingStars = this.players.sort((a, b) => {
+      if (a.neighbourhood.stars() > b.neighbourhood.stars()) return -1;
+      else if (a.neighbourhood.stars() < b.neighbourhood.stars()) return 1;
+      else return 0;
     });
 
-    const topPlayers = sortedPlayers.filter(
-      (p) => p.neighbourhood.stars() === sortedPlayers[0].neighbourhood.stars()
+    /** Identify the player/s with the highest score (index 0 is highest) */
+    const playersHighestStars = playersDescendingStars.filter(
+      (p) =>
+        p.neighbourhood.stars() ===
+        playersDescendingStars[0].neighbourhood.stars()
     );
 
-    if (topPlayers.length === 1) logger.info(topPlayers[0].label + " won!");
-    else logger.info("TIE");
+    /** If only 1 player has the highest score they win */
+    if (playersHighestStars.length !== 1) {
+      logger.info(playersHighestStars[0].label + " won!");
+    } else {
+      let tiebreaker1 = [] as Array<PlayerWithInformation>;
+      if (lowestPlansTiebreaker) {
+        /** Tiebreaker 1 (Lowest Plans)*/
+        tiebreaker1 = playersHighestStars.sort((a, b) => {
+          if (a.neighbourhood.plans.length < b.neighbourhood.plans.length)
+            return -1;
+          else if (a.neighbourhood.plans.length > b.neighbourhood.plans.length)
+            return 1;
+          else return 0;
+        });
+      } else {
+        /** Tiebreaker 1 (Highest Plans) */
+        tiebreaker1 = playersHighestStars.sort((a, b) => {
+          if (a.neighbourhood.plans.length > b.neighbourhood.plans.length)
+            return -1;
+          else if (a.neighbourhood.plans.length < b.neighbourhood.plans.length)
+            return 1;
+          else return 0;
+        });
+      }
+
+      const tiebreaker1Players = tiebreaker1.filter(
+        (p) =>
+          p.neighbourhood.plans.length ===
+          tiebreaker1[0].neighbourhood.plans.length
+      );
+
+      /** If only 1 player has the highest plans they win */
+      if (tiebreaker1Players.length === 1)
+        logger.info(tiebreaker1Players[0].label + " won!");
+    }
 
     logger.info("Apparently somebody won");
     Deno.exit();
