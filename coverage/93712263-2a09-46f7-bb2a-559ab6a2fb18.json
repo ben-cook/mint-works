@@ -1,0 +1,16 @@
+{
+  "scriptId": "197",
+  "url": "file:///Users/ben/Documents/mint-works/players/random_player.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 358, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "takeTurn",
+      "ranges": [{ "startOffset": 71, "endOffset": 355, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

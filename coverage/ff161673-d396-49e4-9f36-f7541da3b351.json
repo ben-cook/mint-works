@@ -1,0 +1,21 @@
+{
+  "scriptId": "201",
+  "url": "file:///Users/ben/Documents/mint-works/plan.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 180, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "isHandPlan",
+      "ranges": [{ "startOffset": 63, "endOffset": 103, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "isBuilding",
+      "ranges": [{ "startOffset": 131, "endOffset": 178, "count": 8 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

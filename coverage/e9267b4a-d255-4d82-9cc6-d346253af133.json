@@ -1,0 +1,57 @@
+{
+  "scriptId": "195",
+  "url": "file:///Users/ben/Documents/mint-works/neighbourhood.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1193, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 59, "endOffset": 854, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Neighbourhood",
+      "ranges": [
+        { "startOffset": 101, "endOffset": 174, "count": 4 },
+        { "startOffset": 162, "endOffset": 167, "count": 2 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getPlan",
+      "ranges": [{ "startOffset": 239, "endOffset": 320, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "addPlan",
+      "ranges": [{ "startOffset": 364, "endOffset": 416, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "removePlan",
+      "ranges": [{ "startOffset": 465, "endOffset": 557, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "stars",
+      "ranges": [{ "startOffset": 618, "endOffset": 852, "count": 8 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [
+        { "startOffset": 661, "endOffset": 841, "count": 8 },
+        { "startOffset": 710, "endOffset": 807, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 862, "endOffset": 1192, "count": 0 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

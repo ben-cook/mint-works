@@ -1,0 +1,26 @@
+{
+  "scriptId": "193",
+  "url": "file:///Users/ben/Documents/mint-works/plan_supply.test.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1497, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 230, "endOffset": 779, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 818, "endOffset": 1073, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1114, "endOffset": 1494, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

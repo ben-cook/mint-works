@@ -1,0 +1,108 @@
+{
+  "scriptId": "68",
+  "url": "internal:runtime/js/40_files.js",
+  "functions": [
+    {
+      "functionName": "openSync",
+      "ranges": [{ "startOffset": 805, "endOffset": 1054, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1630, "endOffset": 2816, "count": 1 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "FsFile",
+      "ranges": [{ "startOffset": 1695, "endOffset": 1742, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "get rid",
+      "ranges": [{ "startOffset": 1748, "endOffset": 1789, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "write",
+      "ranges": [{ "startOffset": 1795, "endOffset": 1844, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "writeSync",
+      "ranges": [{ "startOffset": 1850, "endOffset": 1907, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "truncate",
+      "ranges": [{ "startOffset": 1913, "endOffset": 1973, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "truncateSync",
+      "ranges": [{ "startOffset": 1979, "endOffset": 2047, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "read",
+      "ranges": [{ "startOffset": 2053, "endOffset": 2100, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "readSync",
+      "ranges": [{ "startOffset": 2106, "endOffset": 2161, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "seek",
+      "ranges": [{ "startOffset": 2167, "endOffset": 2240, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "seekSync",
+      "ranges": [{ "startOffset": 2246, "endOffset": 2327, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "stat",
+      "ranges": [{ "startOffset": 2333, "endOffset": 2377, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "statSync",
+      "ranges": [{ "startOffset": 2383, "endOffset": 2435, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "close",
+      "ranges": [{ "startOffset": 2441, "endOffset": 2484, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "get readable",
+      "ranges": [{ "startOffset": 2490, "endOffset": 2648, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "get writable",
+      "ranges": [{ "startOffset": 2654, "endOffset": 2812, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "checkOpenOptions",
+      "ranges": [
+        { "startOffset": 4341, "endOffset": 5020, "count": 1 },
+        { "startOffset": 4504, "endOffset": 4589, "count": 0 },
+        { "startOffset": 4635, "endOffset": 4710, "count": 0 },
+        { "startOffset": 4784, "endOffset": 4804, "count": 0 },
+        { "startOffset": 4831, "endOffset": 4848, "count": 0 },
+        { "startOffset": 4899, "endOffset": 5016, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 4454, "endOffset": 4475, "count": 5 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

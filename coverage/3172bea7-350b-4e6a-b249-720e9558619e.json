@@ -1,0 +1,127 @@
+{
+  "scriptId": "206",
+  "url": "https://deno.land/std@0.177.0/log/logger.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 3714, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 298, "endOffset": 848, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "LogRecord",
+      "ranges": [{ "startOffset": 397, "endOffset": 691, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "get args",
+      "ranges": [{ "startOffset": 696, "endOffset": 768, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "get datetime",
+      "ranges": [{ "startOffset": 773, "endOffset": 846, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 856, "endOffset": 3713, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Logger",
+      "ranges": [
+        { "startOffset": 919, "endOffset": 1111, "count": 2 },
+        { "startOffset": 1099, "endOffset": 1104, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "get level",
+      "ranges": [{ "startOffset": 1116, "endOffset": 1163, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "set level",
+      "ranges": [{ "startOffset": 1168, "endOffset": 1221, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "get levelName",
+      "ranges": [{ "startOffset": 1226, "endOffset": 1291, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "set levelName",
+      "ranges": [{ "startOffset": 1296, "endOffset": 1377, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "get loggerName",
+      "ranges": [{ "startOffset": 1382, "endOffset": 1439, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "set handlers",
+      "ranges": [{ "startOffset": 1444, "endOffset": 1503, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "get handlers",
+      "ranges": [{ "startOffset": 1508, "endOffset": 1561, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "#_log",
+      "ranges": [
+        { "startOffset": 2051, "endOffset": 2747, "count": 2 },
+        { "startOffset": 2112, "endOffset": 2185, "count": 0 },
+        { "startOffset": 2269, "endOffset": 2360, "count": 0 },
+        { "startOffset": 2724, "endOffset": 2734, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 2624, "endOffset": 2682, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "asString",
+      "ranges": [
+        { "startOffset": 2752, "endOffset": 3253, "count": 2 },
+        { "startOffset": 2843, "endOffset": 3252, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "debug",
+      "ranges": [{ "startOffset": 3258, "endOffset": 3343, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "info",
+      "ranges": [{ "startOffset": 3348, "endOffset": 3431, "count": 2 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "warning",
+      "ranges": [{ "startOffset": 3436, "endOffset": 3525, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "error",
+      "ranges": [{ "startOffset": 3530, "endOffset": 3615, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "critical",
+      "ranges": [{ "startOffset": 3620, "endOffset": 3711, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

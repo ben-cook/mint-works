@@ -1,0 +1,11 @@
+{
+  "scriptId": "199",
+  "url": "file:///Users/ben/Documents/mint-works/logger.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 518, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

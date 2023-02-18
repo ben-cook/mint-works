@@ -1,0 +1,71 @@
+{
+  "scriptId": "205",
+  "url": "https://deno.land/std@0.177.0/log/mod.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 12303, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 7666, "endOffset": 7713, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getLogger",
+      "ranges": [
+        { "startOffset": 9187, "endOffset": 9636, "count": 1 },
+        { "startOffset": 9393, "endOffset": 9635, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "debug",
+      "ranges": [{ "startOffset": 9644, "endOffset": 9884, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "info",
+      "ranges": [{ "startOffset": 9892, "endOffset": 10129, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "warning",
+      "ranges": [{ "startOffset": 10137, "endOffset": 10383, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "error",
+      "ranges": [{ "startOffset": 10391, "endOffset": 10631, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "critical",
+      "ranges": [{ "startOffset": 10639, "endOffset": 10888, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "setup",
+      "ranges": [
+        { "startOffset": 10924, "endOffset": 12279, "count": 2 },
+        { "startOffset": 11380, "endOffset": 11385, "count": 0 },
+        { "startOffset": 11425, "endOffset": 11554, "count": 4 },
+        { "startOffset": 11675, "endOffset": 11680, "count": 0 },
+        { "startOffset": 11821, "endOffset": 11826, "count": 0 },
+        { "startOffset": 12104, "endOffset": 12120, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 11239, "endOffset": 11284, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 11887, "endOffset": 12056, "count": 3 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

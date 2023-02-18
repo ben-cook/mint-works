@@ -1,0 +1,84 @@
+{
+  "scriptId": "211",
+  "url": "https://deno.land/std@0.177.0/io/buf_writer.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 7024, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 147, "endOffset": 692, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "AbstractBufBase",
+      "ranges": [{ "startOffset": 225, "endOffset": 272, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "size",
+      "ranges": [{ "startOffset": 341, "endOffset": 391, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "available",
+      "ranges": [{ "startOffset": 452, "endOffset": 530, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "buffered",
+      "ranges": [{ "startOffset": 635, "endOffset": 690, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1061, "endOffset": 3847, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 4231, "endOffset": 7023, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "create",
+      "ranges": [{ "startOffset": 4364, "endOffset": 4502, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "BufWriterSync",
+      "ranges": [
+        { "startOffset": 4507, "endOffset": 4657, "count": 1 },
+        { "startOffset": 4592, "endOffset": 4610, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "reset",
+      "ranges": [{ "startOffset": 4777, "endOffset": 4878, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "flush",
+      "ranges": [
+        { "startOffset": 4954, "endOffset": 5523, "count": 1 },
+        { "startOffset": 4995, "endOffset": 5010, "count": 0 },
+        { "startOffset": 5051, "endOffset": 5058, "count": 0 },
+        { "startOffset": 5307, "endOffset": 5431, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "writeSync",
+      "ranges": [
+        { "startOffset": 5862, "endOffset": 7021, "count": 2 },
+        { "startOffset": 5911, "endOffset": 5926, "count": 0 },
+        { "startOffset": 5958, "endOffset": 5967, "count": 0 },
+        { "startOffset": 6085, "endOffset": 6816, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

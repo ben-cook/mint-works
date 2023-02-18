@@ -1,0 +1,16 @@
+{
+  "scriptId": "196",
+  "url": "file:///Users/ben/Documents/mint-works/plans.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1227, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createPlans",
+      "ranges": [{ "startOffset": 1197, "endOffset": 1225, "count": 2 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

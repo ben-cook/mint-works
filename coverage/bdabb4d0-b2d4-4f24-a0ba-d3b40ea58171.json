@@ -1,0 +1,43 @@
+{
+  "scriptId": "209",
+  "url": "https://deno.land/std@0.177.0/log/levels.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1843, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 221, "endOffset": 553, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 679, "endOffset": 704, "count": 12 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getLevelByName",
+      "ranges": [
+        { "startOffset": 1077, "endOffset": 1574, "count": 5 },
+        { "startOffset": 1135, "endOffset": 1186, "count": 0 },
+        { "startOffset": 1195, "endOffset": 1244, "count": 3 },
+        { "startOffset": 1253, "endOffset": 1300, "count": 2 },
+        { "startOffset": 1309, "endOffset": 1362, "count": 0 },
+        { "startOffset": 1371, "endOffset": 1420, "count": 0 },
+        { "startOffset": 1429, "endOffset": 1484, "count": 0 },
+        { "startOffset": 1493, "endOffset": 1566, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getLevelName",
+      "ranges": [
+        { "startOffset": 1655, "endOffset": 1842, "count": 2 },
+        { "startOffset": 1776, "endOffset": 1841, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

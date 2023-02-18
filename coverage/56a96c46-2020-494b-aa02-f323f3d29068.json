@@ -1,0 +1,39 @@
+{
+  "scriptId": "85",
+  "url": "internal:runtime/js/99_main.js",
+  "functions": [
+    {
+      "functionName": "formatException",
+      "ranges": [
+        { "startOffset": 6491, "endOffset": 6902, "count": 2 },
+        { "startOffset": 6612, "endOffset": 6898, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "promiseRejectCallback",
+      "ranges": [
+        { "startOffset": 10446, "endOffset": 11256, "count": 2 },
+        { "startOffset": 10528, "endOffset": 10753, "count": 1 },
+        { "startOffset": 10760, "endOffset": 11089, "count": 1 },
+        { "startOffset": 11096, "endOffset": 11126, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "promiseRejectMacrotaskCallback",
+      "ranges": [{ "startOffset": 11260, "endOffset": 12638, "count": 7 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "errorEventCb",
+      "ranges": [{ "startOffset": 11926, "endOffset": 12054, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 14959, "endOffset": 15013, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}
