@@ -1,6 +1,6 @@
 import { LocationCard } from "./location.ts";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
-import { Building, HandPlan, Plan } from "./plan.ts";
+import { Plan } from "./plan.ts";
 
 /** This game state is passed to players when they are asked to make moves */
 export interface State {

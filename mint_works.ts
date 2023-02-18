@@ -177,18 +177,11 @@ export class MintWorks {
 
   private getPlayerState(playerMakingTurn: PlayerWithInformation): State {
     const players = this.players.map((anyPlayer) => {
-      let neighbourhood;
       const isPlayerMakingTurn = playerMakingTurn.label === anyPlayer.label;
-      if (isPlayerMakingTurn) {
-        // This is the current player. They are allowed to see their entire neighbourhood
-        neighbourhood = playerMakingTurn.neighbourhood;
-      } else {
-        // We need to generate what this player can see from other player's neighbourhoods
-        neighbourhood = new PublicNeighbourhood(anyPlayer.neighbourhood.plans);
-      }
-
       return {
-        neighbourhood,
+        neighbourhood: isPlayerMakingTurn
+          ? playerMakingTurn.neighbourhood
+          : new PublicNeighbourhood(anyPlayer.neighbourhood.plans),
         tokens: anyPlayer.tokens,
         label: anyPlayer.label,
       };
