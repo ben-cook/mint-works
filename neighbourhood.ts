@@ -1,4 +1,4 @@
-import { Building, HandPlan, isHandPlan } from "./plan.ts";
+import { Building, HandPlan, isHandPlan, Plan } from "./plan.ts";
 import { createPlans, PlanName } from "./plans.ts";
 
 export class Neighbourhood {
@@ -30,7 +30,7 @@ export class Neighbourhood {
   }
 
   /** Add a plan to the neighbourhood and convert it into a building */
-  public addBuilding(name: string): void {
+  public addBuilding(name: PlanName): void {
     this.addPlan(name);
     this.build(name);
   }
