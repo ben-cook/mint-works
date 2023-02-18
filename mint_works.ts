@@ -3,7 +3,7 @@ import { RandomPlayer } from "./players/random_player.ts";
 import { Turn } from "./turn.ts";
 import { logger } from "./logger.ts";
 import { State } from "./state.ts";
-import { plans } from "./plans.ts";
+import { createPlans } from "./plans.ts";
 import { LocationCard } from "./location.ts";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 import { PlanSupply } from "./plan_supply.ts";
@@ -51,6 +51,7 @@ export class MintWorks {
     ];
 
     // Set up the plan deck
+    const plans = createPlans();
     const deck = plans.slice();
     shuffleArray(deck);
 
