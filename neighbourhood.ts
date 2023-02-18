@@ -38,12 +38,11 @@ export class PublicNeighbourhood extends Neighbourhood {
 
   constructor(initialPlans?: Array<HandPlan | Building>) {
     super(initialPlans);
-    this.publicPlans =
-      initialPlans?.map((plan) => {
-        if (isHandPlan(plan) && plan.hidden) {
-          return "Hidden";
-        }
-        return plan;
-      }) ?? [];
+    this.publicPlans = initialPlans?.map((plan) => {
+      if (isHandPlan(plan) && plan.hidden) {
+        return "Hidden";
+      }
+      return plan;
+    }) ?? [];
   }
 }

@@ -1,6 +1,6 @@
 import { Plan } from "./plan.ts";
 
-export const plans = [
+const plans = [
   // Green Cards
   {
     name: "Windmill",
@@ -62,3 +62,5 @@ export const plans = [
     effect: undefined,
   },
 ] satisfies Array<Plan>;
+
+export const createPlans = () => structuredClone(plans);

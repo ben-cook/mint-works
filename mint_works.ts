@@ -2,11 +2,11 @@ import { Player } from "./player.ts";
 import { RandomPlayer } from "./players/random_player.ts";
 import { Turn } from "./turn.ts";
 import { logger } from "./logger.ts";
-import { Building, HandPlan, isHandPlan, Plan } from "./plan.ts";
 import { State } from "./state.ts";
 import { plans } from "./plans.ts";
 import { LocationCard } from "./location.ts";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
+import { PlanSupply } from "./plan_supply.ts";
 
 const lowestPlansTiebreaker = false;
 
@@ -31,9 +31,7 @@ export class MintWorks {
   roundNumber = 1;
   locations: Array<LocationCard> = [];
   players: Array<PlayerWithInformation>;
-  deck: Array<Plan> = [];
-  planSupply: Array<Plan> = [];
-  planSupplySize = 3;
+  planSupply: PlanSupply;
 
   constructor() {
     // Set up players of the game
@@ -55,11 +53,9 @@ export class MintWorks {
     // Set up the plan deck
     const deck = plans.slice();
     shuffleArray(deck);
-    logger.info(deck);
-    this.deck = deck;
 
     // Set up the plan supply
-    this.refillPlanSupply();
+    this.planSupply = new PlanSupply(deck);
   }
 
   public async play() {
@@ -107,14 +103,14 @@ export class MintWorks {
    * - Each player gains one Mint Token.
    * - Proceed to the next Development phase.
    */
-  private async upkeep() {
+  private upkeep() {
     // If any player has seven or more stars provided by Buildings in their Neighbourhood, the game ends and Scoring takes place.
     if (this.players.some((p) => p.neighbourhood.stars() >= 7)) {
       this.scoring();
     }
 
     // Refill the plan supply to three face up cards from the Plan Deck. If it is not possible to completely refill the Plan Supply, the game ends and Scoring takes place.
-    if (!this.refillPlanSupply) {
+    if (!this.planSupply.refill()) {
       this.scoring();
     }
 
@@ -155,7 +151,7 @@ export class MintWorks {
     const playersHighestStars = playersDescendingStars.filter(
       (p) =>
         p.neighbourhood.stars() ===
-        playersDescendingStars[0].neighbourhood.stars()
+          playersDescendingStars[0].neighbourhood.stars(),
     );
 
     /** If only 1 player has the highest score they win */
@@ -166,32 +162,37 @@ export class MintWorks {
       if (lowestPlansTiebreaker) {
         /** Tiebreaker 1 (Lowest Plans)*/
         tiebreaker1 = playersHighestStars.sort((a, b) => {
-          if (a.neighbourhood.plans.length < b.neighbourhood.plans.length)
+          if (a.neighbourhood.plans.length < b.neighbourhood.plans.length) {
             return -1;
-          else if (a.neighbourhood.plans.length > b.neighbourhood.plans.length)
+          } else if (
+            a.neighbourhood.plans.length > b.neighbourhood.plans.length
+          ) {
             return 1;
-          else return 0;
+          } else return 0;
         });
       } else {
         /** Tiebreaker 1 (Highest Plans) */
         tiebreaker1 = playersHighestStars.sort((a, b) => {
-          if (a.neighbourhood.plans.length > b.neighbourhood.plans.length)
+          if (a.neighbourhood.plans.length > b.neighbourhood.plans.length) {
             return -1;
-          else if (a.neighbourhood.plans.length < b.neighbourhood.plans.length)
+          } else if (
+            a.neighbourhood.plans.length < b.neighbourhood.plans.length
+          ) {
             return 1;
-          else return 0;
+          } else return 0;
         });
       }
 
       const tiebreaker1Players = tiebreaker1.filter(
         (p) =>
           p.neighbourhood.plans.length ===
-          tiebreaker1[0].neighbourhood.plans.length
+            tiebreaker1[0].neighbourhood.plans.length,
       );
 
       /** If only 1 player has the highest plans they win */
-      if (tiebreaker1Players.length === 1)
+      if (tiebreaker1Players.length === 1) {
         logger.info(tiebreaker1Players[0].label + " won!");
+      }
     }
 
     logger.info("Apparently somebody won");
@@ -204,7 +205,7 @@ export class MintWorks {
     if (turn.action._type === "Build") {
       if (playerTokens < 2) {
         throw new Error(
-          `Player ${turn.playerId} does not have sufficient tokens to build. Tokens: ${playerTokens}. Required tokens: 2`
+          `Player ${turn.playerId} does not have sufficient tokens to build. Tokens: ${playerTokens}. Required tokens: 2`,
         );
       }
     }
@@ -224,23 +225,9 @@ export class MintWorks {
 
     return {
       locations: this.locations,
-      numPlansInDeck: this.deck.length,
-      planSupply: this.planSupply,
+      numPlansInDeck: this.planSupply.numPlansLeftInDeck,
+      planSupply: this.planSupply.plans,
       players,
     };
-  }
-
-  /** Refills the plan supply with plans from the top of the deck.
-   * @returns a boolean indicating whether or not the refill was successful
-   */
-  private refillPlanSupply() {
-    while (this.planSupply.length < this.planSupplySize) {
-      const plan = this.deck.pop();
-      if (!plan) {
-        return false;
-      }
-      this.planSupply.push(plan);
-    }
-    return true;
   }
 }
