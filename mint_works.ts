@@ -107,7 +107,7 @@ export class MintWorks {
    */
   private async upkeep() {
     // If any player has seven or more stars provided by Buildings in their Neighbourhood, the game ends and Scoring takes place.
-    if (this.players.some((p) => p.tokens >= 7)) {
+    if (this.players.some((p) => p.neighbourhood.stars() >= 7)) {
       this.scoring();
     }
 
