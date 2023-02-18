@@ -1,10 +1,12 @@
+/** A slot that holds tokens when the are played */
 export class Slot {
+  /** The price to use this token */
   basePrice: number;
-  tokens: number;
+  /** The number of tokens on this slot */
+  tokens = 0;
 
-  constructor(basePrice: number, tokens: number) {
+  constructor(basePrice: number) {
     this.basePrice = basePrice;
-    this.tokens = tokens;
   }
 
   public available(): boolean {
@@ -46,3 +48,13 @@ export class LocationCard {
     }
   }
 }
+
+const builderSlots = [new Slot(2), new Slot(2), new Slot(2)];
+export const Builder = new LocationCard(
+  "Supplier",
+  "Core",
+  "who knows?",
+  builderSlots,
+);
+
+export const Locations = [Builder];
