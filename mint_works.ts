@@ -6,7 +6,7 @@ import { Building, HandPlan, isHandPlan, Plan } from "./plan.ts";
 import { State } from "./state.ts";
 import { plans } from "./plans.ts";
 import { LocationCard } from "./location.ts";
-import { Neighbourhood } from "./neighbourhood.ts";
+import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 
 interface PlayerInformation {
   tokens: number;
@@ -184,12 +184,7 @@ export class MintWorks {
         neighbourhood = playerMakingTurn.neighbourhood;
       } else {
         // We need to generate what this player can see from other player's neighbourhoods
-        neighbourhood = anyPlayer.neighbourhood.plans.map((plan) => {
-          if (isHandPlan(plan) && plan.hidden) {
-            return "Hidden";
-          }
-          return plan;
-        });
+        neighbourhood = new PublicNeighbourhood(anyPlayer.neighbourhood.plans);
       }
 
       return {

@@ -1,7 +1,11 @@
-import { Building, HandPlan, isBuilding } from "./plan.ts";
+import { Building, HandPlan, isBuilding, isHandPlan } from "./plan.ts";
 
 export class Neighbourhood {
   public plans: Array<HandPlan | Building> = [];
+
+  constructor(initialPlans?: Array<HandPlan | Building>) {
+    this.plans = initialPlans ?? [];
+  }
 
   public getPlan(name: string): HandPlan | Building | undefined {
     return this.plans.find((building) => building.name === name);
@@ -22,5 +26,20 @@ export class Neighbourhood {
       }
       return sum;
     }, 0);
+  }
+}
+
+export class PublicNeighbourhood extends Neighbourhood {
+  publicPlans: Array<HandPlan | Building | "Hidden">;
+
+  constructor(initialPlans?: Array<HandPlan | Building>) {
+    super(initialPlans);
+    this.publicPlans =
+      initialPlans?.map((plan) => {
+        if (isHandPlan(plan) && plan.hidden) {
+          return "Hidden";
+        }
+        return plan;
+      }) ?? [];
   }
 }
