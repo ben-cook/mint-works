@@ -187,7 +187,7 @@ export class MintWorks {
         neighbourhood = playerMakingTurn.neighbourhood;
       } else {
         // We need to generate what this player can see from other player's neighbourhoods
-        neighbourhood = anyPlayer.neighbourhood.map((plan) => {
+        neighbourhood = anyPlayer.neighbourhood.plans.map((plan) => {
           if (isHandPlan(plan) && plan.hidden) {
             return "Hidden";
           }
