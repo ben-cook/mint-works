@@ -22,6 +22,7 @@ export class Slot {
 
 export type LocationType = "Core" | "Deed" | "Advanced";
 
+/** Location cards are where players can place mint tokens. */
 export class LocationCard {
   name: string;
   type: LocationType;
