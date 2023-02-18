@@ -11,6 +11,11 @@ export class Neighbourhood {
     return this.plans.find((plan) => plan.name === name);
   }
 
+  /** Search for a building by name and return it if it exists */
+  public getBuilding(name: string): Building | undefined {
+    return this.buildings.find((plan) => plan.name === name);
+  }
+
   /** Add a plan to the neighbourhood */
   public addPlan(name: string, hidden?: boolean): void {
     const plans = createPlans();
