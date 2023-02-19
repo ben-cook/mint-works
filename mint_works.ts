@@ -191,9 +191,19 @@ export class MintWorks {
     if (turn.action._type === "Build") {
       if (playerTokens < 2) {
         throw new Error(
-          `Player ${turn.playerName} does not have nufficient tokens to build. Tokens: ${playerTokens}. Required tokens: 2`,
+          `Player ${turn.playerName} does not have sufficient tokens to build. Tokens: ${playerTokens}. Required tokens: 2`,
         );
       }
+    }
+
+    if (turn.action._type === "Produce") {
+      if (playerTokens < 1) {
+        throw new Error(
+          `Player ${turn.playerName} does not have sufficient tokens to produce. Tokens: ${playerTokens}. Required tokens: 1`,
+        );
+      }
+
+      player.tokens++;
     }
   }
 
