@@ -1,7 +1,8 @@
-import { IPlayer, PlayerHelper } from "../player.ts";
+import { IPlayer } from "../player.ts";
 import { Turn } from "../turn.ts";
 import { logger } from "../logger.ts";
 import { State } from "../state.ts";
+import { PlayerHelper } from "./player_helper.ts";
 
 export class RandomPlayer extends PlayerHelper implements IPlayer {
   constructor(name: string) {
