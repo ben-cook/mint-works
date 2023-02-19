@@ -6,6 +6,8 @@ export interface Plan {
   cost: number;
   /** The base number of stars that this plan is worth. */
   baseStars: number;
+  /** The type of the plan */
+  type: PlanType;
   /** Descriptive plan text */
   description?: string;
   /** A hook that is executed during the "upkeep" game phase */
@@ -34,3 +36,5 @@ export interface Building extends Plan {
   // deno-lint-ignore no-explicit-any
   internalState: any;
 }
+
+export type PlanType = "NONE";

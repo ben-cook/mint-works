@@ -1,6 +1,6 @@
 import type { PlayerWithInformation } from "./mint_works.ts";
 
-export interface ScoreBoard {
+export interface Scoreboard {
   winner: string;
   scores: Array<Score>;
 }
@@ -15,7 +15,7 @@ export interface Score {
 /** Finds the winner from a list of players */
 export const findWinner = (
   players: Array<PlayerWithInformation>,
-): ScoreBoard => {
+): Scoreboard => {
   const scores: Array<Score> = players.map((p) => ({
     player: p,
     stars: p.neighbourhood.stars(),

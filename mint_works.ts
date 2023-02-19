@@ -7,7 +7,7 @@ import { createPlans } from "./plans.ts";
 import { LocationCard, Locations } from "./location.ts";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 import { PlanSupply } from "./plan_supply.ts";
-import { findWinner } from "./scoring.ts";
+import { findWinner, Scoreboard } from "./scoring.ts";
 import { shuffleArray } from "./utils.ts";
 
 interface PlayerInformation {
@@ -137,13 +137,33 @@ export class MintWorks {
    * Decide who the winner is.
    */
   private scoring() {
-    const winner = findWinner(this.players);
-    if (winner) {
-      logger.info(`The winner is ${winner}`);
+    const scoreboard = findWinner(this.players);
+    if (scoreboard) {
+      logger.info(`The winner is ${scoreboard.winner}`);
+      logger.info(`      NAME | STARS | PLANS | TOKENS`);
+      scoreboard.scores.forEach((score) => {
+        const name = score.player.label.padStart(10);
+        logger.info(
+          `${name} :   ${score.stars}       ${score.plans}        ${score.tokens}`,
+        );
+      });
     } else {
       logger.warning("No winner was found");
     }
+    this.printScoreboard();
     Deno.exit();
+  }
+
+  private printScoreboard(scoreboard?: Scoreboard) {
+    if (!scoreboard) 
+    logger.info(`Round ${this.roundNumber}`);
+    logger.info(`      NAME | STARS | PLANS | TOKENS`);
+    this.players.forEach((player) => {
+      const name = player.label.padStart(10);
+      logger.info(
+        `${name} :   ${player.neighbourhood.stars()}       ${player.neighbourhood.plans.length}        ${player.tokens}`,
+      );
+    });
   }
 
   /** Simulate taking a turn */
