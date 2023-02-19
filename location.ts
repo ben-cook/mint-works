@@ -24,6 +24,13 @@ export class Slot {
 
 export type LocationType = "Core" | "Deed" | "Advanced";
 
+export interface LocationConstructor {
+  name: string;
+  type: LocationType;
+  effect: string;
+  slots: Slot[];
+}
+
 /** Location cards are where players can place mint tokens. */
 export class LocationCard {
   name: string;
@@ -31,7 +38,7 @@ export class LocationCard {
   effect: string;
   slots: Slot[];
 
-  constructor(name: string, type: LocationType, effect: string, slots: Slot[]) {
+  constructor({ name, type, effect, slots }: LocationConstructor) {
     this.name = name;
     this.type = type;
     this.effect = effect;
@@ -51,10 +58,12 @@ export class LocationCard {
 
 const builderSlots = [new Slot(2), new Slot(2), new Slot(2)];
 export const Builder = new LocationCard(
-  "Builder",
-  "Core",
-  "who knows?",
-  builderSlots,
+  {
+    name: "Builder",
+    type: "Core",
+    effect: "who knows?",
+    slots: builderSlots,
+  },
 );
 
 export const Locations = [Builder];
