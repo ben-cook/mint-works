@@ -37,4 +37,4 @@ export interface Building extends Plan {
   internalState: any;
 }
 
-export type PlanType = "NONE";
+export type PlanType = "CULTURE"|"PRODUCTION"|"UTILITY"|"DEED";
