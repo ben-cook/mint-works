@@ -1,7 +1,7 @@
 import { HandPlan } from "./plan.ts";
 
 export interface Turn {
-  playerId: number;
+  playerName: string;
   action: Action;
 }
 

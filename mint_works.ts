@@ -4,10 +4,11 @@ import { Turn } from "./turn.ts";
 import { logger } from "./logger.ts";
 import { State } from "./state.ts";
 import { createPlans } from "./plans.ts";
-import { LocationCard } from "./location.ts";
+import { LocationCard, Locations } from "./location.ts";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 import { PlanSupply } from "./plan_supply.ts";
 import { findWinner } from "./scoring.ts";
+import { shuffleArray } from "./utils.ts";
 
 interface PlayerInformation {
   tokens: number;
@@ -20,16 +21,9 @@ export interface PlayerWithInformation extends PlayerInformation {
   player: Player;
 }
 
-const shuffleArray = <T>(array: Array<T>) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-};
-
 export class MintWorks {
   roundNumber = 1;
-  locations: Array<LocationCard> = [];
+  locations: Array<LocationCard> = Locations;
   players: Array<PlayerWithInformation>;
   planSupply: PlanSupply;
 
@@ -37,14 +31,14 @@ export class MintWorks {
     // Set up players of the game
     this.players = [
       {
-        player: new RandomPlayer(),
+        player: new RandomPlayer("Bob"),
         tokens: 0,
         label: "Bob",
         age: 34,
         neighbourhood: new Neighbourhood(),
       },
       {
-        player: new RandomPlayer(),
+        player: new RandomPlayer("Alice"),
         tokens: 0,
         label: "Alice",
         age: 21,
@@ -154,11 +148,13 @@ export class MintWorks {
 
   /** Simulate taking a turn */
   private simulateTurn(turn: Turn) {
-    const playerTokens = this.players[turn.playerId].tokens;
+    const player = this.players.find((p) => p.label === turn.playerName)!;
+    const playerTokens = player.tokens;
+
     if (turn.action._type === "Build") {
       if (playerTokens < 2) {
         throw new Error(
-          `Player ${turn.playerId} does not have sufficient tokens to build. Tokens: ${playerTokens}. Required tokens: 2`,
+          `Player ${turn.playerName} does not have nufficient tokens to build. Tokens: ${playerTokens}. Required tokens: 2`,
         );
       }
     }

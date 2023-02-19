@@ -15,14 +15,14 @@ Deno.test("Scoring", () => {
       label: playerOneName,
       age: playerOneAge,
       neighbourhood: new Neighbourhood(),
-      player: new RandomPlayer(),
+      player: new RandomPlayer(playerOneName),
       tokens: 5,
     },
     {
       label: playerTwoName,
       age: playerTwoAge,
       neighbourhood: new Neighbourhood(),
-      player: new RandomPlayer(),
+      player: new RandomPlayer(playerTwoName),
       tokens: 5,
     },
   ];

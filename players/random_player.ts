@@ -4,13 +4,19 @@ import { logger } from "../logger.ts";
 import { State } from "../state.ts";
 
 export class RandomPlayer implements Player {
+  name;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
   takeTurn(state: State): Promise<Turn> {
     logger.info(`Taking a turn! State:`);
     logger.info(state);
 
     return new Promise((resolve, _reject) =>
       resolve({
-        playerId: 0,
+        playerName: this.name,
         action: { _type: "Leadership" },
       })
     );

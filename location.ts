@@ -51,7 +51,7 @@ export class LocationCard {
 
 const builderSlots = [new Slot(2), new Slot(2), new Slot(2)];
 export const Builder = new LocationCard(
-  "Supplier",
+  "Builder",
   "Core",
   "who knows?",
   builderSlots,

@@ -10,14 +10,14 @@ Deno.test("Neighbourhood", async (neighbourhoodTest) => {
       label: "Test Player 1",
       age: 21,
       neighbourhood: new Neighbourhood(),
-      player: new RandomPlayer(),
+      player: new RandomPlayer("Test Player 1"),
       tokens: 5,
     },
     {
       label: "Test Player 2",
       age: 34,
       neighbourhood: new Neighbourhood(),
-      player: new RandomPlayer(),
+      player: new RandomPlayer("Test Player 2"),
       tokens: 5,
     },
   ];
