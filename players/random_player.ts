@@ -11,8 +11,7 @@ export class RandomPlayer extends PlayerHelper implements IPlayer {
 
   takeTurn(state: State): Promise<Turn> {
     const turns = this.generateTurns(state);
-    logger.info(`turns`);
-    logger.info(turns);
+    logger.info(`[${this.name}] available turns: ${JSON.stringify(turns)}`);
     const turn = turns.at(Math.floor(Math.random() * turns.length))!;
     if (!turn) {
       logger.error(`Could not find a valid move!`);

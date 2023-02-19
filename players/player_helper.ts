@@ -15,6 +15,7 @@ export class PlayerHelper {
       action: { "_type": "Pass" },
       playerName: this.name,
     }];
+
     const builder = state.locations.find((l) => l.name === "Builder");
     if (builder?.available() && this.canAffordToBuild(state)) {
       for (
@@ -29,6 +30,18 @@ export class PlayerHelper {
           playerName: this.name,
         });
       }
+    }
+
+    const producer = state.locations.find((l) => l.name === "Producer");
+    if (producer?.available()) {
+      validTurns.push(
+        {
+          action: {
+            "_type": "Produce",
+          },
+          playerName: this.name,
+        },
+      );
     }
     return validTurns;
   }

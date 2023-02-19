@@ -66,4 +66,14 @@ export const Builder = new LocationCard(
   },
 );
 
-export const Locations = [Builder];
+const producerSlots = [new Slot(1), new Slot(1), new Slot(1)];
+export const Producer = new LocationCard(
+  {
+    name: "Producer",
+    type: "Core",
+    effect: "who knows?",
+    slots: producerSlots,
+  },
+);
+
+export const Locations = [Builder, Producer];
