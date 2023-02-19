@@ -1,7 +1,7 @@
 import { IPlayer } from "./player.ts";
 import { RandomPlayer } from "./players/random_player.ts";
 import { Turn } from "./turn.ts";
-import { logger } from "./logger.ts";
+import { gameLogger as logger } from "./logger.ts";
 import { State } from "./state.ts";
 import { createPlans } from "./plans.ts";
 import { LocationCard, Locations } from "./location.ts";
@@ -77,16 +77,28 @@ export class MintWorks {
    * - The Development phase repeats until all players consecutively pass, ending the phase. Then proceed to the Upkeep phase.
    */
   private async development() {
-    for (let i = 0; i < this.players.length; i++) {
+    const numPlayers = this.players.length;
+    let numConsecutivePasses = 0;
+    let i = 0;
+
+    while (numConsecutivePasses < numPlayers) {
       const player = this.players[i]!;
       logger.info(`Player ${i}: (${player.label}'s turn)`);
 
       const turn = await player.player.takeTurn(this.getPlayerState(player));
       try {
+        if (turn.action._type === "Pass") {
+          numConsecutivePasses++;
+        } else {
+          numConsecutivePasses = 0;
+        }
         this.simulateTurn(turn);
       } catch (err) {
         logger.error(`Invalid turn! Error: ${err}`);
+        Deno.exit(1);
       }
+
+      i %= numPlayers;
     }
   }
 
@@ -155,8 +167,9 @@ export class MintWorks {
   }
 
   private printScoreboard(scoreboard?: Scoreboard) {
-    if (!scoreboard) 
-    logger.info(`Round ${this.roundNumber}`);
+    if (!scoreboard) {
+      logger.info(`Round ${this.roundNumber}`);
+    }
     logger.info(`      NAME | STARS | PLANS | TOKENS`);
     this.players.forEach((player) => {
       const name = player.label.padStart(10);

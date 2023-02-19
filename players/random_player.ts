@@ -1,6 +1,6 @@
 import { IPlayer } from "../player.ts";
 import { Turn } from "../turn.ts";
-import { logger } from "../logger.ts";
+import { playerLogger as logger } from "../logger.ts";
 import { State } from "../state.ts";
 import { PlayerHelper } from "./player_helper.ts";
 
