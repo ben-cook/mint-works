@@ -26,6 +26,8 @@ export class MintWorks {
   locations: Array<LocationCard> = Locations;
   players: Array<PlayerWithInformation>;
   planSupply: PlanSupply;
+  /** The player with the starting player token starts each round in the Development phase */
+  startingPlayerToken: string;
 
   constructor() {
     // Set up players of the game
@@ -53,6 +55,8 @@ export class MintWorks {
 
     // Set up the plan supply
     this.planSupply = new PlanSupply(deck);
+
+    this.startingPlayerToken = this.players[0].label;
   }
 
   public async play() {
@@ -79,7 +83,7 @@ export class MintWorks {
   private async development() {
     const numPlayers = this.players.length;
     let numConsecutivePasses = 0;
-    let i = 0;
+    let i = this.players.findIndex((p) => p.label === this.startingPlayerToken);
 
     while (numConsecutivePasses < numPlayers) {
       const player = this.players[i]!;
