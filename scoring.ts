@@ -1,4 +1,3 @@
-import { logger } from "./logger.ts";
 import type { PlayerWithInformation } from "./mint_works.ts";
 
 const lowestPlansTiebreaker = false;

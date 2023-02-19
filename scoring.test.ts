@@ -2,7 +2,7 @@ import { MintWorks } from "./mint_works.ts";
 import { assertEquals } from "https://deno.land/std@0.177.0/testing/asserts.ts";
 import { Neighbourhood } from "./neighbourhood.ts";
 import { RandomPlayer } from "./players/random_player.ts";
-import { findWinner, scoreBoard, Winner } from "./scoring.ts";
+import { findWinner, scoreBoard } from "./scoring.ts";
 
 Deno.test("Scoring", () => {
   const mintWorks = new MintWorks();
