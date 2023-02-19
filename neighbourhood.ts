@@ -1,4 +1,4 @@
-import { Building, HandPlan, isBuilding, isHandPlan } from "./plan.ts";
+import { Building, HandPlan } from "./plan.ts";
 import { createPlans, PlanName } from "./plans.ts";
 
 export class Neighbourhood {
