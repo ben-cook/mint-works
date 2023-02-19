@@ -1,7 +1,10 @@
 import { MintWorks } from "./mint_works.ts";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 import { RandomPlayer } from "./players/random_player.ts";
-import { assertEquals } from "https://deno.land/std@0.177.0/testing/asserts.ts";
+import {
+  assertEquals,
+  assertExists,
+} from "https://deno.land/std@0.177.0/testing/asserts.ts";
 
 Deno.test("Neighbourhood", async (neighbourhoodTest) => {
   const mintWorks = new MintWorks();
@@ -214,6 +217,41 @@ Deno.test("Public Neighbourhood", async (publicNeighbourhoodTest) => {
           "Gardens",
         );
       });
+      await publicNeighbourhoodInitTest.step("Calculates stars", () => {
+        assertEquals(publicNeighbourhood.stars(), 3);
+      });
+      await publicNeighbourhoodInitTest.step("Calculates size", () => {
+        assertEquals(publicNeighbourhood.size(), 4);
+      });
+      await publicNeighbourhoodInitTest.step(
+        "Hidden plans are hidden",
+        async (hiddenPlanTest) => {
+          const hasHiddenPlans = publicNeighbourhood.plans.some((plan) =>
+            plan.name === "HIDDEN"
+          );
+          assertEquals(
+            hasHiddenPlans,
+            true,
+          );
+          const hiddenPlan = publicNeighbourhood.plans.find((plan) =>
+            plan.name === "HIDDEN"
+          );
+          assertExists(hiddenPlan);
+          await hiddenPlanTest.step(
+            "Hidden plans are fully masked",
+            () => {
+              assertEquals(hiddenPlan?.name, "HIDDEN");
+              assertEquals(hiddenPlan?.baseStars, undefined);
+              assertEquals(hiddenPlan?.cost, undefined);
+              assertEquals(hiddenPlan?.description, undefined);
+              assertEquals(hiddenPlan?.effect, undefined);
+              assertEquals(hiddenPlan?.hidden, undefined);
+              assertEquals(hiddenPlan?.type, undefined);
+              assertEquals(hiddenPlan?.upkeepHook, undefined);
+            },
+          );
+        },
+      );
     },
   );
 });
