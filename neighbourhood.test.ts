@@ -1,5 +1,5 @@
 import { MintWorks } from "./mint_works.ts";
-import { Neighbourhood } from "./neighbourhood.ts";
+import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 import { RandomPlayer } from "./players/random_player.ts";
 import { assertEquals } from "https://deno.land/std@0.177.0/testing/asserts.ts";
 
@@ -29,6 +29,30 @@ Deno.test("Neighbourhood", async (neighbourhoodTest) => {
           plan.name === "Windmill"
         )?.name,
         "Windmill",
+      );
+    });
+    await planTest.step("Add Building", () => {
+      mintWorks.players[0].neighbourhood.addBuilding("Mine");
+      assertEquals(
+        mintWorks.players[0].neighbourhood.plans.find((plan) =>
+          plan.name === "Mine"
+        )?.name,
+        undefined,
+      );
+      assertEquals(
+        mintWorks.players[0].neighbourhood.buildings.find((plan) =>
+          plan.name === "Mine"
+        )?.name,
+        "Mine",
+      );
+    });
+    await planTest.step("Remove building", () => {
+      mintWorks.players[0].neighbourhood.removeBuilding("Mine");
+      assertEquals(
+        mintWorks.players[0].neighbourhood.buildings.find((plan) =>
+          plan.name === "Mine"
+        )?.name,
+        undefined,
       );
     });
     await planTest.step("Get plan", () => {
@@ -98,4 +122,98 @@ Deno.test("Neighbourhood", async (neighbourhoodTest) => {
   await neighbourhoodTest.step("Size", () => {
     assertEquals(mintWorks.players[0].neighbourhood.size(), 3);
   });
+});
+
+Deno.test("Neighbourhood Getting", async (neighbourhoodGettingTest) => {
+  const mintWorks = new MintWorks();
+  mintWorks.players = [
+    {
+      label: "Test Player 1",
+      age: 21,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 1"),
+      tokens: 5,
+    },
+    {
+      label: "Test Player 2",
+      age: 34,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 2"),
+      tokens: 5,
+    },
+  ];
+  mintWorks.players[0].neighbourhood.addPlan("Windmill");
+  mintWorks.players[0].neighbourhood.addPlan("Factory");
+  mintWorks.players[0].neighbourhood.addPlan("Statue", true);
+  mintWorks.players[0].neighbourhood.addBuilding("Gardens");
+  await neighbourhoodGettingTest.step("Get Plans", () => {
+    assertEquals(mintWorks.players[0].neighbourhood.plans.length, 3);
+  });
+  await neighbourhoodGettingTest.step("Get Buildings", () => {
+    assertEquals(mintWorks.players[0].neighbourhood.buildings.length, 1);
+  });
+  await neighbourhoodGettingTest.step("Get Plans and Buildings", () => {
+    const buildingsAndPlans = mintWorks.players[0].neighbourhood
+      .getPlansAndBuildings();
+    assertEquals(
+      buildingsAndPlans.plans.length,
+      3,
+    );
+    assertEquals(
+      buildingsAndPlans.buildings.length,
+      1,
+    );
+  });
+});
+
+Deno.test("Public Neighbourhood", async (publicNeighbourhoodTest) => {
+  const mintWorks = new MintWorks();
+  mintWorks.players = [
+    {
+      label: "Test Player 1",
+      age: 21,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 1"),
+      tokens: 5,
+    },
+    {
+      label: "Test Player 2",
+      age: 34,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 2"),
+      tokens: 5,
+    },
+  ];
+  mintWorks.players[0].neighbourhood.addPlan("Windmill");
+  mintWorks.players[0].neighbourhood.addPlan("Factory");
+  mintWorks.players[0].neighbourhood.addPlan("Statue", true);
+  mintWorks.players[0].neighbourhood.addBuilding("Gardens");
+  assertEquals(mintWorks.players[0].neighbourhood.plans.length, 3);
+  assertEquals(mintWorks.players[0].neighbourhood.buildings.length, 1);
+
+  await publicNeighbourhoodTest.step(
+    "Initialise Public Neighbourhood",
+    async (publicNeighbourhoodInitTest) => {
+      const plansAndBuildings = mintWorks.players[0].neighbourhood
+        .getPlansAndBuildings();
+      assertEquals(plansAndBuildings.plans.length, 3);
+      assertEquals(plansAndBuildings.buildings.length, 1);
+      const publicNeighbourhood = new PublicNeighbourhood({
+        plans: plansAndBuildings.plans,
+        buildings: plansAndBuildings.buildings,
+      });
+      await publicNeighbourhoodInitTest.step("Has expected plans", () => {
+        assertEquals(publicNeighbourhood.plans.length, 3);
+        assertEquals(publicNeighbourhood.getPlan("Windmill")?.name, "Windmill");
+        assertEquals(publicNeighbourhood.getPlan("Statue")?.name, undefined);
+      });
+      await publicNeighbourhoodInitTest.step("Has expected buildings", () => {
+        assertEquals(publicNeighbourhood.buildings.length, 1);
+        assertEquals(
+          publicNeighbourhood.buildings[0].name,
+          "Gardens",
+        );
+      });
+    },
+  );
 });

@@ -213,7 +213,9 @@ export class MintWorks {
       return {
         neighbourhood: isPlayerMakingTurn
           ? playerMakingTurn.neighbourhood
-          : new PublicNeighbourhood(anyPlayer.neighbourhood.plans),
+          : new PublicNeighbourhood(
+            anyPlayer.neighbourhood.getPlansAndBuildings(),
+          ),
         tokens: anyPlayer.tokens,
         label: anyPlayer.label,
       };

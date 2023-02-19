@@ -1,4 +1,4 @@
-import { Building, HandPlan, isHandPlan } from "./plan.ts";
+import { Building, HandPlan, isBuilding, isHandPlan } from "./plan.ts";
 import { createPlans, PlanName } from "./plans.ts";
 
 export class Neighbourhood {
@@ -14,6 +14,17 @@ export class Neighbourhood {
   /** Search for a building by name and return it if it exists */
   public getBuilding(name: PlanName): Building | undefined {
     return this.buildings.find((plan) => plan.name === name);
+  }
+
+  /** Get all plans and buildings in the neighbourhood */
+  public getPlansAndBuildings(): {
+    plans: Array<HandPlan>;
+    buildings: Array<Building>;
+  } {
+    return {
+      plans: this.plans,
+      buildings: this.buildings,
+    };
   }
 
   /** Add a plan to the neighbourhood */
@@ -77,15 +88,22 @@ export class Neighbourhood {
 }
 
 export class PublicNeighbourhood extends Neighbourhood {
-  publicPlans: Array<HandPlan | Building | "Hidden">;
-
-  constructor(initialPlans?: Array<HandPlan | Building>) {
+  constructor(
+    { plans, buildings }: {
+      plans?: Array<HandPlan>;
+      buildings?: Array<Building>;
+    },
+  ) {
     super();
-    this.publicPlans = initialPlans?.map((plan) => {
-      if (isHandPlan(plan) && plan.hidden) {
-        return "Hidden";
+    this.buildings = buildings ?? [];
+    this.plans = plans?.map((plan) => {
+      if (plan.hidden) {
+        return {
+          name: "HIDDEN",
+        } as HandPlan;
+      } else {
+        return plan;
       }
-      return plan;
     }) ?? [];
   }
 }
