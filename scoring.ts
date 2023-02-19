@@ -156,9 +156,7 @@ export const scoreBoard = (
       if (a.plans > b.plans) return -1;
       else if (a.plans < b.plans) return 1;
       else {
-        if (a.tokens > b.tokens) return -1;
-        else if (a.tokens < b.tokens) return 1;
-        else return 0;
+        return b.tokens - a.tokens;
       }
     }
   });
