@@ -36,7 +36,10 @@ export const findWinner = (
   });
 
   // If there is a tie
-  const scoreWinners = scores.filter((s) => s.stars === scores[0].stars);
+  const scoreWinners = scores.filter((s) =>
+    s.stars === scores[0].stars && s.plans === scores[0].plans &&
+    s.tokens === scores[0].tokens
+  );
 
   if (scoreWinners.length === 1) {
     return {
