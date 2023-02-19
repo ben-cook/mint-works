@@ -1,4 +1,4 @@
-import { Player } from "./player.ts";
+import { IPlayer } from "./player.ts";
 import { RandomPlayer } from "./players/random_player.ts";
 import { Turn } from "./turn.ts";
 import { logger } from "./logger.ts";
@@ -18,7 +18,7 @@ interface PlayerInformation {
 }
 
 export interface PlayerWithInformation extends PlayerInformation {
-  player: Player;
+  player: IPlayer;
 }
 
 export class MintWorks {
@@ -32,14 +32,14 @@ export class MintWorks {
     this.players = [
       {
         player: new RandomPlayer("Bob"),
-        tokens: 0,
+        tokens: 3,
         label: "Bob",
         age: 34,
         neighbourhood: new Neighbourhood(),
       },
       {
         player: new RandomPlayer("Alice"),
-        tokens: 0,
+        tokens: 3,
         label: "Alice",
         age: 21,
         neighbourhood: new Neighbourhood(),

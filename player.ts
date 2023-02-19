@@ -1,7 +1,7 @@
 import { State } from "./state.ts";
 import { Turn } from "./turn.ts";
 
-export interface Player {
+export interface IPlayer {
   /** The `takeTurn` method is called when it is this player's turn.
    * @returns A promise that resolves to the turn that the player chooses
    */
@@ -10,4 +10,37 @@ export interface Player {
    * This could be used to update a UI, to train a model, etc.
    */
   update?: (turn: Turn) => void;
+}
+
+export class PlayerHelper {
+  name;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  generateTurns(
+    state: State,
+  ): Array<Turn> {
+    const validTurns: Array<Turn> = [{
+      action: { "_type": "Pass" },
+      playerName: this.name,
+    }];
+    const builder = state.locations.find((l) => l.name === "Builder");
+    if (builder?.available()) {
+      for (
+        const plan of state.players.find((p) => p.label === this.name)!
+          .neighbourhood.plans
+      ) {
+        validTurns.push({
+          action: {
+            _type: "Build",
+            plan,
+          },
+          playerName: this.name,
+        });
+      }
+    }
+    return validTurns;
+  }
 }
