@@ -43,9 +43,30 @@ export class PlayerHelper {
         },
       );
     }
+
+    const supplier = state.locations.find((l) => l.name === "Supplier");
+    if (supplier?.available() && this.canAffordToSupply(state)) {
+      for (
+        const plan of state.planSupply.filter((p) =>
+          p.cost <= state.players.find(
+            (p) => p.label === this.name,
+          )!.tokens
+        )
+      ) {
+        validTurns.push({
+          action: {
+            _type: "Supply",
+            plan,
+          },
+          playerName: this.name,
+        });
+      }
+    }
+
     return validTurns;
   }
 
+  /** Return if the player can afford to build any of their plans */
   canAffordToBuild(state: State): boolean {
     const player = this.thisPlayer(state);
 
@@ -54,6 +75,12 @@ export class PlayerHelper {
     }
 
     return player.tokens >= 2;
+  }
+
+  /** Return if the player can afford to supply any of the plan supply plans */
+  canAffordToSupply(state: State): boolean {
+    const player = this.thisPlayer(state);
+    return state.planSupply.some((p) => p.cost <= player.tokens);
   }
 
   /** Return this player's information from a state object */

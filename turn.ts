@@ -1,4 +1,4 @@
-import { HandPlan } from "./plan.ts";
+import { HandPlan, Plan } from "./plan.ts";
 
 export interface Turn {
   playerName: string;
@@ -9,7 +9,7 @@ type Place =
   | { _type: "Build"; plan: HandPlan }
   | { _type: "Produce" }
   | { _type: "Leadership" }
-  | { _type: "Supply"; plan: HandPlan };
+  | { _type: "Supply"; plan: Plan };
 
 type Pass = { _type: "Pass" };
 
