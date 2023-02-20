@@ -60,6 +60,15 @@ export class LocationCard {
       slot.empty();
     }
   }
+
+  public minSlotPrice(): number {
+    return this.slots.reduce((acc, slot) => {
+      if (slot.available()) {
+        return Math.min(acc, slot.basePrice);
+      }
+      return acc;
+    }, Infinity);
+  }
 }
 
 export const Builder = new LocationCard(
