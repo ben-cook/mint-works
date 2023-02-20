@@ -8,6 +8,13 @@ Deno.test("Location", async (t) => {
     assertEquals(location.available(), true);
   });
 
+  await t.step("Initialises with correct slots", () => {
+    assertEquals(location.slots.length, 3);
+    assertEquals(location.slots[0].basePrice, 2);
+    assertEquals(location.slots[1].basePrice, 2);
+    assertEquals(location.slots[2].basePrice, 2);
+  });
+
   await t.step("Filling all slots makes the location unavailable", () => {
     location.slots.forEach((slot) => {
       slot.fill(3);

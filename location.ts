@@ -28,7 +28,8 @@ export interface LocationConstructor {
   name: string;
   type: LocationType;
   effect: string;
-  slots: Slot[];
+  slotBasePrice: number;
+  numberOfSlots: number;
 }
 
 /** Location cards are where players can place mint tokens. */
@@ -38,11 +39,16 @@ export class LocationCard {
   effect: string;
   slots: Slot[];
 
-  constructor({ name, type, effect, slots }: LocationConstructor) {
+  constructor(
+    { name, type, effect, slotBasePrice, numberOfSlots }: LocationConstructor,
+  ) {
     this.name = name;
     this.type = type;
     this.effect = effect;
-    this.slots = slots;
+    this.slots = Array.from(
+      { length: numberOfSlots },
+      () => new Slot(slotBasePrice),
+    );
   }
 
   public available(): boolean {
@@ -56,23 +62,23 @@ export class LocationCard {
   }
 }
 
-const builderSlots = [new Slot(2), new Slot(2), new Slot(2)];
 export const Builder = new LocationCard(
   {
     name: "Builder",
     type: "Core",
     effect: "who knows?",
-    slots: builderSlots,
+    slotBasePrice: 2,
+    numberOfSlots: 3,
   },
 );
 
-const producerSlots = [new Slot(1), new Slot(1), new Slot(1)];
 export const Producer = new LocationCard(
   {
     name: "Producer",
     type: "Core",
     effect: "who knows?",
-    slots: producerSlots,
+    slotBasePrice: 1,
+    numberOfSlots: 3,
   },
 );
 
