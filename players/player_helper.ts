@@ -44,6 +44,18 @@ export class PlayerHelper {
       );
     }
 
+    const leadership = state.locations.find((l) => l.name === "Leadership");
+    if (leadership?.available()) {
+      validTurns.push(
+        {
+          action: {
+            "_type": "Leadership",
+          },
+          playerName: this.name,
+        },
+      );
+    }
+
     const supplier = state.locations.find((l) => l.name === "Supplier");
     if (supplier?.available() && this.canAffordToSupply(state)) {
       for (
