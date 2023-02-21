@@ -9,7 +9,8 @@ type Place =
   | { _type: "Build"; plan: HandPlan }
   | { _type: "Produce" }
   | { _type: "Leadership" }
-  | { _type: "Supply"; plan: Plan };
+  | { _type: "Supply"; plan: Plan }
+  | { _type: "Lotto" };
 
 type Pass = { _type: "Pass" };
 

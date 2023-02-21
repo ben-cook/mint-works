@@ -39,6 +39,12 @@ export class PlanSupply {
     return true;
   }
 
+  public lottoDeckDraw(): Plan | undefined {
+    const plan = this.deck.pop();
+    const hiddenPlan = plan ? { ...plan, hidden: true } : undefined;
+    return hiddenPlan;
+  }
+
   public get plans() {
     return this.planSupply;
   }

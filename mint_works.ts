@@ -9,6 +9,7 @@ import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 import { PlanSupply } from "./plan_supply.ts";
 import { findWinner, Scoreboard } from "./scoring.ts";
 import { shuffleArray } from "./utils.ts";
+import { HandPlan } from "./plan.ts";
 
 interface PlayerInformation {
   tokens: number;
@@ -215,6 +216,26 @@ export class MintWorks {
       }
 
       player.tokens++;
+    }
+
+    if (turn.action._type === "Lotto") {
+      const lotto = this.locations.find((l) => l.name === "Lotto");
+
+      if (!lotto) throw new Error("Lotto location does not exist");
+      if (lotto.isClosed()) throw new Error("Lotto location is closed");
+      if (playerTokens < lotto.minSlotPrice()) {
+        throw new Error(
+          `Player ${turn.playerName} does not have sufficient tokens to use the Lotto. Tokens: ${playerTokens}. Required tokens: ${lotto.minSlotPrice()}`,
+        );
+      }
+
+      const lottoCard = this.planSupply.lottoDeckDraw();
+
+      if (!lottoCard) {
+        throw new Error("Deck is empty, lotto card can't be drawn");
+      }
+
+      player.neighbourhood.plans.push(lottoCard as HandPlan);
     }
   }
 
