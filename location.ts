@@ -1,3 +1,5 @@
+import { Turn } from "./turn.ts";
+
 /** A slot that holds tokens when the are played */
 export class Slot {
   /** The price to use this token */
@@ -33,6 +35,7 @@ export interface LocationConstructor {
   effect: string;
   slotBasePrice: number;
   numberOfSlots: number;
+  mappedAction?: Turn["action"]["_type"];
   startClosed?: boolean;
 }
 
@@ -43,17 +46,26 @@ export class LocationCard {
   effect: string;
   slotBasePrice: number;
   numberOfSlots: number;
+  mappedAction?: Turn["action"]["_type"];
   slots: Slot[];
 
   constructor(
-    { name, type, effect, slotBasePrice, numberOfSlots, startClosed = false }:
-      LocationConstructor,
+    {
+      name,
+      type,
+      effect,
+      slotBasePrice,
+      numberOfSlots,
+      startClosed = false,
+      mappedAction,
+    }: LocationConstructor,
   ) {
     this.name = name;
     this.type = type;
     this.effect = effect;
     this.slotBasePrice = slotBasePrice;
     this.numberOfSlots = numberOfSlots;
+    this.mappedAction = mappedAction;
     this.slots = [];
     if (!startClosed) this.openLocation();
   }
@@ -61,6 +73,13 @@ export class LocationCard {
   /** Return if a location has at least one free slot */
   public available(): boolean {
     return this.slots.some((slot) => slot.available());
+  }
+
+  /** Use an available slot */
+  public useSlot(): void {
+    const slot = this.slots.find((s) => s.available());
+    if (!slot) throw new Error("No available slots");
+    slot.fill(1);
   }
 
   /** Empty all the slots */
