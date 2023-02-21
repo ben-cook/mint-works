@@ -3,7 +3,7 @@ import { RandomPlayer } from "./players/random_player.ts";
 import { Turn } from "./turn.ts";
 import { gameLogger as logger } from "./logger.ts";
 import { State } from "./state.ts";
-import { createPlans } from "./plans.ts";
+import { createPlans, PlanName } from "./plans.ts";
 import { LocationCard, Locations } from "./location.ts";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 import { PlanSupply } from "./plan_supply.ts";
@@ -206,6 +206,7 @@ export class MintWorks {
       if (linkedLocation && linkedLocation.isClosed()) {
         linkedLocation.openLocation();
       }
+      player.neighbourhood.build(plan.name as PlanName);
     }
 
     if (turn.action._type === "Produce") {
