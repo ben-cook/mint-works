@@ -136,7 +136,7 @@ export class MintWorks {
     for (const player of this.players) {
       player.neighbourhood.buildings.forEach((b) => {
         if (!b.upkeepHook) return;
-        b.upkeepHook(player);
+        b.upkeepHook(player, this.locations);
       });
     }
 

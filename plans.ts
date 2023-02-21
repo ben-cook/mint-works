@@ -1,3 +1,4 @@
+import { PlayerWithInformation } from "./mint_works.ts";
 import { Plan } from "./plan.ts";
 
 export type PlanName = typeof plans[number]["name"];

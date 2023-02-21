@@ -1,3 +1,4 @@
+import { LocationCard } from "./location.ts";
 import { PlayerWithInformation } from "./mint_works.ts";
 
 /** Represents a plan in the deck */
@@ -13,7 +14,10 @@ export interface Plan {
   /** Descriptive plan text */
   description?: string;
   /** A hook that is executed during the "upkeep" game phase */
-  upkeepHook?: (player: PlayerWithInformation) => void;
+  upkeepHook?: (
+    player: PlayerWithInformation,
+    locations: Array<LocationCard>,
+  ) => void;
   /** Other effects eg. pay less at supplier? */
   effect?: () => void;
 }
