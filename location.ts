@@ -124,4 +124,14 @@ export const Producer = new LocationCard(
   },
 );
 
-export const Locations = [Builder, Producer];
+export const Lotto = new LocationCard(
+  {
+    name: "Lotto",
+    type: "Deed",
+    effect: "who knows?",
+    slotBasePrice: 3,
+    numberOfSlots: 1,
+  },
+);
+
+export const Locations = [Builder, Producer, Lotto];

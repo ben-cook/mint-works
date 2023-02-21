@@ -113,3 +113,32 @@ Deno.test("Upkeep Test 3", async (t) => {
     assertEquals(mintWorks.players[0].neighbourhood.stars(), 1);
   });
 });
+
+Deno.test("Lotto Upkeep Test", async (t) => {
+  const mintWorks = new MintWorks();
+  mintWorks.players = [
+    {
+      label: "Test Player 1",
+      age: 21,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 1"),
+      tokens: 5,
+    },
+    {
+      label: "Test Player 2",
+      age: 34,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 2"),
+      tokens: 5,
+    },
+  ];
+  await t.step("Upkeep of Lotto", () => {
+    mintWorks.players[0].neighbourhood.addBuilding("Lotto");
+    const Lotto = mintWorks.locations.find((l) => l.name === "Lotto")!;
+    Lotto.openLocation();
+    Lotto.slots[0].fill(2);
+    assertEquals(mintWorks.players[0].tokens, 5);
+    mintWorks.upkeep();
+    assertEquals(mintWorks.players[0].tokens, 8);
+  });
+});

@@ -77,6 +77,7 @@ const plans = [
     cost: 1,
     baseStars: 1,
     types: ["Production"],
+    //TODO Determine upkeep to co-op
     upkeepHook: undefined,
   },
   {
@@ -172,6 +173,15 @@ const plans = [
     cost: 4,
     baseStars: 2,
     types: ["Deed"],
+    upkeepHook: (player, locations) => {
+      const Lotto = locations.find((l) => l.name === "Lotto");
+      if (!Lotto) {
+        throw new Error("No Lotto was found in upkeep phase");
+      }
+      if (!Lotto.available()) {
+        player.tokens += 2;
+      }
+    },
   },
 ] as const satisfies ReadonlyArray<Plan>;
 

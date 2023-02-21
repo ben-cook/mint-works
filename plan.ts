@@ -13,8 +13,23 @@ export interface Plan {
   types: ReadonlyArray<PlanType>;
   /** Descriptive plan text */
   description?: string;
+  /** A hook that is executed during the "supply" game phase */
+  supplyHook?: (
+    player: PlayerWithInformation,
+    locations: Array<LocationCard>,
+  ) => void;
+  /** A hook that is executed during the "build" game phase */
+  buildHook?: (
+    player: PlayerWithInformation,
+    locations: Array<LocationCard>,
+  ) => void;
   /** A hook that is executed during the "upkeep" game phase */
   upkeepHook?: (
+    player: PlayerWithInformation,
+    locations: Array<LocationCard>,
+  ) => void;
+  /** A hook that is executed during the "post upkeep" game phase (Used for co-op) */
+  postUpkeepHook?: (
     player: PlayerWithInformation,
     locations: Array<LocationCard>,
   ) => void;
