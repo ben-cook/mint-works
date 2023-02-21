@@ -8,26 +8,26 @@ const plans = [
     name: "Windmill",
     cost: 1,
     baseStars: 1,
-    type: "Culture",
+    types: ["Culture"],
   },
   {
     name: "Statue",
     cost: 2,
     baseStars: 2,
-    type: "Culture",
+    types: ["Culture"],
   },
   {
     name: "Gardens",
     cost: 3,
     baseStars: 3,
-    type: "Culture",
+    types: ["Culture"],
   },
   // Red Cards
   {
     name: "Workshop",
     cost: 3,
     baseStars: 2,
-    type: "Production",
+    types: ["Production"],
     // TODO: implement upkeepHook
     upkeepHook: undefined,
   },
@@ -35,7 +35,7 @@ const plans = [
     name: "Factory",
     cost: 4,
     baseStars: 3,
-    type: "Production",
+    types: ["Production"],
     upkeepHook: (player) => {
       player.tokens += 1;
     },
@@ -44,7 +44,7 @@ const plans = [
     name: "Co-op",
     cost: 1,
     baseStars: 1,
-    type: "Production",
+    types: ["Production"],
     // TODO: implement upkeepHook
     upkeepHook: undefined,
   },
@@ -52,7 +52,7 @@ const plans = [
     name: "Plant",
     cost: 5,
     baseStars: 2,
-    type: "Production",
+    types: ["Production"],
     // TODO: implement upkeepHook
     upkeepHook: undefined,
   },
@@ -60,7 +60,7 @@ const plans = [
     name: "Mine",
     cost: 2,
     baseStars: 1,
-    type: "Production",
+    types: ["Production"],
     // TODO: implement upkeepHook
     upkeepHook: undefined,
   },
@@ -69,7 +69,7 @@ const plans = [
     name: "Truck",
     cost: 2,
     baseStars: 1,
-    type: "Utility",
+    types: ["Utility"],
     // TODO: implement pay less at supplier
     effect: undefined,
   },
@@ -77,7 +77,7 @@ const plans = [
     name: "Crane",
     cost: 2,
     baseStars: 1,
-    type: "Utility",
+    types: ["Utility"],
     // TODO: implement pay less at builder
     effect: undefined,
   },
