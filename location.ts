@@ -76,10 +76,10 @@ export class LocationCard {
   }
 
   /** Use an available slot */
-  public useSlot(): void {
+  public useSlot(tokens: number): void {
     const slot = this.slots.find((s) => s.available());
     if (!slot) throw new Error("No available slots");
-    slot.fill(1);
+    slot.fill(tokens);
   }
 
   /** Empty all the slots */
