@@ -246,7 +246,7 @@ Deno.test("Public Neighbourhood", async (publicNeighbourhoodTest) => {
               assertEquals(hiddenPlan?.description, undefined);
               assertEquals(hiddenPlan?.effect, undefined);
               assertEquals(hiddenPlan?.hidden, undefined);
-              assertEquals(hiddenPlan?.type, undefined);
+              assertEquals(hiddenPlan?.types, undefined);
               assertEquals(hiddenPlan?.upkeepHook, undefined);
             },
           );
