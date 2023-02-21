@@ -9,14 +9,17 @@ export class Slot {
     this.basePrice = basePrice;
   }
 
+  /** Return if the slot is available */
   public available(): boolean {
     return this.tokens < 1;
   }
 
+  /** Add tokens to the slot */
   public fill(n: number): void {
     this.tokens = n;
   }
 
+  /** Empty the slot */
   public empty() {
     this.tokens = 0;
   }
@@ -55,16 +58,19 @@ export class LocationCard {
     if (!startClosed) this.openLocation();
   }
 
+  /** Return if a location has at least one free slot */
   public available(): boolean {
     return this.slots.some((slot) => slot.available());
   }
 
+  /** Empty all the slots */
   public emptySlots() {
     for (const slot of this.slots) {
       slot.empty();
     }
   }
 
+  /** Return the minimum price of an available slot */
   public minSlotPrice(): number {
     return this.slots.reduce((acc, slot) => {
       if (slot.available()) {
@@ -74,6 +80,7 @@ export class LocationCard {
     }, Infinity);
   }
 
+  /** Populate the location with slots */
   public openLocation(): void {
     this.slots = Array.from(
       { length: this.numberOfSlots },
@@ -81,14 +88,17 @@ export class LocationCard {
     );
   }
 
+  /** Remove slots from the location */
   public closeLocation(): void {
     this.slots = [];
   }
 
+  /** Return if the location is open */
   public isOpen(): boolean {
     return this.slots?.length > 0;
   }
 
+  /** Return if the location is closed */
   public isClosed(): boolean {
     return !this.isOpen();
   }
