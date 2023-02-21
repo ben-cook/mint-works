@@ -96,8 +96,8 @@ export class MintWorks {
           numConsecutivePasses++;
         } else {
           numConsecutivePasses = 0;
+          this.simulateTurn(turn);
         }
-        this.simulateTurn(turn);
       } catch (err) {
         logger.error(`Invalid turn! Error: ${err}`);
         Deno.exit(1);
@@ -195,48 +195,76 @@ export class MintWorks {
     const player = this.players.find((p) => p.label === turn.playerName)!;
     const playerTokens = player.tokens;
 
-    if (turn.action._type === "Build") {
-      const plan = turn.action.plan;
-      if (playerTokens < 2) {
-        throw new Error(
-          `Player ${turn.playerName} does not have sufficient tokens to build. Tokens: ${playerTokens}. Required tokens: 2`,
-        );
-      }
-      const linkedLocation = this.locations.find((l) => l.name === plan.name);
-      if (linkedLocation && linkedLocation.isClosed()) {
-        linkedLocation.openLocation();
-      }
-      player.neighbourhood.build(plan.name as PlanName);
+    const mappedLocation = this.locations.find((l) =>
+      l.mappedAction === turn.action._type
+    )!;
+
+    const actionCost = "plan" in turn.action
+      ? turn.action.plan.cost
+      : mappedLocation.minSlotPrice();
+
+    if (playerTokens < actionCost) {
+      throw new Error(
+        `Player ${turn.playerName} does not have sufficient tokens to ${turn.action._type}. Tokens: ${playerTokens}. Required tokens: ${actionCost}`,
+      );
     }
 
-    if (turn.action._type === "Produce") {
-      if (playerTokens < 1) {
-        throw new Error(
-          `Player ${turn.playerName} does not have sufficient tokens to produce. Tokens: ${playerTokens}. Required tokens: 1`,
-        );
-      }
+    mappedLocation.useSlot(actionCost);
+    player.tokens -= actionCost;
 
-      player.tokens++;
-    }
+    switch (turn.action._type) {
+      case "Build":
+        {
+          const plan = turn.action.plan;
+          player.neighbourhood.build(plan.name as PlanName);
 
-    if (turn.action._type === "Lotto") {
-      const lotto = this.locations.find((l) => l.name === "Lotto");
+          const linkedLocation = this.locations.find((l) =>
+            l.name === plan.name
+          );
+          if (linkedLocation && linkedLocation.isClosed()) {
+            linkedLocation.openLocation();
+          }
+        }
+        break;
 
-      if (!lotto) throw new Error("Lotto location does not exist");
-      if (lotto.isClosed()) throw new Error("Lotto location is closed");
-      if (playerTokens < lotto.minSlotPrice()) {
-        throw new Error(
-          `Player ${turn.playerName} does not have sufficient tokens to use the Lotto. Tokens: ${playerTokens}. Required tokens: ${lotto.minSlotPrice()}`,
-        );
-      }
+      case "Leadership":
+        //TODO: Implement Leadership change mechanic
+        break;
 
-      const lottoCard = this.planSupply.lottoDeckDraw();
+      case "Lotto":
+        {
+          const lotto = mappedLocation;
 
-      if (!lottoCard) {
-        throw new Error("Deck is empty, lotto card can't be drawn");
-      }
+          if (!lotto) throw new Error("Lotto location does not exist");
+          if (lotto.isClosed()) throw new Error("Lotto location is closed");
 
-      player.neighbourhood.plans.push(lottoCard as HandPlan);
+          const lottoCard = this.planSupply.lottoDeckDraw();
+
+          if (!lottoCard) {
+            throw new Error("Deck is empty, lotto card can't be drawn");
+          }
+
+          player.neighbourhood.plans.push(lottoCard as HandPlan);
+        }
+        break;
+
+      case "Pass":
+        throw new Error("Pass action should not be handled here");
+
+      case "Produce":
+        player.tokens += 2;
+        break;
+
+      case "Supply":
+        {
+          player.neighbourhood.plans.push(
+            this.planSupply.take(turn.action.plan) as HandPlan,
+          );
+        }
+        break;
+
+      default:
+        throw new Error("Unknown action type");
     }
   }
 
