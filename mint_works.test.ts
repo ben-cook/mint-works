@@ -30,7 +30,7 @@ Deno.test("MintWorks", async (t) => {
   });
 });
 
-Deno.test("Upkeep", async (t) => {
+Deno.test("Upkeep (Test 1)", async (t) => {
   const mintWorks = new MintWorks();
   mintWorks.players = [
     {
@@ -58,5 +58,58 @@ Deno.test("Upkeep", async (t) => {
     mintWorks.upkeep();
     assertEquals(mintWorks.players[0].tokens, 8);
     assertEquals(mintWorks.players[1].tokens, 7);
+  });
+});
+
+Deno.test("Upkeep Test 2", async (t) => {
+  const mintWorks = new MintWorks();
+  mintWorks.players = [
+    {
+      label: "Test Player 1",
+      age: 21,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 1"),
+      tokens: 5,
+    },
+    {
+      label: "Test Player 2",
+      age: 34,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 2"),
+      tokens: 5,
+    },
+  ];
+  await t.step("Upkeep with Corporate HQ with 2 buildings", () => {
+    mintWorks.players[0].neighbourhood.addBuilding("Gardens");
+    mintWorks.players[0].neighbourhood.addBuilding("Corporate HQ");
+    assertEquals(mintWorks.players[0].tokens, 5);
+    mintWorks.upkeep();
+    assertEquals(mintWorks.players[0].tokens, 8);
+  });
+});
+
+Deno.test("Upkeep Test 3", async (t) => {
+  const mintWorks = new MintWorks();
+  mintWorks.players = [
+    {
+      label: "Test Player 1",
+      age: 21,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 1"),
+      tokens: 5,
+    },
+    {
+      label: "Test Player 2",
+      age: 34,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 2"),
+      tokens: 5,
+    },
+  ];
+  await t.step("Upkeep of Gallery that increases star count by 1", () => {
+    mintWorks.players[0].neighbourhood.addBuilding("Gallery");
+    assertEquals(mintWorks.players[0].neighbourhood.stars(), 0);
+    mintWorks.upkeep();
+    assertEquals(mintWorks.players[0].neighbourhood.stars(), 1);
   });
 });
