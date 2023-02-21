@@ -32,4 +32,16 @@ Deno.test("Location", async (t) => {
 
     assertEquals(location.available(), true);
   });
+
+  await t.step("Locations can be closed", () => {
+    location.closeLocation();
+    assertEquals(location.isOpen(), false);
+    assertEquals(location.isClosed(), true);
+  });
+
+  await t.step("Locations can be opened", () => {
+    location.openLocation();
+    assertEquals(location.isOpen(), true);
+    assertEquals(location.isClosed(), false);
+  });
 });

@@ -30,6 +30,7 @@ export interface LocationConstructor {
   effect: string;
   slotBasePrice: number;
   numberOfSlots: number;
+  startClosed?: boolean;
 }
 
 /** Location cards are where players can place mint tokens. */
@@ -37,18 +38,21 @@ export class LocationCard {
   name: string;
   type: LocationType;
   effect: string;
+  slotBasePrice: number;
+  numberOfSlots: number;
   slots: Slot[];
 
   constructor(
-    { name, type, effect, slotBasePrice, numberOfSlots }: LocationConstructor,
+    { name, type, effect, slotBasePrice, numberOfSlots, startClosed = false }:
+      LocationConstructor,
   ) {
     this.name = name;
     this.type = type;
     this.effect = effect;
-    this.slots = Array.from(
-      { length: numberOfSlots },
-      () => new Slot(slotBasePrice),
-    );
+    this.slotBasePrice = slotBasePrice;
+    this.numberOfSlots = numberOfSlots;
+    this.slots = [];
+    if (!startClosed) this.openLocation();
   }
 
   public available(): boolean {
@@ -68,6 +72,25 @@ export class LocationCard {
       }
       return acc;
     }, Infinity);
+  }
+
+  public openLocation(): void {
+    this.slots = Array.from(
+      { length: this.numberOfSlots },
+      () => new Slot(this.slotBasePrice),
+    );
+  }
+
+  public closeLocation(): void {
+    this.slots = [];
+  }
+
+  public isOpen(): boolean {
+    return this.slots?.length > 0;
+  }
+
+  public isClosed(): boolean {
+    return !this.isOpen();
   }
 }
 

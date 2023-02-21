@@ -195,10 +195,15 @@ export class MintWorks {
     const playerTokens = player.tokens;
 
     if (turn.action._type === "Build") {
+      const plan = turn.action.plan;
       if (playerTokens < 2) {
         throw new Error(
           `Player ${turn.playerName} does not have sufficient tokens to build. Tokens: ${playerTokens}. Required tokens: 2`,
         );
+      }
+      const linkedLocation = this.locations.find((l) => l.name === plan.name);
+      if (linkedLocation && linkedLocation.isClosed()) {
+        linkedLocation.openLocation();
       }
     }
 
