@@ -29,3 +29,34 @@ Deno.test("MintWorks", async (t) => {
     );
   });
 });
+
+Deno.test("Upkeep", async (t) => {
+  const mintWorks = new MintWorks();
+  mintWorks.players = [
+    {
+      label: "Test Player 1",
+      age: 21,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 1"),
+      tokens: 5,
+    },
+    {
+      label: "Test Player 2",
+      age: 34,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 2"),
+      tokens: 5,
+    },
+  ];
+  await t.step("Upkeep gives all players 1 token", () => {
+    mintWorks.upkeep();
+    assertEquals(mintWorks.players[0].tokens, 6);
+    assertEquals(mintWorks.players[1].tokens, 6);
+  });
+  await t.step("Upkeep with Factory adds 2 token instead", () => {
+    mintWorks.players[0].neighbourhood.addBuilding("Factory");
+    mintWorks.upkeep();
+    assertEquals(mintWorks.players[0].tokens, 8);
+    assertEquals(mintWorks.players[1].tokens, 7);
+  });
+});

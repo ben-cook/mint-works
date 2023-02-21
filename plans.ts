@@ -36,8 +36,9 @@ const plans = [
     cost: 4,
     baseStars: 3,
     type: "Production",
-    // TODO: implement upkeepHook
-    upkeepHook: undefined,
+    upkeepHook: (player) => {
+      player.tokens += 1;
+    },
   },
   {
     name: "Co-op",

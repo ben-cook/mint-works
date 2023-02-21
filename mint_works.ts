@@ -116,7 +116,7 @@ export class MintWorks {
    * - Each player gains one Mint Token.
    * - Proceed to the next Development phase.
    */
-  private upkeep() {
+  public upkeep() {
     // If any player has seven or more stars provided by Buildings in their Neighbourhood, the game ends and Scoring takes place.
     if (this.players.some((p) => p.neighbourhood.stars() >= 7)) {
       this.scoring();
@@ -133,6 +133,12 @@ export class MintWorks {
     }
 
     // Resolve all 'Upkeep' effects on Buildings.
+    for (const player of this.players) {
+      player.neighbourhood.buildings.forEach((b) => {
+        if (!b.upkeepHook) return;
+        b.upkeepHook(player);
+      });
+    }
 
     // If there are any Mint Tokens on Deed Locations, the Owners of those Locations gain the indicated amount of Mint Tokens from the Mint Supply.
 
