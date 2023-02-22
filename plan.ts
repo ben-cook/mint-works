@@ -13,12 +13,12 @@ export interface Plan {
   types: ReadonlyArray<PlanType>;
   /** Descriptive plan text */
   description?: string;
-  /** A hook that is executed during the "supply" game phase */
+  /** A hook that is executed before the "supply" action */
   supplyHook?: (
     player: PlayerWithInformation,
     locations: Array<LocationCard>,
   ) => void;
-  /** A hook that is executed during the "build" game phase */
+  /** A hook that is executed during the "build" action */
   buildHook?: (
     player: PlayerWithInformation,
     locations: Array<LocationCard>,
@@ -35,6 +35,24 @@ export interface Plan {
   ) => void;
   /** Other effects eg. pay less at supplier? */
   effect?: () => void;
+
+  hooks?: Hooks;
+}
+
+export type HookType = "supply" | "build" | "upkeep";
+
+export type Hooks = Record<HookType, Hook>;
+
+export interface HookParams {
+  player: PlayerWithInformation;
+  locations: Array<LocationCard>;
+}
+
+export type Change = Record<string, unknown>;
+
+export interface Hook {
+  pre?: ({ player, locations }: HookParams) => void | Change;
+  post?: ({ player, locations }: HookParams) => void | Change;
 }
 
 /** Represents a plan that has come from the Lotto - therefore, it should be hidden to other players before it has been built */
