@@ -53,6 +53,10 @@ export class Neighbourhood {
 
   /** Remove a building from the neighbourhood */
   public removeBuilding(name: PlanName): void {
+    const building = this.getBuilding(name);
+
+    if (building) building.linkedLocation?.closeLocation();
+
     this.buildings = this.buildings.filter((building) =>
       building.name !== name
     );
@@ -61,6 +65,9 @@ export class Neighbourhood {
   /** Convert a plan into a building */
   public build(name: PlanName): void {
     const plan = this.getPlan(name);
+
+    if (plan) plan.linkedLocation?.openLocation();
+
     if (plan) {
       const building = {
         ...plan,

@@ -56,6 +56,7 @@ export class MintWorks {
 
     // Set up the plan supply
     this.planSupply = new PlanSupply(deck);
+    this.linkPlansAndLocations();
 
     this.startingPlayerToken = this.players[0].label;
   }
@@ -270,13 +271,6 @@ export class MintWorks {
         {
           const plan = turn.action.plan;
           player.neighbourhood.build(plan.name as PlanName);
-
-          const linkedLocation = this.locations.find((l) =>
-            l.name === plan.name
-          );
-          if (linkedLocation && linkedLocation.isClosed()) {
-            linkedLocation.openLocation();
-          }
         }
         break;
 
@@ -363,5 +357,15 @@ export class MintWorks {
       planSupply: this.planSupply.plans,
       players,
     };
+  }
+
+  private linkPlansAndLocations() {
+    for (const location of this.locations) {
+      this.planSupply.deck.forEach((plan) => {
+        if (plan.name === location.name) {
+          plan.linkedLocation = location;
+        }
+      });
+    }
   }
 }

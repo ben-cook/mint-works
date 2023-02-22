@@ -17,6 +17,8 @@ export interface Plan {
   effect?: () => void;
   /** A hook that is executed before and after actions*/
   hooks?: Partial<Hooks>;
+  /** The location the plan is linked to */
+  linkedLocation?: LocationCard;
 }
 
 export type HookType = "supply" | "build" | "upkeep";

@@ -257,3 +257,52 @@ Deno.test("Public Neighbourhood", async (publicNeighbourhoodTest) => {
     },
   );
 });
+
+Deno.test("Linked Locations", async (locationLinkTest) => {
+  const mintWorks = new MintWorks();
+  mintWorks.players = [
+    {
+      label: "Test Player 1",
+      age: 21,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 1"),
+      tokens: 5,
+    },
+    {
+      label: "Test Player 2",
+      age: 34,
+      neighbourhood: new Neighbourhood(),
+      player: new RandomPlayer("Test Player 2"),
+      tokens: 5,
+    },
+  ];
+  mintWorks.players[0].neighbourhood.addPlan("Lotto");
+
+  const lottoPlan = mintWorks.players[0].neighbourhood.getPlan("Lotto")!;
+
+  const lottoLocation = mintWorks.locations.find((location) => {
+    return location.name === "Lotto";
+  })!;
+
+  await locationLinkTest.step("Has linked location", () => {
+    assertExists(lottoPlan.linkedLocation);
+    assertEquals(lottoPlan.linkedLocation, lottoLocation);
+  });
+  await locationLinkTest.step("Linked location starts closed", () => {
+    assertEquals(lottoLocation.isClosed(), true);
+  });
+  await locationLinkTest.step(
+    "Linked location opens when plan is built",
+    () => {
+      mintWorks.players[0].neighbourhood.build("Lotto");
+      assertEquals(lottoLocation.isOpen(), true);
+    },
+  );
+  await locationLinkTest.step(
+    "Linked location closes when building is removed",
+    () => {
+      mintWorks.players[0].neighbourhood.removeBuilding("Lotto");
+      assertEquals(lottoLocation.isClosed(), true);
+    },
+  );
+});
