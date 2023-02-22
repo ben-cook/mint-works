@@ -53,6 +53,7 @@ export class PlayerHelper {
         {
           action: {
             "_type": "Leadership",
+            playerName: this.name,
           },
           playerName: this.name,
         },
@@ -76,6 +77,18 @@ export class PlayerHelper {
           playerName: this.name,
         });
       }
+    }
+
+    const lotto = state.locations.find((l) => l.name === "Lotto");
+    if (lotto?.available() && this.canAffordBasicLocation(state, lotto)) {
+      validTurns.push(
+        {
+          action: {
+            "_type": "Lotto",
+          },
+          playerName: this.name,
+        },
+      );
     }
 
     return validTurns;

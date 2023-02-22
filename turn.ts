@@ -8,7 +8,7 @@ export interface Turn {
 type Place =
   | { _type: "Build"; plan: HandPlan }
   | { _type: "Produce" }
-  | { _type: "Leadership" }
+  | { _type: "Leadership"; playerName: string }
   | { _type: "Supply"; plan: Plan }
   | { _type: "Lotto" };
 
