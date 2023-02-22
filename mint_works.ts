@@ -170,14 +170,14 @@ export class MintWorks {
   private scoring() {
     const scoreboard = findWinner(this.players);
     if (scoreboard) {
-      logger.info(`The winner is ${scoreboard.winner}`);
-      logger.info(`      NAME | STARS | PLANS | TOKENS`);
+      logger.info(`      NAME | STARS | HOOD | TOKENS`);
       scoreboard.scores.forEach((score) => {
         const name = score.player.label.padStart(10);
         logger.info(
           `${name} :   ${score.stars}       ${score.plans}        ${score.tokens}`,
         );
       });
+      logger.info(`The winner is ${scoreboard.winner}`);
     } else {
       logger.warning("No winner was found");
     }
@@ -189,11 +189,11 @@ export class MintWorks {
     if (!scoreboard) {
       logger.info(`Round ${this.roundNumber}`);
     }
-    logger.info(`      NAME | STARS | PLANS | TOKENS`);
+    logger.info(`      NAME | STARS | HOOD | TOKENS`);
     this.players.forEach((player) => {
       const name = player.label.padStart(10);
       logger.info(
-        `${name} :   ${player.neighbourhood.stars()}       ${player.neighbourhood.plans.length}        ${player.tokens}`,
+        `${name} :   ${player.neighbourhood.stars()}       ${player.neighbourhood.size()}        ${player.tokens}`,
       );
     });
   }

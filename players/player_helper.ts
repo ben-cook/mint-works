@@ -80,7 +80,10 @@ export class PlayerHelper {
     }
 
     const lotto = state.locations.find((l) => l.name === "Lotto");
-    if (lotto?.available() && this.canAffordBasicLocation(state, lotto)) {
+    if (
+      state.numPlansInDeck >= 1 && lotto?.available() &&
+      this.canAffordBasicLocation(state, lotto)
+    ) {
       validTurns.push(
         {
           action: {
