@@ -126,6 +126,7 @@ export class LocationCard {
 export const Builder = new LocationCard(
   {
     name: "Builder",
+    mappedAction: "Build",
     type: "Core",
     effect: "who knows?",
     slotBasePrice: 2,
@@ -136,6 +137,7 @@ export const Builder = new LocationCard(
 export const Producer = new LocationCard(
   {
     name: "Producer",
+    mappedAction: "Produce",
     type: "Core",
     effect: "who knows?",
     slotBasePrice: 1,
@@ -146,6 +148,7 @@ export const Producer = new LocationCard(
 export const Lotto = new LocationCard(
   {
     name: "Lotto",
+    mappedAction: "Lotto",
     type: "Deed",
     effect: "who knows?",
     slotBasePrice: 3,
