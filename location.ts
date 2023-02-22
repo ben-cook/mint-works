@@ -134,6 +134,17 @@ export const Builder = new LocationCard(
   },
 );
 
+export const Supplier = new LocationCard(
+  {
+    name: "Supplier",
+    mappedAction: "Supply",
+    type: "Core",
+    effect: "who knows?",
+    slotBasePrice: Infinity,
+    numberOfSlots: 3,
+  },
+);
+
 export const Producer = new LocationCard(
   {
     name: "Producer",
@@ -157,4 +168,4 @@ export const Lotto = new LocationCard(
   },
 );
 
-export const Locations = [Builder, Producer, Lotto];
+export const Locations = [Builder, Supplier, Producer, Lotto];

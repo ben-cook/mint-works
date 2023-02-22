@@ -133,11 +133,6 @@ export class MintWorks {
       this.scoring();
     }
 
-    // TODO: Remove this
-    if (this.roundNumber > 8) {
-      this.scoring();
-    }
-
     // Resolve all 'Upkeep' effects on Buildings.
     for (const player of this.players) {
       player.neighbourhood.buildings.forEach((b) => {
@@ -218,6 +213,7 @@ export class MintWorks {
 
     switch (turn.action._type) {
       case "Build":
+        actionCost = mappedLocation.minSlotPrice();
         player.neighbourhood.buildings.forEach((b) => {
           if (!b.hooks?.build?.pre) return;
           const result = b.hooks.build.pre({
