@@ -35,16 +35,20 @@ const plans = [
     cost: 4,
     baseStars: 0,
     types: ["Culture"],
-    upkeepHook: (player) => {
-      const gallery = player.neighbourhood.buildings.find((b) =>
-        b.name === "Gallery"
-      );
-      if (!gallery) {
-        throw new Error("No Gallery Found in Upkeep Hook - Blame RYAN");
-      }
-      gallery.additionalStars
-        ? gallery.additionalStars += 1
-        : gallery.additionalStars = 1;
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          const gallery = player.neighbourhood.buildings.find((b) =>
+            b.name === "Gallery"
+          );
+          if (!gallery) {
+            throw new Error("No Gallery Found in Upkeep Hook - Blame RYAN");
+          }
+          gallery.additionalStars
+            ? gallery.additionalStars += 1
+            : gallery.additionalStars = 1;
+        },
+      },
     },
   },
   {
@@ -59,8 +63,12 @@ const plans = [
     cost: 3,
     baseStars: 2,
     types: ["Production"],
-    upkeepHook: (player) => {
-      player.tokens += 1;
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          player.tokens += 1;
+        },
+      },
     },
   },
   {
@@ -68,8 +76,12 @@ const plans = [
     cost: 4,
     baseStars: 3,
     types: ["Production"],
-    upkeepHook: (player) => {
-      player.tokens += 1;
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          player.tokens += 1;
+        },
+      },
     },
   },
   {
@@ -77,16 +89,28 @@ const plans = [
     cost: 1,
     baseStars: 1,
     types: ["Production"],
-    //TODO Determine upkeep to co-op
-    upkeepHook: undefined,
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          player.tokens += 1;
+        },
+        post: () => {
+          // TODO: Implement this
+        },
+      },
+    },
   },
   {
     name: "Plant",
     cost: 5,
     baseStars: 2,
     types: ["Production"],
-    upkeepHook: (player) => {
-      player.tokens += 2;
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          player.tokens += 2;
+        },
+      },
     },
   },
   {
@@ -94,8 +118,12 @@ const plans = [
     cost: 2,
     baseStars: 1,
     types: ["Production"],
-    upkeepHook: (player) => {
-      player.tokens += 1;
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          player.tokens += 1;
+        },
+      },
     },
   },
   {
@@ -103,8 +131,12 @@ const plans = [
     cost: 4,
     baseStars: 0,
     types: ["Production"],
-    upkeepHook: (player) => {
-      player.tokens += 3;
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          player.tokens += 3;
+        },
+      },
     },
   },
   {
@@ -112,8 +144,12 @@ const plans = [
     cost: 3,
     baseStars: 0,
     types: ["Production"],
-    upkeepHook: (player) => {
-      player.tokens += player.neighbourhood.buildings.length;
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          player.tokens += player.neighbourhood.buildings.length;
+        },
+      },
     },
   },
   // Orange Cards
@@ -173,14 +209,18 @@ const plans = [
     cost: 4,
     baseStars: 2,
     types: ["Deed"],
-    upkeepHook: (player, locations) => {
-      const Lotto = locations.find((l) => l.name === "Lotto");
-      if (!Lotto) {
-        throw new Error("No Lotto was found in upkeep phase");
-      }
-      if (!Lotto.available()) {
-        player.tokens += 2;
-      }
+    hooks: {
+      upkeep: {
+        pre: ({ player, locations }) => {
+          const Lotto = locations.find((l) => l.name === "Lotto");
+          if (!Lotto) {
+            throw new Error("No Lotto was found in upkeep phase");
+          }
+          if (!Lotto.available()) {
+            player.tokens += 2;
+          }
+        },
+      },
     },
   },
 ] as const satisfies ReadonlyArray<Plan>;

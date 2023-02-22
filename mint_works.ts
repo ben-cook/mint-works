@@ -136,8 +136,16 @@ export class MintWorks {
     // Resolve all 'Upkeep' effects on Buildings.
     for (const player of this.players) {
       player.neighbourhood.buildings.forEach((b) => {
-        if (!b.upkeepHook) return;
-        b.upkeepHook(player, this.locations);
+        if (!b.hooks?.upkeep?.pre) return;
+        b.hooks.upkeep.pre({ player, locations: this.locations });
+      });
+    }
+
+    // Resolve all 'Post-Upkeep' effects on Buildings.
+    for (const player of this.players) {
+      player.neighbourhood.buildings.forEach((b) => {
+        if (!b.hooks?.upkeep?.post) return;
+        b.hooks.upkeep.post({ player, locations: this.locations });
       });
     }
 
@@ -199,9 +207,54 @@ export class MintWorks {
       l.mappedAction === turn.action._type
     )!;
 
-    const actionCost = "plan" in turn.action
+    let actionCost = "plan" in turn.action
       ? turn.action.plan.cost
       : mappedLocation.minSlotPrice();
+
+    switch (turn.action._type) {
+      case "Build":
+        player.neighbourhood.buildings.forEach((b) => {
+          if (!b.hooks?.build?.pre) return;
+          const result = b.hooks.build.pre({
+            player,
+            locations: this.locations,
+          });
+          if (result) {
+            switch (result._type) {
+              case "tokens":
+                actionCost += result.tokens;
+                break;
+
+              default:
+                throw new Error("Invalid build pre hook result");
+            }
+          }
+        });
+        break;
+
+      case "Supply":
+        player.neighbourhood.buildings.forEach((b) => {
+          if (!b.hooks?.supply?.pre) return;
+          const result = b.hooks.supply.pre({
+            player,
+            locations: this.locations,
+          });
+          if (result) {
+            switch (result._type) {
+              case "tokens":
+                actionCost += result.tokens;
+                break;
+
+              default:
+                throw new Error("Invalid supply pre hook result");
+            }
+          }
+        });
+        break;
+
+      default:
+        break;
+    }
 
     if (playerTokens < actionCost) {
       throw new Error(
@@ -257,9 +310,31 @@ export class MintWorks {
 
       case "Supply":
         {
+          const plan = turn.action.plan;
           player.neighbourhood.plans.push(
-            this.planSupply.take(turn.action.plan) as HandPlan,
+            this.planSupply.take(plan) as HandPlan,
           );
+          player.neighbourhood.buildings.forEach((b) => {
+            if (!b.hooks?.supply?.post) return;
+            const result = b.hooks.supply.post({
+              player,
+              locations: this.locations,
+            });
+            if (result) {
+              switch (result._type) {
+                case "tokens":
+                  player.tokens += result.tokens;
+                  break;
+
+                case "build":
+                  player.neighbourhood.build(plan.name as PlanName);
+                  break;
+
+                default:
+                  throw new Error("Invalid supply post hook result");
+              }
+            }
+          });
         }
         break;
 

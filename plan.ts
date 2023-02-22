@@ -13,30 +13,10 @@ export interface Plan {
   types: ReadonlyArray<PlanType>;
   /** Descriptive plan text */
   description?: string;
-  /** A hook that is executed before the "supply" action */
-  supplyHook?: (
-    player: PlayerWithInformation,
-    locations: Array<LocationCard>,
-  ) => void;
-  /** A hook that is executed during the "build" action */
-  buildHook?: (
-    player: PlayerWithInformation,
-    locations: Array<LocationCard>,
-  ) => void;
-  /** A hook that is executed during the "upkeep" game phase */
-  upkeepHook?: (
-    player: PlayerWithInformation,
-    locations: Array<LocationCard>,
-  ) => void;
-  /** A hook that is executed during the "post upkeep" game phase (Used for co-op) */
-  postUpkeepHook?: (
-    player: PlayerWithInformation,
-    locations: Array<LocationCard>,
-  ) => void;
   /** Other effects eg. pay less at supplier? */
   effect?: () => void;
-
-  hooks?: Hooks;
+  /** A hook that is executed before and after actions*/
+  hooks?: Partial<Hooks>;
 }
 
 export type HookType = "supply" | "build" | "upkeep";
@@ -48,11 +28,13 @@ export interface HookParams {
   locations: Array<LocationCard>;
 }
 
-export type Change = Record<string, unknown>;
+export type HookEffect = { _type: "tokens"; tokens: number } | {
+  _type: "build";
+};
 
 export interface Hook {
-  pre?: ({ player, locations }: HookParams) => void | Change;
-  post?: ({ player, locations }: HookParams) => void | Change;
+  pre?: ({ player, locations }: HookParams) => void | HookEffect;
+  post?: ({ player, locations }: HookParams) => void | HookEffect;
 }
 
 /** Represents a plan that has come from the Lotto - therefore, it should be hidden to other players before it has been built */
