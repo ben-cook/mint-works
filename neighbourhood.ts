@@ -66,7 +66,7 @@ export class Neighbourhood {
   public build(name: PlanName): void {
     const plan = this.getPlan(name);
 
-    if (plan) plan.linkedLocation?.openLocation();
+    //if (plan) plan.linkedLocation?.openLocation();
 
     if (plan) {
       const building = {

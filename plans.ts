@@ -233,6 +233,15 @@ const plans = [
           }
         },
       },
+      build: {
+        post: ({ locations }) => {
+          const lotto = locations.find((l) => l.name === "Lotto");
+          if (!lotto) {
+            throw new Error("NO LOTTO FOUND IN LOTTO POST BUILD HOOK");
+          }
+          if (lotto.isClosed()) lotto.openLocation();
+        },
+      },
     },
   },
 ] as const satisfies ReadonlyArray<Plan>;
