@@ -1,7 +1,7 @@
 import { IPlayer } from "./player.ts";
 import { RandomPlayer } from "./players/random_player.ts";
 import { Turn } from "./turn.ts";
-import { gameLogger as logger } from "./logger.ts";
+import { gameLogger, gameLogger as logger } from "./logger.ts";
 import { State } from "./state.ts";
 import { createPlans, PlanName } from "./plans.ts";
 import { LocationCard, Locations } from "./location.ts";
@@ -91,7 +91,20 @@ export class MintWorks {
       const player = this.players[i]!;
       logger.info(`Player ${i}: (${player.label}'s turn)`);
 
-      const turn = await player.player.takeTurn(this.getPlayerState(player));
+      const playerState = this.getPlayerState(player);
+
+      //gameLogger.debug(playerState);
+
+      const producerState = playerState.locations.find((l) =>
+        l.name === "Producer"
+      )!;
+
+      gameLogger.debug(producerState.slots[0].tokens);
+      gameLogger.debug(producerState.slots[1].tokens);
+      gameLogger.debug(producerState.slots[2].tokens);
+
+      const turn = await player.player.takeTurn(playerState);
+
       try {
         if (turn.action._type === "Pass") {
           numConsecutivePasses++;

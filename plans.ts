@@ -180,7 +180,13 @@ const plans = [
     cost: 5,
     baseStars: 1,
     types: ["Utility"],
-    // TODO: implement automatic build
+    hooks: {
+      supply: {
+        post: () => {
+          return { _type: "build" };
+        },
+      },
+    },
   },
   {
     name: "Landfill",
