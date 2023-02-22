@@ -93,16 +93,6 @@ export class MintWorks {
 
       const playerState = this.getPlayerState(player);
 
-      //gameLogger.debug(playerState);
-
-      const producerState = playerState.locations.find((l) =>
-        l.name === "Producer"
-      )!;
-
-      gameLogger.debug(producerState.slots[0].tokens);
-      gameLogger.debug(producerState.slots[1].tokens);
-      gameLogger.debug(producerState.slots[2].tokens);
-
       const turn = await player.player.takeTurn(playerState);
 
       try {
@@ -302,11 +292,29 @@ export class MintWorks {
         {
           const plan = turn.action.plan;
           player.neighbourhood.build(plan.name as PlanName);
+          player.neighbourhood.buildings.forEach((b) => {
+            if (!b.hooks?.build?.post) return;
+            const result = b.hooks.build.post({
+              player,
+              locations: this.locations,
+            });
+            if (result) {
+              switch (result._type) {
+                case "tokens":
+                  player.tokens += result.tokens;
+                  break;
+
+                default:
+                  throw new Error("Invalid build post hook result");
+              }
+            }
+          });
         }
         break;
 
       case "Leadership":
         this.startingPlayerToken = turn.action.playerName;
+        player.tokens += 1;
         break;
 
       case "Lotto":
@@ -391,9 +399,11 @@ export class MintWorks {
   }
 
   private linkPlansAndLocations() {
+    gameLogger.info("Linking locations to plans");
     for (const location of this.locations) {
       this.planSupply.deck.forEach((plan) => {
         if (plan.name === location.name) {
+          gameLogger.info(`${location.name} linked to ${plan.name}`);
           plan.linkedLocation = location;
         }
       });
