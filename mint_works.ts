@@ -30,9 +30,9 @@ export class MintWorks {
   /** The player with the starting player token starts each round in the Development phase */
   startingPlayerToken: string;
 
-  constructor() {
+  constructor(players?: Array<PlayerWithInformation>) {
     // Set up players of the game
-    this.players = [
+    this.players = players ?? [
       {
         player: new RandomPlayer("Bob"),
         tokens: 3,
@@ -104,7 +104,11 @@ export class MintWorks {
         Deno.exit(1);
       }
 
-      i %= numPlayers;
+      if (i === numPlayers - 1) {
+        i = 0;
+      } else {
+        i++;
+      }
     }
   }
 
@@ -130,7 +134,7 @@ export class MintWorks {
     }
 
     // TODO: Remove this
-    if (this.roundNumber > 4) {
+    if (this.roundNumber > 8) {
       this.scoring();
     }
 
@@ -275,7 +279,7 @@ export class MintWorks {
         break;
 
       case "Leadership":
-        //TODO: Implement Leadership change mechanic
+        this.startingPlayerToken = turn.action.playerName;
         break;
 
       case "Lotto":
