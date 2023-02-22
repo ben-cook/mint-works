@@ -185,15 +185,33 @@ export class MintWorks {
     Deno.exit();
   }
 
-  private printScoreboard(scoreboard?: Scoreboard) {
-    if (!scoreboard) {
-      logger.info(`Round ${this.roundNumber}`);
-    }
+  public generateScoreboard() {
+    return this.players.map((player) => {
+      return {
+        player,
+        stars: player.neighbourhood.stars(),
+        plans: player.neighbourhood.size(),
+        tokens: player.tokens,
+      };
+    }).sort((a, b) => {
+      if (a.stars > b.stars) return -1;
+      else if (a.stars < b.stars) return 1;
+      else {
+        if (a.plans > b.plans) return -1;
+        else if (a.plans < b.plans) return 1;
+        else {
+          return b.tokens - a.tokens;
+        }
+      }
+    });
+  }
+
+  private printScoreboard() {
     logger.info(`      NAME | STARS | HOOD | TOKENS`);
-    this.players.forEach((player) => {
-      const name = player.label.padStart(10);
+    this.generateScoreboard().forEach((score) => {
+      const name = score.player.label.padStart(10);
       logger.info(
-        `${name} :   ${player.neighbourhood.stars()}       ${player.neighbourhood.size()}        ${player.tokens}`,
+        `${name} :   ${score.stars}       ${score.plans}        ${score.tokens}`,
       );
     });
   }
