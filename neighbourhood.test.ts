@@ -240,14 +240,16 @@ Deno.test("Public Neighbourhood", async (publicNeighbourhoodTest) => {
           await hiddenPlanTest.step(
             "Hidden plans are fully masked",
             () => {
-              assertEquals(hiddenPlan?.name, "HIDDEN");
-              assertEquals(hiddenPlan?.baseStars, undefined);
-              assertEquals(hiddenPlan?.cost, undefined);
-              assertEquals(hiddenPlan?.description, undefined);
-              assertEquals(hiddenPlan?.effect, undefined);
-              assertEquals(hiddenPlan?.hidden, undefined);
-              assertEquals(hiddenPlan?.types, undefined);
-              assertEquals(hiddenPlan?.upkeepHook, undefined);
+              const originalPlan = mintWorks.players[0].neighbourhood.getPlan(
+                "Statue",
+              )!;
+              assertEquals(
+                Object.keys(originalPlan).filter((key) => {
+                  return hiddenPlan[key as keyof typeof hiddenPlan] ===
+                    originalPlan[key as keyof typeof hiddenPlan];
+                }),
+                [],
+              );
             },
           );
         },
