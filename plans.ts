@@ -166,7 +166,13 @@ const plans = [
     cost: 2,
     baseStars: 1,
     types: ["Utility"],
-    // TODO: implement pay less at builder
+    hooks: {
+      build: {
+        pre: () => {
+          return { _type: "tokens", tokens: -1 };
+        },
+      },
+    },
     effect: undefined,
   },
   {
