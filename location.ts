@@ -201,3 +201,8 @@ export const Locations = [
   Wholesaler,
   Leadership,
 ];
+
+export const createLocations = (
+  customLocations?: Array<LocationCard>,
+): Array<LocationCard> =>
+  customLocations ? [...customLocations] : [...Locations];

@@ -4,12 +4,12 @@ import { Turn } from "./turn.ts";
 import { gameLogger, gameLogger as logger } from "./logger.ts";
 import { State } from "./state.ts";
 import { createPlans, PlanName } from "./plans.ts";
-import { LocationCard, Locations } from "./location.ts";
+import { createLocations, LocationCard, Locations } from "./location.ts";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 import { PlanSupply } from "./plan_supply.ts";
 import { findWinner, Scoreboard } from "./scoring.ts";
 import { shuffleArray } from "./utils.ts";
-import { HandPlan } from "./plan.ts";
+import { HandPlan, Plan } from "./plan.ts";
 
 interface PlayerInformation {
   tokens: number;
@@ -22,15 +22,21 @@ export interface PlayerWithInformation extends PlayerInformation {
   player: IPlayer;
 }
 
+export interface MintWorksParams {
+  players?: Array<PlayerWithInformation>;
+  plans?: Array<Plan>;
+  locations?: Array<LocationCard>;
+}
+
 export class MintWorks {
   roundNumber = 1;
-  locations: Array<LocationCard> = Locations;
+  locations: Array<LocationCard>;
   players: Array<PlayerWithInformation>;
   planSupply: PlanSupply;
   /** The player with the starting player token starts each round in the Development phase */
   startingPlayerToken: string;
 
-  constructor(players?: Array<PlayerWithInformation>) {
+  constructor({ players }: MintWorksParams) {
     // Set up players of the game
     this.players = players ?? [
       {
@@ -51,11 +57,14 @@ export class MintWorks {
 
     // Set up the plan deck
     const plans = createPlans();
+    this.locations = createLocations();
     const deck = plans.slice();
     shuffleArray(deck);
 
     // Set up the plan supply
     this.planSupply = new PlanSupply(deck);
+
+    // TODO: investigate if this is needed anymore
     this.linkPlansAndLocations();
 
     this.startingPlayerToken = this.players[0].label;
