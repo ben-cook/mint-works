@@ -28,6 +28,25 @@ const plans = [
     baseStars: 0,
     types: ["Culture"],
     // TODO: Implement starHook
+    hooks: {
+      turn: {
+        post: ({ player }) => {
+          const museum = player.neighbourhood.buildings.find((b) =>
+            b.name === "Museum"
+          );
+          if (!museum) {
+            throw new Error("No Museum object Found in Post-turn Hook");
+          }
+          const cultureBuildings = player.neighbourhood.buildings.filter((b) =>
+            b.types.includes("Culture")
+          );
+          const cultureMap = cultureBuildings.map((b) => {
+            return b.types.join(",");
+          }).join(",").split(",");
+          museum.additionalStars = cultureMap.length;
+        },
+      },
+    },
   },
   {
     name: "Gallery",
@@ -157,7 +176,13 @@ const plans = [
     cost: 2,
     baseStars: 1,
     types: ["Utility"],
-    // TODO: implement pay less at supplier
+    hooks: {
+      supply: {
+        pre: () => {
+          return { _type: "tokens", tokens: -1 };
+        },
+      },
+    },
     effect: undefined,
   },
   {
@@ -192,21 +217,50 @@ const plans = [
     cost: 3,
     baseStars: 3,
     types: ["Utility"],
-    // TODO: Add starHook
+    hooks: {
+      turn: {
+        post: ({ player }) => {
+          const landfill = player.neighbourhood.buildings.find((b) =>
+            b.name === "Landfill"
+          );
+          if (!landfill) {
+            throw new Error("No Landfill object Found in Post-turn Hook");
+          }
+          const cultureBuildings = player.neighbourhood.buildings.filter((b) =>
+            b.types.includes("Culture")
+          );
+          const cultureMap = cultureBuildings.map((b) => {
+            return b.types.join(",");
+          }).join(",").split(",");
+          landfill.additionalStars = -cultureMap.length;
+        },
+      },
+    },
   },
   {
     name: "Vault",
     cost: 5,
     baseStars: 1,
     types: ["Utility"],
-    // TODO: Add starHook
+    hooks: {
+      turn: {
+        post: ({ player }) => {
+          const vault = player.neighbourhood.buildings.find((b) =>
+            b.name === "Vault"
+          );
+          if (!vault) {
+            throw new Error("No Vault object Found in Post-turn Hook");
+          }
+          vault.additionalStars = player.neighbourhood.plans.length * 2;
+        },
+      },
+    },
   },
   {
     name: "Obelisk",
     cost: 4,
     baseStars: 0,
     types: ["Utility"],
-    // TODO: Add starHook
     hooks: {
       turn: {
         post: ({ player }) => {
