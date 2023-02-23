@@ -337,4 +337,6 @@ const plans = [
   },
 ] as const satisfies ReadonlyArray<Plan>;
 
-export const createPlans = (): Array<Plan> => [...plans];
+export const createPlans = (
+  customPlans?: Array<Plan>,
+): Array<Plan> => customPlans ? [...customPlans] : [...plans];
