@@ -4,10 +4,10 @@ import { Turn } from "./turn.ts";
 import { gameLogger, gameLogger as logger } from "./logger.ts";
 import { State } from "./state.ts";
 import { createPlans, PlanName } from "./plans.ts";
-import { createLocations, LocationCard, Locations } from "./location.ts";
+import { createLocations, LocationCard } from "./location.ts";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
 import { PlanSupply } from "./plan_supply.ts";
-import { findWinner, Scoreboard } from "./scoring.ts";
+import { findWinner } from "./scoring.ts";
 import { shuffleArray } from "./utils.ts";
 import { HandPlan, Plan } from "./plan.ts";
 
@@ -240,6 +240,16 @@ export class MintWorks {
       ? turn.action.plan.cost
       : mappedLocation.minSlotPrice();
 
+    // Execute any start of turn hooks (pre-turn hooks)
+    player.neighbourhood.buildings.forEach((b) => {
+      if (!b.hooks?.turn?.pre) return;
+      b.hooks.turn.pre({
+        player,
+        locations: this.locations,
+      });
+    });
+
+    // Find the action type and execute appropriate pre-hooks like price calculations
     switch (turn.action._type) {
       case "Build":
         actionCost = mappedLocation.minSlotPrice();
@@ -295,6 +305,7 @@ export class MintWorks {
     mappedLocation.useSlot(actionCost);
     player.tokens -= actionCost;
 
+    // Execute all the action effects and post-hooks
     switch (turn.action._type) {
       case "Build":
         {
@@ -386,6 +397,8 @@ export class MintWorks {
       default:
         throw new Error("Unknown action type");
     }
+
+    // Execute any end of turn hooks (post-turn hooks)
     player.neighbourhood.buildings.forEach((b) => {
       if (!b.hooks?.turn?.post) return;
       b.hooks.turn.post({
