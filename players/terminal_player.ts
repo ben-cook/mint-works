@@ -12,6 +12,18 @@ import {
   prompt,
   Select,
 } from "https://deno.land/x/cliffy@v0.25.7/prompt/mod.ts";
+import { Plan } from "../plan.ts";
+
+interface NeighbourhoodView {
+  name: string;
+  tokens: {
+    number: number;
+    icons: string;
+  };
+  plans: string;
+  buildings: string;
+  stars: number;
+}
 
 export class TerminalPlayer extends PlayerHelper implements IPlayer {
   constructor(name: string) {
@@ -21,9 +33,39 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
   async takeTurn(state: State): Promise<Turn> {
     const turns = this.generateTurns(state);
 
-    playerLogger.info(state.locations);
+    const locationsView = state.locations.map((l) => {
+      let slots = "";
+      for (const slot of l.slots) {
+        slots += slot.available() ? "⭕" : "⛔";
+      }
+      return {
+        name: l.name,
+        slots,
+      };
+    });
 
-    const padAmount = 12;
+    let locationsText = "------------------LOCATIONS-------------------\n";
+
+    const locationPad = 12;
+
+    for (const location of locationsView) {
+      locationsText += `|`;
+      locationsText += location.name.padEnd(locationPad);
+    }
+
+    locationsText += "\n";
+
+    for (const location of locationsView) {
+      locationsText += `|`;
+      if (location.slots) {
+        locationsText += location.slots.padEnd(
+          locationPad / 2 + location.slots.length,
+        );
+      } else {
+        locationsText += "".padEnd(locationPad);
+      }
+    }
+    /* const padAmount = 12;
 
     state.players.forEach((p, i) => {
       const buildings = p.neighbourhood.buildings;
@@ -70,8 +112,8 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
       outputText += planText;
 
       playerLogger.info(outputText + "\n \n");
-    });
-
+    }); */
+    /*
     let supplyText = "------------------PLAN SUPPLY------------------";
 
     const supplyPad = 22;
@@ -101,9 +143,38 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
       supplyText += upHook
         ? JSON.stringify(upHook).padEnd(supplyPad)
         : "".padEnd(supplyPad);
+    }); */
+
+    const neighbourhoods: Array<NeighbourhoodView> = state.players.map((p) => {
+      let tokenIcons = "";
+      for (let i = 0; i < p.tokens; i++) {
+        tokenIcons += "🪙";
+      }
+      return {
+        name: p.label,
+        tokens: {
+          number: p.tokens,
+          icons: tokenIcons,
+        },
+        plans: this.formatPlanCards(p.neighbourhood.plans),
+        buildings: this.formatPlanCards(p.neighbourhood.buildings),
+        stars: p.neighbourhood.stars(),
+      };
     });
 
+    const textNeighbourhoods = neighbourhoods.map((n) => {
+      return this.formatNeighbourhood(n);
+    });
+
+    textNeighbourhoods.forEach((n) => playerLogger.info(n));
+
+    const textSupply = this.formatPlanCards(state.planSupply);
+
+    const supplyText = "---------------- PLAN SUPPLY ----------------\n" +
+      textSupply;
+
     playerLogger.info(supplyText);
+    playerLogger.info(locationsText);
     playerLogger.info(this.name + "'s Turn");
 
     const userTurns = turns.map((turn) => {
@@ -131,5 +202,139 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
       logger.error(`Could not find a valid move!`);
     }
     return new Promise((resolve, _reject) => resolve(turn));
+  }
+
+  private formatPlanCards(plans: Array<Plan>): string {
+    const padAmount = 16;
+
+    const supplyProps = plans.map((plan) => {
+      let stars = "";
+      for (let i = 0; i < plan.baseStars; i++) {
+        stars += "⭐";
+      }
+
+      let tokens = "";
+      for (let i = 0; i < plan.cost; i++) {
+        tokens += "🪙";
+      }
+
+      let planTypes = "";
+      for (const type of plan.types) {
+        switch (type) {
+          case "Culture":
+            planTypes += "🌿";
+            break;
+
+          case "Deed":
+            planTypes += "📋";
+            break;
+
+          case "Production":
+            planTypes += "🛞";
+            break;
+
+          case "Utility":
+            planTypes += "🪛";
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      return {
+        name: plan.name,
+        cost: tokens,
+        stars,
+        description: plan.description ?? "",
+        type: planTypes,
+      };
+    });
+
+    const supplyCards = supplyProps.map((p) => {
+      let card = "--";
+      for (let j = 0; j < padAmount; j++) {
+        card += "-";
+      }
+      card += "\n";
+      Object.keys(p).forEach((k) => {
+        if (!card.endsWith("|")) card += "|";
+        const value = p[k as keyof typeof p];
+
+        let specificPad = padAmount;
+        if (k === "stars") {
+          specificPad = padAmount - value.length;
+        } else if (k === "cost") {
+          specificPad = padAmount + value.length / 2;
+        }
+
+        if (value && (value.includes("🛞") || value.includes("🪛"))) {
+          specificPad = padAmount + value.length / 2;
+        }
+
+        if (!value) {
+          card += "".padEnd(specificPad);
+        } else if (value.length <= specificPad) {
+          card += value.padEnd(specificPad);
+        } else {
+          const lines = value.length % 10;
+          let start = 0;
+          for (let i = 0; i < lines; i++) {
+            card += value.substring(
+              start,
+              Math.min(start + specificPad, value.length - 1),
+            ).padEnd(specificPad);
+            start += specificPad;
+            card += "|\n|";
+          }
+        }
+        card += "|\n";
+      });
+      card += "--";
+      for (let j = 0; j < padAmount; j++) {
+        card += "-";
+      }
+      card += "\n";
+      return card;
+    });
+
+    const splitCards = supplyCards.map((c) => {
+      return c.split("\n");
+    });
+
+    let maxLength = 0;
+    for (const card of splitCards) {
+      if (card.length > maxLength) maxLength = card.length;
+    }
+
+    let horizontalCards = "";
+    for (let i = 0; i < maxLength; i++) {
+      for (const card of splitCards) {
+        horizontalCards += card[i];
+        horizontalCards += "  ";
+      }
+      horizontalCards += "\n";
+    }
+
+    return horizontalCards.trimEnd();
+  }
+
+  private formatNeighbourhood(neighbourhood: NeighbourhoodView): string {
+    let textNeighbourhood =
+      `---------- ${neighbourhood.name}'s Neighbourhood (${neighbourhood.tokens.number} tokens) (${neighbourhood.stars} stars) ----------\n`;
+
+    textNeighbourhood += neighbourhood.name + " ";
+    textNeighbourhood += neighbourhood.tokens.icons;
+
+    textNeighbourhood += "\n";
+    textNeighbourhood +=
+      `--------------- ${neighbourhood.name}'s BUILDINGS ---------------\n`;
+    textNeighbourhood += neighbourhood.buildings;
+    textNeighbourhood += "\n";
+    textNeighbourhood +=
+      `--------------- ${neighbourhood.name}'s PLANS ---------------\n`;
+    textNeighbourhood += neighbourhood.plans;
+
+    return textNeighbourhood;
   }
 }
