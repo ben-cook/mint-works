@@ -64,7 +64,6 @@ export class MintWorks {
   public async play() {
     while (true) {
       logger.info(`Starting round ${this.roundNumber}`);
-      logger.debug(this.planSupply);
       await this.playRound();
       this.roundNumber++;
     }

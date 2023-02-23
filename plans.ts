@@ -229,9 +229,11 @@ const plans = [
       },
       build: {
         post: ({ locations }) => {
-          const wholesaler = locations.find((l) => l.name === "Lotto");
+          const wholesaler = locations.find((l) => l.name === "Wholesaler");
           if (!wholesaler) {
-            throw new Error("NO wholesaler FOUND IN LOTTO POST BUILD HOOK");
+            throw new Error(
+              "NO wholesaler FOUND IN Wholesaler POST BUILD HOOK",
+            );
           }
           if (wholesaler.isClosed()) wholesaler.openLocation();
         },

@@ -1,3 +1,4 @@
+import { gameLogger } from "./logger.ts";
 import { Turn } from "./turn.ts";
 
 /** A slot that holds tokens when the are played */
@@ -101,6 +102,7 @@ export class LocationCard {
 
   /** Populate the location with slots */
   public openLocation(): void {
+    gameLogger.info(`${this.name} has opened`);
     this.slots = Array.from(
       { length: this.numberOfSlots },
       () => new Slot(this.slotBasePrice),
@@ -130,7 +132,7 @@ export const Builder = new LocationCard(
     type: "Core",
     effect: "who knows?",
     slotBasePrice: 2,
-    numberOfSlots: 3,
+    numberOfSlots: 2,
   },
 );
 
@@ -141,7 +143,7 @@ export const Supplier = new LocationCard(
     type: "Core",
     effect: "who knows?",
     slotBasePrice: Infinity,
-    numberOfSlots: 3,
+    numberOfSlots: 2,
   },
 );
 
@@ -152,7 +154,7 @@ export const Producer = new LocationCard(
     type: "Core",
     effect: "who knows?",
     slotBasePrice: 1,
-    numberOfSlots: 3,
+    numberOfSlots: 2,
   },
 );
 

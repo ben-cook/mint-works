@@ -12,7 +12,7 @@ import {
   prompt,
   Select,
 } from "https://deno.land/x/cliffy@v0.25.7/prompt/mod.ts";
-import { Plan } from "../plan.ts";
+import { Building, Plan } from "../plan.ts";
 
 interface NeighbourhoodView {
   name: string;
@@ -59,7 +59,7 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
       locationsText += `|`;
       if (location.slots) {
         locationsText += location.slots.padEnd(
-          locationPad / 2 + location.slots.length,
+          locationPad - location.slots.length,
         );
       } else {
         locationsText += "".padEnd(locationPad);
@@ -213,41 +213,55 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
         stars += "⭐";
       }
 
+      let additionalStarsText = "";
+
+      const additionalStars = "additionalStars" in plan
+        ? plan.additionalStars as Building["additionalStars"]
+        : 0;
+
+      if (additionalStars && additionalStars > 0) {
+        for (let i = 0; i < additionalStars; i++) {
+          additionalStarsText += "⭐";
+        }
+      }
       let tokens = "";
       for (let i = 0; i < plan.cost; i++) {
         tokens += "🪙";
       }
 
       let planTypes = "";
-      for (const type of plan.types) {
-        switch (type) {
-          case "Culture":
-            planTypes += "🌿";
-            break;
+      if (plan.types && plan.types.length > 0) {
+        for (const type of plan.types) {
+          switch (type) {
+            case "Culture":
+              planTypes += "🌿";
+              break;
 
-          case "Deed":
-            planTypes += "📋";
-            break;
+            case "Deed":
+              planTypes += "📋";
+              break;
 
-          case "Production":
-            planTypes += "🛞";
-            break;
+            case "Production":
+              planTypes += "🛞";
+              break;
 
-          case "Utility":
-            planTypes += "🪛";
-            break;
+            case "Utility":
+              planTypes += "🪛";
+              break;
 
-          default:
-            break;
+            default:
+              break;
+          }
         }
       }
 
       return {
         name: plan.name,
-        cost: tokens,
+        cost: tokens ?? "",
         stars,
+        additionalStars: additionalStarsText ?? "",
         description: plan.description ?? "",
-        type: planTypes,
+        type: planTypes ?? "",
       };
     });
 
@@ -262,7 +276,7 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
         const value = p[k as keyof typeof p];
 
         let specificPad = padAmount;
-        if (k === "stars") {
+        if (k === "stars" || k === "additionalStars") {
           specificPad = padAmount - value.length;
         } else if (k === "cost") {
           specificPad = padAmount + value.length / 2;
@@ -327,12 +341,10 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
     textNeighbourhood += neighbourhood.tokens.icons;
 
     textNeighbourhood += "\n";
-    textNeighbourhood +=
-      `--------------- ${neighbourhood.name}'s BUILDINGS ---------------\n`;
+    textNeighbourhood += `${neighbourhood.name}'s BUILDINGS\n`;
     textNeighbourhood += neighbourhood.buildings;
     textNeighbourhood += "\n";
-    textNeighbourhood +=
-      `--------------- ${neighbourhood.name}'s PLANS ---------------\n`;
+    textNeighbourhood += `${neighbourhood.name}'s PLANS\n`;
     textNeighbourhood += neighbourhood.plans;
 
     return textNeighbourhood;
