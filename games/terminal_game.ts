@@ -11,6 +11,7 @@ import {
   Select,
 } from "https://deno.land/x/cliffy@v0.25.7/prompt/mod.ts";
 import { createPlans } from "../plans.ts";
+import { Plan } from "../plan.ts";
 
 type TerminalGames = "Quick" | "Standard" | "Custom";
 
@@ -22,6 +23,7 @@ const terminalGames = [
 
 interface TerminalGameSettings {
   startingTokens?: number;
+  deck?: Array<Plan>;
 }
 
 export async function createTerminalGame(
@@ -48,7 +50,7 @@ export async function createTerminalGame(
       break;
   }
 
-  const { startingTokens } = gameSettings;
+  const { startingTokens, deck } = gameSettings;
 
   const players = await createTerminalPlayers({
     gameType,
@@ -56,21 +58,12 @@ export async function createTerminalGame(
     startingTokens,
   });
 
-  const gameParams: MintWorksParams = { players };
+  const gameParams: MintWorksParams = { players, deck };
 
   return gameParams;
 }
 
 async function createCustomGame(): Promise<TerminalGameSettings> {
-  const customSettingsToUse = await prompt([
-    {
-      name: "customSettings",
-      message: "Which settings do you wish to customise?",
-      type: Checkbox,
-      options: [],
-    },
-  ]);
-
   const customSettings = await prompt([{
     name: "startingTokens",
     message: "Starting Tokens",
@@ -92,7 +85,19 @@ async function createCustomGame(): Promise<TerminalGameSettings> {
       return `${value} NOT FOUND!`;
     },
   }]);
-  return { startingTokens: customSettings.startingTokens };
+
+  const plans = createPlans();
+  const deck = plans.slice().filter((p) => {
+    return p.name.toLowerCase().trim() !== customSettings.topCard;
+  });
+
+  const foundPlan = plans.find((p) =>
+    p.name.toLowerCase().trim() === customSettings.topCard
+  )!;
+
+  deck.push(foundPlan);
+
+  return { startingTokens: customSettings.startingTokens, deck };
 }
 
 async function createTerminalPlayers(

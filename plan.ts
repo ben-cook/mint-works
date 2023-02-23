@@ -32,7 +32,7 @@ export interface HookParams {
 
 export type HookEffect = { _type: "tokens"; tokens: number } | {
   _type: "build";
-};
+} | { _type: "selectPlayer"; appliedEffect: HookEffect };
 
 export interface Hook {
   pre?: ({ player, locations }: HookParams) => void | HookEffect;

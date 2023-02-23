@@ -3,6 +3,8 @@ import { Turn } from "../turn.ts";
 import { playerLogger as logger } from "../logger.ts";
 import { State } from "../state.ts";
 import { PlayerHelper } from "./player_helper.ts";
+import { PlayerWithInformation } from "../mint_works.ts";
+import { HookEffect } from "../plan.ts";
 
 export class RandomPlayer extends PlayerHelper implements IPlayer {
   constructor(name: string) {
@@ -18,5 +20,18 @@ export class RandomPlayer extends PlayerHelper implements IPlayer {
       logger.error(`Could not find a valid move!`);
     }
     return new Promise((resolve, _reject) => resolve(turn));
+  }
+
+  async selectPlayerForEffect(
+    appliedEffect: HookEffect,
+    players: Array<PlayerWithInformation>,
+  ): Promise<string> {
+    const playerNames = players.map((p) => {
+      return p.label;
+    }).filter((name) => name !== this.name);
+    const selectedPlayer = await playerNames.at(
+      Math.floor(Math.random() * playerNames.length),
+    )!;
+    return selectedPlayer;
   }
 }

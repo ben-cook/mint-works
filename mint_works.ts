@@ -26,6 +26,7 @@ export interface MintWorksParams {
   players?: Array<PlayerWithInformation>;
   plans?: Array<Plan>;
   locations?: Array<LocationCard>;
+  deck?: Array<Plan>;
 }
 
 export class MintWorks {
@@ -36,7 +37,7 @@ export class MintWorks {
   /** The player with the starting player token starts each round in the Development phase */
   startingPlayerToken: string;
 
-  constructor({ players }: MintWorksParams) {
+  constructor({ players, deck }: MintWorksParams) {
     // Set up players of the game
     this.players = players ?? [
       {
@@ -55,11 +56,13 @@ export class MintWorks {
       },
     ];
 
+    if (!deck) {
+      const plans = createPlans();
+      deck = plans.slice();
+      shuffleArray(deck);
+    }
     // Set up the plan deck
-    const plans = createPlans();
     this.locations = createLocations();
-    const deck = plans.slice();
-    shuffleArray(deck);
 
     // Set up the plan supply
     this.planSupply = new PlanSupply(deck);
@@ -133,7 +136,7 @@ export class MintWorks {
    * - Each player gains one Mint Token.
    * - Proceed to the next Development phase.
    */
-  public upkeep() {
+  public async upkeep() {
     // If any player has seven or more stars provided by Buildings in their Neighbourhood, the game ends and Scoring takes place.
     if (this.players.some((p) => p.neighbourhood.stars() >= 7)) {
       this.scoring();
@@ -154,10 +157,43 @@ export class MintWorks {
 
     // Resolve all 'Post-Upkeep' effects on Buildings.
     for (const player of this.players) {
-      player.neighbourhood.buildings.forEach((b) => {
+      for (const b of player.neighbourhood.buildings) {
         if (!b.hooks?.upkeep?.post) return;
-        b.hooks.upkeep.post({ player, locations: this.locations });
-      });
+        const result = b.hooks.upkeep.post({
+          player,
+          locations: this.locations,
+        });
+
+        if (result) {
+          switch (result._type) {
+            case "selectPlayer":
+              {
+                const selectedPlayerName = await player.player
+                  .selectPlayerForEffect(result.appliedEffect, this.players);
+                const selectedPlayer = this.players.find((p) => {
+                  return p.label === selectedPlayerName;
+                });
+
+                if (!selectedPlayer) {
+                  throw new Error("Selected Player not found!");
+                }
+
+                switch (result.appliedEffect._type) {
+                  case "tokens":
+                    selectedPlayer.tokens += result.appliedEffect.tokens;
+                    break;
+
+                  default:
+                    break;
+                }
+              }
+              break;
+
+            default:
+              break;
+          }
+        }
+      }
     }
 
     // If there are any Mint Tokens on Deed Locations, the Owners of those Locations gain the indicated amount of Mint Tokens from the Mint Supply.

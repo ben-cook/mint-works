@@ -114,7 +114,10 @@ const plans = [
           player.tokens += 1;
         },
         post: () => {
-          // TODO: Implement this
+          return {
+            _type: "selectPlayer",
+            appliedEffect: { _type: "tokens", tokens: 1 },
+          };
         },
       },
     },

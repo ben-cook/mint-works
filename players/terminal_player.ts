@@ -12,7 +12,8 @@ import {
   prompt,
   Select,
 } from "https://deno.land/x/cliffy@v0.25.7/prompt/mod.ts";
-import { Building, Plan } from "../plan.ts";
+import { Building, HookEffect, Plan } from "../plan.ts";
+import { PlayerWithInformation } from "../mint_works.ts";
 
 interface NeighbourhoodView {
   name: string;
@@ -28,6 +29,38 @@ interface NeighbourhoodView {
 export class TerminalPlayer extends PlayerHelper implements IPlayer {
   constructor(name: string) {
     super(name);
+  }
+
+  async selectPlayerForEffect(
+    appliedEffect: HookEffect,
+    players: Array<PlayerWithInformation>,
+  ): Promise<string> {
+    let textAction = "";
+    switch (appliedEffect._type) {
+      case "tokens":
+        {
+          const direction = appliedEffect.tokens > 0 ? "add" : "remove";
+          const stringTokens = appliedEffect.tokens > 0
+            ? appliedEffect.tokens
+            : -appliedEffect.tokens;
+          textAction = `to ${direction}${stringTokens} tokens to.`;
+        }
+        break;
+
+      default:
+        break;
+    }
+
+    const playerNames = players.map((p) => {
+      return p.label;
+    }).filter((name) => name !== this.name);
+    const selectionPrompt = await prompt([{
+      name: "selectedPlayer",
+      message: "Select a Player " + textAction,
+      type: Select,
+      options: playerNames,
+    }]);
+    return selectionPrompt.selectedPlayer ?? playerNames[0];
   }
 
   async takeTurn(state: State): Promise<Turn> {
