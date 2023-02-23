@@ -21,7 +21,7 @@ export interface Plan {
   linkedLocation?: LocationCard;
 }
 
-export type HookType = "supply" | "build" | "upkeep";
+export type HookType = "supply" | "build" | "upkeep" | "turn";
 
 export type Hooks = Record<HookType, Hook>;
 
