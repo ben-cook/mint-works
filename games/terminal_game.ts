@@ -10,6 +10,7 @@ import {
   prompt,
   Select,
 } from "https://deno.land/x/cliffy@v0.25.7/prompt/mod.ts";
+import { createPlans } from "../plans.ts";
 
 type TerminalGames = "Quick" | "Standard" | "Custom";
 
@@ -61,11 +62,35 @@ export async function createTerminalGame(
 }
 
 async function createCustomGame(): Promise<TerminalGameSettings> {
+  const customSettingsToUse = await prompt([
+    {
+      name: "customSettings",
+      message: "Which settings do you wish to customise?",
+      type: Checkbox,
+      options: [],
+    },
+  ]);
+
   const customSettings = await prompt([{
     name: "startingTokens",
     message: "Starting Tokens",
     type: Number,
     default: 3,
+  }, {
+    name: "topCard",
+    message: "Card at top of deck",
+    type: Input,
+    validate: (value: string) => {
+      const plans = createPlans();
+      if (
+        plans.find((p) =>
+          p.name.toLowerCase().trim() === value.toLowerCase().trim()
+        )
+      ) {
+        return true;
+      }
+      return `${value} NOT FOUND!`;
+    },
   }]);
   return { startingTokens: customSettings.startingTokens };
 }
