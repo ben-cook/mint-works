@@ -207,6 +207,19 @@ const plans = [
     baseStars: 0,
     types: ["Utility"],
     // TODO: Add starHook
+    hooks: {
+      turn: {
+        post: ({ player }) => {
+          const obelisk = player.neighbourhood.buildings.find((b) =>
+            b.name === "Obelisk"
+          );
+          if (!obelisk) {
+            throw new Error("No Obelisk object Found in Post-turn Hook");
+          }
+          obelisk.additionalStars = player.neighbourhood.buildings.length;
+        },
+      },
+    },
   },
 
   {
