@@ -128,7 +128,14 @@ export class PlayerHelper {
   /** Return if the player can afford to supply any of the plan supply plans */
   canAffordToSupply(state: State): boolean {
     const player = this.thisPlayer(state);
-    return state.planSupply.some((p) => p.cost <= player.tokens);
+
+    let costChange = 0;
+
+    if (player.neighbourhood.getBuilding("Truck")) {
+      costChange -= 1;
+    }
+
+    return state.planSupply.some((p) => (p.cost + costChange) <= player.tokens);
   }
 
   /** Return if the player can afford to use a basic location */

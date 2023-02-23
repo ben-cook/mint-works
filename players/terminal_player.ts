@@ -173,9 +173,18 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
     const supplyText = "---------------- PLAN SUPPLY ----------------\n" +
       textSupply;
 
+    const currentPlayer = state.players.find((p) => p.label === this.name)!;
+
+    let currentPlayerTokens = "";
+    for (let i = 0; i < currentPlayer.tokens; i++) {
+      currentPlayerTokens += "🪙";
+    }
+
     playerLogger.info(supplyText);
     playerLogger.info(locationsText);
-    playerLogger.info(this.name + "'s Turn");
+    playerLogger.info(
+      `${currentPlayer.label}'s Turn (${currentPlayer.neighbourhood.stars()} stars) (${currentPlayer.tokens} tokens) ${currentPlayerTokens}`,
+    );
 
     const userTurns = turns.map((turn) => {
       const actionName = turn.action._type;
@@ -219,14 +228,16 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
         ? plan.additionalStars as Building["additionalStars"]
         : 0;
 
-      if (additionalStars && additionalStars > 0) {
-        for (let i = 0; i < additionalStars; i++) {
-          additionalStarsText += "⭐";
-        }
-      } else if (additionalStars && additionalStars < 0) {
-        additionalStarsText += "-";
-        for (let i = 0; i < -additionalStars; i++) {
-          additionalStarsText += "⭐";
+      if (additionalStars) {
+        if (additionalStars > 0) {
+          for (let i = 0; i < additionalStars; i++) {
+            additionalStarsText += "⭐";
+          }
+        } else if (additionalStars < 0) {
+          additionalStarsText += "-";
+          for (let i = 0; i < -additionalStars; i++) {
+            additionalStarsText += "⭐";
+          }
         }
       }
 

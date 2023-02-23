@@ -1,3 +1,4 @@
+import { gameLogger } from "./logger.ts";
 import { Plan } from "./plan.ts";
 
 export type PlanName = typeof plans[number]["name"];
@@ -42,7 +43,7 @@ const plans = [
           );
           const cultureMap = cultureBuildings.map((b) => {
             return b.types.join(",");
-          }).join(",").split(",");
+          }).join(",").split(",").filter((t) => t !== "");
           museum.additionalStars = cultureMap.length;
         },
       },
@@ -231,7 +232,7 @@ const plans = [
           );
           const cultureMap = cultureBuildings.map((b) => {
             return b.types.join(",");
-          }).join(",").split(",");
+          }).join(",").split(",").filter((t) => t !== "");
           landfill.additionalStars = -cultureMap.length;
         },
       },
