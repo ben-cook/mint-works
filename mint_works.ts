@@ -377,6 +377,13 @@ export class MintWorks {
       default:
         throw new Error("Unknown action type");
     }
+    player.neighbourhood.buildings.forEach((b) => {
+      if (!b.hooks?.turn?.post) return;
+      b.hooks.turn.post({
+        player,
+        locations: this.locations,
+      });
+    });
   }
 
   private getPlayerState(playerMakingTurn: PlayerWithInformation): State {
