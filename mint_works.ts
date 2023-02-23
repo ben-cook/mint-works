@@ -341,6 +341,10 @@ export class MintWorks {
         player.tokens += 2;
         break;
 
+      case "Wholesale":
+        player.tokens += 2;
+        break;
+
       case "Supply":
         {
           const plan = turn.action.plan;

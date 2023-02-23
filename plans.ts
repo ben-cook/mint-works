@@ -215,6 +215,28 @@ const plans = [
     cost: 1,
     baseStars: 1,
     types: ["Deed"],
+    hooks: {
+      upkeep: {
+        pre: ({ player, locations }) => {
+          const wholesaler = locations.find((l) => l.name === "Wholesaler");
+          if (!wholesaler) {
+            throw new Error("No Wholesaler was found in upkeep phase");
+          }
+          if (!wholesaler.available()) {
+            player.tokens += 2;
+          }
+        },
+      },
+      build: {
+        post: ({ locations }) => {
+          const wholesaler = locations.find((l) => l.name === "Lotto");
+          if (!wholesaler) {
+            throw new Error("NO wholesaler FOUND IN LOTTO POST BUILD HOOK");
+          }
+          if (wholesaler.isClosed()) wholesaler.openLocation();
+        },
+      },
+    },
   },
   {
     name: "Lotto",
@@ -224,11 +246,11 @@ const plans = [
     hooks: {
       upkeep: {
         pre: ({ player, locations }) => {
-          const Lotto = locations.find((l) => l.name === "Lotto");
-          if (!Lotto) {
+          const lotto = locations.find((l) => l.name === "Lotto");
+          if (!lotto) {
             throw new Error("No Lotto was found in upkeep phase");
           }
-          if (!Lotto.available()) {
+          if (!lotto.available()) {
             player.tokens += 2;
           }
         },

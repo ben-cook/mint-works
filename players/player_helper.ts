@@ -94,6 +94,21 @@ export class PlayerHelper {
       );
     }
 
+    const wholesaler = state.locations.find((l) => l.name === "Wholesaler");
+    if (
+      wholesaler?.available() &&
+      this.canAffordBasicLocation(state, wholesaler)
+    ) {
+      validTurns.push(
+        {
+          action: {
+            "_type": "Wholesale",
+          },
+          playerName: this.name,
+        },
+      );
+    }
+
     return validTurns;
   }
 

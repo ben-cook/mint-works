@@ -10,7 +10,8 @@ type Place =
   | { _type: "Produce" }
   | { _type: "Leadership"; playerName: string }
   | { _type: "Supply"; plan: Plan }
-  | { _type: "Lotto" };
+  | { _type: "Lotto" }
+  | { _type: "Wholesale" };
 
 type Pass = { _type: "Pass" };
 

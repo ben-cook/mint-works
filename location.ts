@@ -168,6 +168,18 @@ export const Lotto = new LocationCard(
   },
 );
 
+export const Wholesaler = new LocationCard(
+  {
+    name: "Wholesaler",
+    mappedAction: "Wholesale",
+    type: "Deed",
+    effect: "who knows?",
+    slotBasePrice: 1,
+    numberOfSlots: 1,
+    startClosed: true,
+  },
+);
+
 export const Leadership = new LocationCard(
   {
     name: "Leadership",
@@ -179,4 +191,11 @@ export const Leadership = new LocationCard(
   },
 );
 
-export const Locations = [Builder, Supplier, Producer, Lotto, Leadership];
+export const Locations = [
+  Builder,
+  Supplier,
+  Producer,
+  Lotto,
+  Wholesaler,
+  Leadership,
+];
