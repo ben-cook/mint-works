@@ -223,7 +223,13 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
         for (let i = 0; i < additionalStars; i++) {
           additionalStarsText += "⭐";
         }
+      } else if (additionalStars && additionalStars < 0) {
+        additionalStarsText += "-";
+        for (let i = 0; i < -additionalStars; i++) {
+          additionalStarsText += "⭐";
+        }
       }
+
       let tokens = "";
       for (let i = 0; i < plan.cost; i++) {
         tokens += "🪙";
