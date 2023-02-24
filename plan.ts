@@ -31,6 +31,13 @@ export interface HookParams {
 }
 
 export type HookEffect = { _type: "tokens"; tokens: number } | {
+  _type: "tokensAll";
+  tokens: number;
+} | {
+  _type: "tokensAllOther";
+  tokens: number;
+  playerName: string;
+} | {
   _type: "build";
 } | { _type: "selectPlayer"; appliedEffect: HookEffect };
 
