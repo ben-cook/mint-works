@@ -102,7 +102,7 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
     const neighbourhoods: Array<NeighbourhoodView> = state.players.map((p) => {
       let tokenIcons = "";
       for (let i = 0; i < p.tokens; i++) {
-        tokenIcons += "🪙";
+        tokenIcons += "⚪";
       }
       return {
         name: p.label,
@@ -131,7 +131,7 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
 
     let currentPlayerTokens = "";
     for (let i = 0; i < currentPlayer.tokens; i++) {
-      currentPlayerTokens += "🪙";
+      currentPlayerTokens += "⚪";
     }
 
     playerLogger.info(supplyText);
@@ -197,7 +197,7 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
 
       let tokens = "";
       for (let i = 0; i < plan.cost; i++) {
-        tokens += "🪙";
+        tokens += "⚪";
       }
 
       let planTypes = "";
@@ -213,11 +213,11 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
               break;
 
             case "Production":
-              planTypes += "🛞";
+              planTypes += "🔨";
               break;
 
             case "Utility":
-              planTypes += "🪛";
+              planTypes += "💡";
               break;
 
             default:
@@ -251,11 +251,11 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
           specificPad = padAmount - value.length;
           if (value && value.includes("-")) specificPad += 1;
         } else if (k === "cost") {
-          specificPad = padAmount + value.length / 2;
+          specificPad = padAmount - value.length;
         }
 
-        if (value && (value.includes("🛞") || value.includes("🪛"))) {
-          specificPad = padAmount + value.length / 2;
+        if (value && (value.includes(" "))) {
+          specificPad = padAmount - value.length;
         }
 
         if (!value) {
