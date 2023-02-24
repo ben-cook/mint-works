@@ -144,7 +144,17 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
       const actionName = turn.action._type;
       const plan = "plan" in turn.action ? turn.action.plan : undefined;
       let text = `${actionName}`;
-      if (plan) text += ` - ${plan.name} (${plan.cost} tokens)`;
+      if (plan) {
+        if (actionName === "Supply") {
+          text += ` - ${plan.name} (${plan.cost} tokens)`;
+        } else if (actionName === "Build") {
+          const crane = currentPlayer.neighbourhood.getBuilding("Crane");
+          let buildCost = 2;
+          if (crane) buildCost -= 1;
+          text += ` - ${plan.name} (${buildCost} tokens)`;
+        }
+        // TODO: Add location cost
+      }
       return text;
     });
 
