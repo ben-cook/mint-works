@@ -158,7 +158,7 @@ export class MintWorks {
     // Resolve all 'Post-Upkeep' effects on Buildings.
     for (const player of this.players) {
       for (const b of player.neighbourhood.buildings) {
-        if (!b.hooks?.upkeep?.post) return;
+        if (!b.hooks?.upkeep?.post) continue;
         const result = b.hooks.upkeep.post({
           player,
           locations: this.locations,
