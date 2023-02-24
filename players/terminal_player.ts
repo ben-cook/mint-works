@@ -249,6 +249,7 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
         let specificPad = padAmount;
         if (k === "stars" || k === "additionalStars") {
           specificPad = padAmount - value.length;
+          if (value && value.includes("-")) specificPad += 1;
         } else if (k === "cost") {
           specificPad = padAmount + value.length / 2;
         }
