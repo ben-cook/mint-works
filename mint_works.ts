@@ -69,7 +69,7 @@ export class MintWorks {
     this.planSupply = new PlanSupply(deck);
 
     // TODO: investigate if this is needed anymore
-    this.linkPlansAndLocations();
+    // this.linkPlansAndLocations();
 
     this.startingPlayerToken = this.players[0].label;
   }
@@ -103,6 +103,15 @@ export class MintWorks {
       const player = this.players[i]!;
       logger.info(`Player ${i}: (${player.label}'s turn)`);
 
+      // Execute any start of turn hooks (pre-turn hooks)
+      player.neighbourhood.buildings.forEach((b) => {
+        if (!b.hooks?.turn?.pre) return;
+        b.hooks.turn.pre({
+          player,
+          locations: this.locations,
+        });
+      });
+
       const playerState = this.getPlayerState(player);
 
       const turn = await player.player.takeTurn(playerState);
@@ -118,6 +127,15 @@ export class MintWorks {
         logger.error(`Invalid turn! Error: ${err}`);
         Deno.exit(1);
       }
+
+      // Execute any end of turn hooks (post-turn hooks)
+      player.neighbourhood.buildings.forEach((b) => {
+        if (!b.hooks?.turn?.post) return;
+        b.hooks.turn.post({
+          player,
+          locations: this.locations,
+        });
+      });
 
       if (i === numPlayers - 1) {
         i = 0;
@@ -298,15 +316,6 @@ export class MintWorks {
       ? turn.action.plan.cost
       : mappedLocation.minSlotPrice();
 
-    // Execute any start of turn hooks (pre-turn hooks)
-    player.neighbourhood.buildings.forEach((b) => {
-      if (!b.hooks?.turn?.pre) return;
-      b.hooks.turn.pre({
-        player,
-        locations: this.locations,
-      });
-    });
-
     // Find the action type and execute appropriate pre-hooks like price calculations
     switch (turn.action._type) {
       case "Build":
@@ -455,15 +464,6 @@ export class MintWorks {
       default:
         throw new Error("Unknown action type");
     }
-
-    // Execute any end of turn hooks (post-turn hooks)
-    player.neighbourhood.buildings.forEach((b) => {
-      if (!b.hooks?.turn?.post) return;
-      b.hooks.turn.post({
-        player,
-        locations: this.locations,
-      });
-    });
   }
 
   private getPlayerState(playerMakingTurn: PlayerWithInformation): State {

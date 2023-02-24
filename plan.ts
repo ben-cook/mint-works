@@ -34,6 +34,9 @@ export type HookEffect = { _type: "tokens"; tokens: number } | {
   _type: "tokensAll";
   tokens: number;
 } | {
+  _type: "starsAll";
+  stars: number;
+} | {
   _type: "tokensAllOther";
   tokens: number;
   playerName: string;

@@ -28,7 +28,7 @@ const plans = [
     cost: 2,
     baseStars: 0,
     types: ["Culture"],
-    // TODO: Implement starHook
+    description: ":STAR: per :CULTURE: building",
     hooks: {
       turn: {
         post: ({ player }) => {
@@ -54,6 +54,7 @@ const plans = [
     cost: 4,
     baseStars: 0,
     types: ["Culture"],
+    description: "Upkeep: Add :TOKEN: from the Mint Supply to Gallery",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -75,6 +76,7 @@ const plans = [
     cost: 1,
     baseStars: 0,
     types: ["Culture", "Culture"],
+    description: "Counts as 2 :CULTURE: buildings",
   },
   // Red Cards
   {
@@ -82,6 +84,7 @@ const plans = [
     cost: 3,
     baseStars: 2,
     types: ["Production"],
+    description: "Upkeep: Gain :TOKEN:",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -95,6 +98,7 @@ const plans = [
     cost: 4,
     baseStars: 3,
     types: ["Production"],
+    description: "Upkeep: Gain :TOKEN: :TOKEN:",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -108,6 +112,7 @@ const plans = [
     cost: 1,
     baseStars: 1,
     types: ["Production"],
+    description: "Upkeep: Gain :TOKEN: and choose a player to gain :TOKEN:",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -127,6 +132,7 @@ const plans = [
     cost: 5,
     baseStars: 2,
     types: ["Production"],
+    description: "Upkeep: Gain :TOKEN: :TOKEN:",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -140,6 +146,7 @@ const plans = [
     cost: 2,
     baseStars: 1,
     types: ["Production"],
+    description: "Upkeep: Gain :TOKEN:",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -153,6 +160,7 @@ const plans = [
     cost: 4,
     baseStars: 0,
     types: ["Production"],
+    description: "Upkeep: Gain :TOKEN: :TOKEN: :TOKEN:",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -166,6 +174,7 @@ const plans = [
     cost: 3,
     baseStars: 0,
     types: ["Production"],
+    description: "Upkeep: Gain :TOKEN: for each Building in your Neighbourhood",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -180,6 +189,7 @@ const plans = [
     cost: 2,
     baseStars: 1,
     types: ["Utility"],
+    description: "You pay :TOKEN: less at the Supplier (Minimum One)",
     hooks: {
       supply: {
         pre: () => {
@@ -194,6 +204,7 @@ const plans = [
     cost: 2,
     baseStars: 1,
     types: ["Utility"],
+    description: "You pay :TOKEN: less at the Builder",
     hooks: {
       build: {
         pre: () => {
@@ -208,6 +219,7 @@ const plans = [
     cost: 5,
     baseStars: 1,
     types: ["Utility"],
+    description: "Automatically build Plans you gain from the Supplier",
     hooks: {
       supply: {
         post: () => {
@@ -221,6 +233,8 @@ const plans = [
     cost: 3,
     baseStars: 3,
     types: ["Utility"],
+    description:
+      "You gain one fewer :STAR: from each :CULTURE: Building in your Neighbourhood",
     hooks: {
       turn: {
         post: ({ player }) => {
@@ -246,6 +260,7 @@ const plans = [
     cost: 5,
     baseStars: 1,
     types: ["Utility"],
+    description: ":STAR: :STAR: per Plan in your Neighbourhood",
     hooks: {
       turn: {
         post: ({ player }) => {
@@ -265,6 +280,7 @@ const plans = [
     cost: 4,
     baseStars: 0,
     types: ["Utility"],
+    description: ":STAR: per Building in your Neighbourhood",
     hooks: {
       turn: {
         post: ({ player }) => {
@@ -285,6 +301,7 @@ const plans = [
     cost: 1,
     baseStars: 1,
     types: ["Deed"],
+    description: "You are the Owner of the Wholesaler location",
     hooks: {
       upkeep: {
         pre: ({ player, locations }) => {
@@ -315,6 +332,7 @@ const plans = [
     cost: 4,
     baseStars: 2,
     types: ["Deed"],
+    description: "You are the Owner of the Lotto location",
     hooks: {
       upkeep: {
         pre: ({ player, locations }) => {

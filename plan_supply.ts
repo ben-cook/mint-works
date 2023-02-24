@@ -1,3 +1,4 @@
+import { gameLogger } from "./logger.ts";
 import { Plan } from "./plan.ts";
 
 type Deck = Array<Plan>;
@@ -14,6 +15,10 @@ export class PlanSupply {
    */
   constructor(deck: Deck) {
     this.deck = deck;
+    gameLogger.info(
+      `Creating a new plan supply with ${deck.length} plans in the deck`,
+    );
+    gameLogger.info(deck);
     this.refill();
   }
 
@@ -29,8 +34,11 @@ export class PlanSupply {
    * @returns a boolean indicating whether or not the refill was successful
    */
   public refill() {
+    gameLogger.info("plan sup len" + this.planSupply.length);
+    gameLogger.info("plan sup cap" + PlanSupply.planSupplyCapacity);
     while (this.planSupply.length < PlanSupply.planSupplyCapacity) {
       const plan = this.deck.pop();
+      gameLogger.info(`Refilling plan supply with ${plan?.name ?? "nothing"}`);
       if (!plan) {
         return false;
       }
