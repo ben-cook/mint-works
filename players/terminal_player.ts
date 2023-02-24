@@ -168,7 +168,7 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
   }
 
   private formatPlanCards(plans: Array<Plan>): string {
-    const padAmount = 16;
+    const padAmount = 20;
 
     const supplyProps = plans.map((plan) => {
       let stars = "";
@@ -254,24 +254,26 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
           specificPad = padAmount - value.length;
         }
 
-        if (value && (value.includes(" "))) {
-          specificPad = padAmount - value.length;
-        }
-
         if (!value) {
           card += "".padEnd(specificPad);
         } else if (value.length <= specificPad) {
           card += value.padEnd(specificPad);
         } else {
-          const lines = value.length % 10;
-          let start = 0;
-          for (let i = 0; i < lines; i++) {
-            card += value.substring(
-              start,
-              Math.min(start + specificPad, value.length - 1),
-            ).padEnd(specificPad);
-            start += specificPad;
-            card += "|\n|";
+          let currentLine = "";
+
+          for (let i = 0; i < value.length; i++) {
+            if (currentLine.length + 1 > padAmount) {
+              card += currentLine.padEnd(padAmount);
+              card += "|\n|";
+              currentLine = "";
+            }
+
+            currentLine += value[i];
+          }
+
+          // Add the last line to the result array
+          if (currentLine.length > 0) {
+            card += currentLine.padEnd(padAmount);
           }
         }
         card += "|\n";
@@ -296,7 +298,9 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
     let horizontalCards = "";
     for (let i = 0; i < maxLength; i++) {
       for (const card of splitCards) {
-        horizontalCards += card[i];
+        let line = card[i];
+        if (!line) line = "".padEnd(padAmount + 2);
+        horizontalCards += line;
         horizontalCards += "  ";
       }
       horizontalCards += "\n";
