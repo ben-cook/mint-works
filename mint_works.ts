@@ -151,7 +151,28 @@ export class MintWorks {
     for (const player of this.players) {
       player.neighbourhood.buildings.forEach((b) => {
         if (!b.hooks?.upkeep?.pre) return;
-        b.hooks.upkeep.pre({ player, locations: this.locations });
+        const result = b.hooks.upkeep.pre({
+          player,
+          locations: this.locations,
+        });
+        if (result) {
+          switch (result._type) {
+            case "tokensAll":
+              this.players.forEach((p) => {
+                p.tokens += result.tokens;
+              });
+              break;
+
+            case "tokensAllOther":
+              this.players.forEach((p) => {
+                if (p.label === result.playerName) return;
+                p.tokens += result.tokens;
+              });
+              break;
+            default:
+              break;
+          }
+        }
       });
     }
 
