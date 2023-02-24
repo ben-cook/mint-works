@@ -20,7 +20,7 @@ export const pinkPlans = [
   },
 
   {
-    name: "Farmer's Market",
+    name: "Fish Market",
     cost: 2,
     baseStars: 2,
     types: ["Culture"],
@@ -53,6 +53,54 @@ export const pinkPlans = [
         pre: ({ player }) => {
           if (player.label !== "Ben") return;
           player.tokens += 1;
+        },
+      },
+    },
+  },
+
+  {
+    name: "Massage Parlour",
+    cost: 2,
+    baseStars: 3,
+    types: ["Culture"],
+    description: "Provides 1 upkeep to a special player",
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          if (player.label !== "Nat") return;
+          player.tokens += 1;
+        },
+      },
+    },
+  },
+
+  {
+    name: "Eurocake Factory",
+    cost: 2,
+    baseStars: 3,
+    types: ["Culture"],
+    description: "Provides 1 upkeep to a special player",
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          if (player.label !== "Ryan") return;
+          player.tokens -= 1;
+        },
+      },
+    },
+  },
+
+  {
+    name: "Brewery",
+    cost: 2,
+    baseStars: 3,
+    types: ["Culture"],
+    description: "Provides 1 upkeep to a special player",
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          if (player.label !== "Margo") return;
+          player.tokens += 10;
         },
       },
     },
