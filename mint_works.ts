@@ -59,8 +59,9 @@ export class MintWorks {
     if (!deck) {
       const plans = createPlans();
       deck = plans.slice();
-      shuffleArray(deck);
     }
+    shuffleArray(deck);
+
     // Set up the plan deck
     this.locations = createLocations();
 
