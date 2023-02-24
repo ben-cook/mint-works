@@ -12,6 +12,7 @@ import {
 } from "https://deno.land/x/cliffy@v0.25.7/prompt/mod.ts";
 import { createPlans } from "../plans.ts";
 import { Plan } from "../plan.ts";
+import { customAssets } from "../custom/custom.ts";
 
 type TerminalGames = "Quick" | "Standard" | "Custom";
 
@@ -109,12 +110,14 @@ async function createCustomGame(): Promise<TerminalGameSettings> {
 
   const plans = createPlans();
 
-  let customDecks = [];
+  let customDecks: Array<Array<Plan>> = [];
   const deck: Array<Plan> = [];
   if (customSettings.customDecks && customSettings.customDecks.length > 0) {
     customDecks = customAssets.decks.filter((d) =>
       customSettings.customDecks?.includes(d.name)
-    );
+    ).map((d) => {
+      return d.asset;
+    });
     if (customSettings.customDecks.includes("Base Deck")) {
       const baseDeck = plans.slice();
       customDecks.push(baseDeck);
