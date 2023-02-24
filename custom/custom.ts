@@ -1,6 +1,6 @@
 import { Plan } from "../plan.ts";
 import { createPlans } from "../plans.ts";
-import { pinkPlans } from "./pink_plans.ts";
+import { thaiPlans } from "./thai_plans.ts";
 
 export interface CustomAsset {
   name: string;
@@ -14,8 +14,8 @@ export interface CustomAssets {
 
 export const customAssets: CustomAssets = {
   decks: [{
-    name: "Pink Plans",
+    name: "Thai Plans",
     description: "Custom Pack 1 by Margo and Nat",
-    asset: createPlans(pinkPlans),
+    asset: createPlans(thaiPlans),
   }],
 };

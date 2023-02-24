@@ -1,8 +1,8 @@
 import { Plan } from "../plan.ts";
 
-export const pinkPlans = [
+export const thaiPlans = [
   {
-    name: "Food Bank",
+    name: "Amm",
     cost: 3,
     baseStars: 3,
     types: ["Utility"],
@@ -31,7 +31,7 @@ export const pinkPlans = [
     cost: 2,
     baseStars: 3,
     types: ["Culture"],
-    description: "Provides 1 upkeep to a special player",
+    description: "Special",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -47,7 +47,7 @@ export const pinkPlans = [
     cost: 2,
     baseStars: 3,
     types: ["Culture"],
-    description: "Provides 1 upkeep to a special player",
+    description: "Special",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -63,7 +63,7 @@ export const pinkPlans = [
     cost: 2,
     baseStars: 3,
     types: ["Culture"],
-    description: "Provides 1 upkeep to a special player",
+    description: "Special",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -79,7 +79,7 @@ export const pinkPlans = [
     cost: 2,
     baseStars: 3,
     types: ["Culture"],
-    description: "Provides 1 upkeep to a special player",
+    description: "Special",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -91,16 +91,48 @@ export const pinkPlans = [
   },
 
   {
-    name: "Brewery",
+    name: "Craft Brewery",
     cost: 2,
     baseStars: 3,
     types: ["Culture"],
-    description: "Provides 1 upkeep to a special player",
+    description: "Special",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
           if (player.label !== "Margo") return;
           player.tokens += 10;
+        },
+      },
+    },
+  },
+
+  {
+    name: "Water Sports",
+    cost: 2,
+    baseStars: 3,
+    types: ["Culture"],
+    description: "Special",
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          if (player.label !== "Georgie") return;
+          player.tokens += 1;
+        },
+      },
+    },
+  },
+
+  {
+    name: "Beach Club",
+    cost: 2,
+    baseStars: 3,
+    types: ["Culture"],
+    description: "Special",
+    hooks: {
+      upkeep: {
+        pre: ({ player }) => {
+          if (player.label !== "Vic") return;
+          player.tokens += 1;
         },
       },
     },
