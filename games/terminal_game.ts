@@ -70,6 +70,13 @@ async function createCustomGame(): Promise<TerminalGameSettings> {
     type: Number,
     default: 3,
   }, {
+    name: "customDecks",
+    message: "Expansion Decks",
+    type: Checkbox,
+    options: ["Base Deck", "Deeds Only"].concat(customAssets.decks.map((d) => {
+      return d.name;
+    })),
+  }, {
     name: "topCard",
     message: "Card at top of deck",
     type: Input,
@@ -86,8 +93,42 @@ async function createCustomGame(): Promise<TerminalGameSettings> {
     },
   }]);
 
+  /* const customDecks = []
+  if (customSettings.customDecks && customSettings.customDecks.length > 0) {
+    for (const deck of customSettings.customDecks) {
+      const deckPlans = await prompt([{
+        name: "plans",
+        message: `Select plans for ${deck}`,
+        type: Checkbox,
+        options: [],
+      }]);
+
+      customDecks.push(deckPlans.plans);
+    }
+  } */
+
   const plans = createPlans();
-  const deck = plans.slice().filter((p) => {
+
+  let customDecks = [];
+  const deck: Array<Plan> = [];
+  if (customSettings.customDecks && customSettings.customDecks.length > 0) {
+    customDecks = customAssets.decks.filter((d) =>
+      customSettings.customDecks?.includes(d.name)
+    );
+    if (customSettings.customDecks.includes("Base Deck")) {
+      const baseDeck = plans.slice();
+      customDecks.push(baseDeck);
+    } else if (customSettings.customDecks.includes("Deeds Only")) {
+      const deedsOnly = plans.filter((p) => p.types.includes("Deed"));
+      customDecks.push(deedsOnly);
+    }
+  }
+
+  customDecks.forEach((d) => {
+    deck.push(...d);
+  });
+
+  const finalDeck = deck.slice().filter((p) => {
     return p.name.toLowerCase().trim() !== customSettings.topCard;
   });
 
@@ -95,9 +136,9 @@ async function createCustomGame(): Promise<TerminalGameSettings> {
     p.name.toLowerCase().trim() === customSettings.topCard
   )!;
 
-  deck.push(foundPlan);
+  finalDeck.push(foundPlan);
 
-  return { startingTokens: customSettings.startingTokens, deck };
+  return { startingTokens: customSettings.startingTokens, deck: finalDeck };
 }
 
 async function createTerminalPlayers(
