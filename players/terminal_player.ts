@@ -210,6 +210,11 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
         tokens += "⚪";
       }
 
+      let descriptions = "";
+      if (plan.description) {
+        descriptions = this.formatText(plan.description);
+      }
+
       let planTypes = "";
       if (plan.types && plan.types.length > 0) {
         for (const type of plan.types) {
@@ -241,7 +246,7 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
         cost: tokens ?? "",
         stars,
         additionalStars: additionalStarsText ?? "",
-        description: plan.description ?? "",
+        description: descriptions,
         type: planTypes ?? "",
       };
     });
@@ -257,6 +262,7 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
         const value = p[k as keyof typeof p];
 
         let specificPad = padAmount;
+
         if (k === "stars" || k === "additionalStars") {
           specificPad = padAmount - value.length;
           if (value && value.includes("-")) specificPad += 1;
@@ -266,16 +272,28 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
 
         if (!value) {
           card += "".padEnd(specificPad);
-        } else if (value.length <= specificPad) {
-          card += value.padEnd(specificPad);
-        } else {
+        } else if (k === "description" || value.length > specificPad) {
           let currentLine = "";
 
+          let emojiCount = 0;
+
           for (let i = 0; i < value.length; i++) {
-            if (currentLine.length + 1 > padAmount) {
-              card += currentLine.padEnd(padAmount);
-              card += "|\n|";
+            let currentEmoji = false;
+            if (value[i] === "⚪" || value[i] === "🌿" || value[i] === "⭐") {
+              emojiCount += 1;
+              currentEmoji = true;
+            }
+
+            if (currentLine.length + 1 + emojiCount > padAmount) {
+              if (currentEmoji) {
+                emojiCount = 1;
+                card += currentLine.padEnd(padAmount);
+              } else {
+                card += currentLine.padEnd(padAmount - emojiCount);
+                emojiCount = 0;
+              }
               currentLine = "";
+              card += "|\n|";
             }
 
             currentLine += value[i];
@@ -283,8 +301,10 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
 
           // Add the last line to the result array
           if (currentLine.length > 0) {
-            card += currentLine.padEnd(padAmount);
+            card += currentLine.padEnd(padAmount - emojiCount);
           }
+        } else if (value.length <= specificPad) {
+          card += value.padEnd(specificPad);
         }
         card += "|\n";
       });
@@ -334,5 +354,12 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
     textNeighbourhood += neighbourhood.plans;
 
     return textNeighbourhood;
+  }
+
+  private formatText(text: string) {
+    text = text.replaceAll(":TOKEN:", "⚪");
+    text = text.replaceAll(":CULTURE:", "🌿");
+    text = text.replaceAll(":STAR:", "⭐");
+    return text;
   }
 }
