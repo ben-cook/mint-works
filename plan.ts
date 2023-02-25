@@ -27,6 +27,7 @@ export type Hooks = Record<HookType, Hook>;
 
 export interface HookParams {
   player: PlayerWithInformation;
+  building: Building;
   locations: Array<LocationCard>;
 }
 
@@ -45,8 +46,8 @@ export type HookEffect = { _type: "tokens"; tokens: number } | {
 } | { _type: "selectPlayer"; appliedEffect: HookEffect };
 
 export interface Hook {
-  pre?: ({ player, locations }: HookParams) => void | HookEffect;
-  post?: ({ player, locations }: HookParams) => void | HookEffect;
+  pre?: ({ player, building, locations }: HookParams) => void | HookEffect;
+  post?: ({ player, building, locations }: HookParams) => void | HookEffect;
 }
 
 /** Represents a plan that has come from the Lotto - therefore, it should be hidden to other players before it has been built */

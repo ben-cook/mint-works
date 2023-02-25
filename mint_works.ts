@@ -108,6 +108,7 @@ export class MintWorks {
         if (!b.hooks?.turn?.pre) return;
         b.hooks.turn.pre({
           player,
+          building: b,
           locations: this.locations,
         });
       });
@@ -133,6 +134,7 @@ export class MintWorks {
         if (!b.hooks?.turn?.post) return;
         b.hooks.turn.post({
           player,
+          building: b,
           locations: this.locations,
         });
       });
@@ -172,6 +174,7 @@ export class MintWorks {
         if (!b.hooks?.upkeep?.pre) return;
         const result = b.hooks.upkeep.pre({
           player,
+          building: b,
           locations: this.locations,
         });
         if (result) {
@@ -201,6 +204,7 @@ export class MintWorks {
         if (!b.hooks?.upkeep?.post) continue;
         const result = b.hooks.upkeep.post({
           player,
+          building: b,
           locations: this.locations,
         });
 
@@ -324,6 +328,7 @@ export class MintWorks {
           if (!b.hooks?.build?.pre) return;
           const result = b.hooks.build.pre({
             player,
+            building: b,
             locations: this.locations,
           });
           if (result) {
@@ -344,6 +349,7 @@ export class MintWorks {
           if (!b.hooks?.supply?.pre) return;
           const result = b.hooks.supply.pre({
             player,
+            building: b,
             locations: this.locations,
           });
           if (result) {
@@ -382,6 +388,7 @@ export class MintWorks {
             if (!b.hooks?.build?.post) return;
             const result = b.hooks.build.post({
               player,
+              building: b,
               locations: this.locations,
             });
             if (result) {
@@ -441,6 +448,7 @@ export class MintWorks {
             if (!b.hooks?.supply?.post) return;
             const result = b.hooks.supply.post({
               player,
+              building: b,
               locations: this.locations,
             });
             if (result) {

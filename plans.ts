@@ -31,9 +31,9 @@ const plans = [
     description: ":STAR: per :CULTURE: building",
     hooks: {
       turn: {
-        post: ({ player }) => {
+        post: ({ player, building }) => {
           const museum = player.neighbourhood.buildings.find((b) =>
-            b.name === "Museum"
+            b.name === building.name
           );
           if (!museum) {
             throw new Error("No Museum object Found in Post-turn Hook");
@@ -57,9 +57,9 @@ const plans = [
     description: "Upkeep: Add :TOKEN: from the Mint Supply to Gallery",
     hooks: {
       upkeep: {
-        pre: ({ player }) => {
+        pre: ({ player, building }) => {
           const gallery = player.neighbourhood.buildings.find((b) =>
-            b.name === "Gallery"
+            b.name === building.name
           );
           if (!gallery) {
             throw new Error("No Gallery Found in Upkeep Hook - Blame RYAN");
@@ -98,7 +98,7 @@ const plans = [
     cost: 4,
     baseStars: 3,
     types: ["Production"],
-    description: "Upkeep: Gain :TOKEN: :TOKEN:",
+    description: "Upkeep: Gain :TOKEN:",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -132,7 +132,7 @@ const plans = [
     cost: 5,
     baseStars: 2,
     types: ["Production"],
-    description: "Upkeep: Gain :TOKEN: :TOKEN:",
+    description: "Upkeep: Gain :TOKEN::TOKEN:",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -160,7 +160,7 @@ const plans = [
     cost: 4,
     baseStars: 0,
     types: ["Production"],
-    description: "Upkeep: Gain :TOKEN: :TOKEN: :TOKEN:",
+    description: "Upkeep: Gain :TOKEN::TOKEN::TOKEN:",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -237,9 +237,9 @@ const plans = [
       "You gain one fewer :STAR: from each :CULTURE: Building in your Neighbourhood",
     hooks: {
       turn: {
-        post: ({ player }) => {
+        post: ({ player, building }) => {
           const landfill = player.neighbourhood.buildings.find((b) =>
-            b.name === "Landfill"
+            b.name === building.name
           );
           if (!landfill) {
             throw new Error("No Landfill object Found in Post-turn Hook");
@@ -260,12 +260,12 @@ const plans = [
     cost: 5,
     baseStars: 1,
     types: ["Utility"],
-    description: ":STAR: :STAR: per Plan in your Neighbourhood",
+    description: ":STAR::STAR: per Plan in your Neighbourhood",
     hooks: {
       turn: {
-        post: ({ player }) => {
+        post: ({ player, building }) => {
           const vault = player.neighbourhood.buildings.find((b) =>
-            b.name === "Vault"
+            b.name === building.name
           );
           if (!vault) {
             throw new Error("No Vault object Found in Post-turn Hook");
@@ -283,9 +283,9 @@ const plans = [
     description: ":STAR: per Building in your Neighbourhood",
     hooks: {
       turn: {
-        post: ({ player }) => {
+        post: ({ player, building }) => {
           const obelisk = player.neighbourhood.buildings.find((b) =>
-            b.name === "Obelisk"
+            b.name === building.name
           );
           if (!obelisk) {
             throw new Error("No Obelisk object Found in Post-turn Hook");
@@ -304,8 +304,8 @@ const plans = [
     description: "You are the Owner of the Wholesaler location",
     hooks: {
       upkeep: {
-        pre: ({ player, locations }) => {
-          const wholesaler = locations.find((l) => l.name === "Wholesaler");
+        pre: ({ player, building, locations }) => {
+          const wholesaler = locations.find((l) => l.name === building.name);
           if (!wholesaler) {
             throw new Error("No Wholesaler was found in upkeep phase");
           }
@@ -315,8 +315,8 @@ const plans = [
         },
       },
       build: {
-        post: ({ locations }) => {
-          const wholesaler = locations.find((l) => l.name === "Wholesaler");
+        post: ({ locations, building }) => {
+          const wholesaler = locations.find((l) => l.name === building.name);
           if (!wholesaler) {
             throw new Error(
               "NO wholesaler FOUND IN Wholesaler POST BUILD HOOK",
@@ -335,8 +335,8 @@ const plans = [
     description: "You are the Owner of the Lotto location",
     hooks: {
       upkeep: {
-        pre: ({ player, locations }) => {
-          const lotto = locations.find((l) => l.name === "Lotto");
+        pre: ({ player, building, locations }) => {
+          const lotto = locations.find((l) => l.name === building.name);
           if (!lotto) {
             throw new Error("No Lotto was found in upkeep phase");
           }
@@ -346,8 +346,8 @@ const plans = [
         },
       },
       build: {
-        post: ({ locations }) => {
-          const lotto = locations.find((l) => l.name === "Lotto");
+        post: ({ locations, building }) => {
+          const lotto = locations.find((l) => l.name === building.name);
           if (!lotto) {
             throw new Error("NO LOTTO FOUND IN LOTTO POST BUILD HOOK");
           }
