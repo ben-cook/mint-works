@@ -4,8 +4,9 @@ import { createPlans } from "../plans.ts";
 const plansToRemove = ["Vault"];
 
 export const thaiReskinPlans = [...createPlans()]
-  .filter((p) => !plansToRemove.includes(p.name)).map((basePlan) => {
-    const p = { ...basePlan };
+  .filter((p) => !plansToRemove.includes(p.name))
+  .map((originalPlan) => {
+    const p = { ...originalPlan };
     switch (p.name) {
       case "Windmill":
         p.name = "Pee Beach";
