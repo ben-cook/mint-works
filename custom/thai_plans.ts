@@ -7,7 +7,7 @@ export const thaiPlans = [
     cost: 2,
     baseStars: 2,
     types: ["Utility"],
-    description: "Upkeep: +⚪ for all",
+    description: "Upkeep: :TOKEN: for all",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -26,12 +26,12 @@ export const thaiPlans = [
     cost: 4,
     baseStars: 1,
     types: ["Production"],
-    description: "Lose ⭐ per plan, upkeep: 1.5 * current ⚪",
+    description: "Lose :STAR: per plan, upkeep: 1.5 * current :TOKEN:",
     hooks: {
       turn: {
-        post: ({ player }) => {
+        post: ({ player, building }) => {
           const pier = player.neighbourhood.buildings.find((b) =>
-            b.name === "Raja Pier"
+            b.name === building.name
           );
           if (!pier) {
             throw new Error("No Raja Pier object Found in Post-turn Hook");
@@ -52,7 +52,7 @@ export const thaiPlans = [
     cost: 3,
     baseStars: 1,
     types: ["Culture"],
-    description: "Upkeep: ⚪ per 2⭐",
+    description: "Upkeep: :TOKEN: per :STAR::STAR:⭐",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -67,26 +67,27 @@ export const thaiPlans = [
     cost: 3,
     baseStars: 3,
     types: ["Culture"],
-    description: "Special",
+    description:
+      "Upkeep for 2 rounds: Lose :TOKEN::TOKEN: & :STAR:. Becomes STATUE after.",
     hooks: {
       upkeep: {
-        pre: ({ player }) => {
+        pre: ({ player, building }) => {
           if (player.label === "Julia") player.tokens += 2;
           player.tokens -= 2;
           const thai = player.neighbourhood.buildings.find((b) =>
-            b.name === "Funky Thai"
+            b.name === building.name
           );
 
           if (!thai) {
             throw new Error("No Funky Thai object Found in Post-turn Hook");
           }
           thai.additionalStars
-            ? thai.additionalStars -= 1
-            : thai.additionalStars = -1;
+            ? thai.additionalStars -= 0
+            : thai.additionalStars = -2;
 
-          if (thai.additionalStars < -1) {
+          if (thai.additionalStars < -2) {
             player.neighbourhood.buildings = player.neighbourhood.buildings
-              .filter((building) => building.name !== "Funky Thai");
+              .filter((b) => b.name !== building.name);
             player.neighbourhood.addBuilding("Statue");
             player.tokens += 4;
             playerLogger.info(
@@ -103,7 +104,8 @@ export const thaiPlans = [
     cost: 3,
     baseStars: 3,
     types: ["Utility"],
-    description: "-⭐ per 2 building, upkeep ⚪ per 2 building",
+    description:
+      "Lose :STAR: per 2 buildings \n Upkeep:Gain :TOKEN: per 2 buildings",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -113,9 +115,9 @@ export const thaiPlans = [
         },
       },
       turn: {
-        post: ({ player }) => {
+        post: ({ player, building }) => {
           const fish = player.neighbourhood.buildings.find((b) =>
-            b.name === "Fisherman's Village Market"
+            b.name === building.name
           );
           if (!fish) {
             throw new Error(
@@ -135,11 +137,11 @@ export const thaiPlans = [
     cost: 1,
     baseStars: 0,
     types: ["Deed"],
-    description: "Upkeep: ⚪",
+    description: "Upkeep: Brown :TOKEN: if Ben",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
-          player.tokens += 1;
+          if (player.label === "Ben") player.tokens += 1;
         },
       },
     },
@@ -148,19 +150,19 @@ export const thaiPlans = [
   {
     name: "Massage Parlour",
     cost: 3,
-    baseStars: 4,
+    baseStars: 0,
     types: ["Culture"],
     description:
-      "Lose all ⚪ until end of next development phase. 4⭐ gained at end",
+      "Lose all and gain no :TOKEN: until end of next development phase. :STAR::STAR:STAR:STAR: gained at end",
     hooks: {
       turn: {
         pre: ({ player }) => {
           player.tokens = 0;
         },
-        post: ({ player }) => {
+        post: ({ player, building }) => {
           player.tokens = 0;
           const massageParlour = player.neighbourhood.buildings.find((b) =>
-            b.name === "Massage Parlour"
+            b.name === building.name
           );
           if (!massageParlour) {
             throw new Error(
@@ -169,17 +171,16 @@ export const thaiPlans = [
           }
 
           if (
-            !massageParlour.additionalStars ||
-            massageParlour.additionalStars > -4
+            !massageParlour.additionalStars
           ) {
-            massageParlour.additionalStars = -4;
+            massageParlour.additionalStars = 0;
           }
         },
       },
       upkeep: {
-        pre: ({ player }) => {
+        pre: ({ player, building }) => {
           const massageParlour = player.neighbourhood.buildings.find((b) =>
-            b.name === "Massage Parlour"
+            b.name === building.name
           );
           if (!massageParlour) {
             throw new Error(
@@ -189,16 +190,16 @@ export const thaiPlans = [
 
           if (
             massageParlour.additionalStars &&
-            massageParlour.additionalStars <= -6
+            massageParlour.additionalStars >= 3
           ) {
-            massageParlour.additionalStars = 0;
+            massageParlour.additionalStars = 4;
             massageParlour.hooks = undefined;
             if (player.label === "Nat") player.tokens += 2;
           }
 
           massageParlour.additionalStars
-            ? massageParlour.additionalStars -= 1
-            : massageParlour.additionalStars = -4;
+            ? massageParlour.additionalStars += 1
+            : massageParlour.additionalStars = 0;
         },
         post: ({ player }) => {
           player.tokens = 0;
@@ -212,7 +213,7 @@ export const thaiPlans = [
     cost: 1,
     baseStars: 2,
     types: ["Production"],
-    description: "Upkeep: -⚪",
+    description: "Upkeep: Lose :TOKEN: / Gain :TOKEN: if Ryan ",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -224,16 +225,17 @@ export const thaiPlans = [
   },
 
   {
-    name: "Eurocake Factory",
-    cost: 1,
+    name: "Craft Brewery",
+    cost: 2,
     baseStars: 2,
-    types: ["Production"],
-    description: "Upkeep: -⚪",
+    types: ["Utility"],
+    description: "Upkeep: Gain :TOKEN: if Margo or Ben",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
-          if (player.label === "Ryan") player.tokens += 2;
-          if (player.tokens > 0) player.tokens -= 1;
+          if (player.label === "Margo" || player.label === "Ben") {
+            player.tokens += 1;
+          }
         },
       },
     },
@@ -244,7 +246,7 @@ export const thaiPlans = [
     cost: 2,
     baseStars: 2,
     types: ["Utility"],
-    description: "Special",
+    description: "Upkeep: Gain :TOKEN: if Georgie",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -259,7 +261,7 @@ export const thaiPlans = [
     cost: 2,
     baseStars: 2,
     types: ["Culture"],
-    description: "Special",
+    description: "Upkeep: Gain :TOKEN: if Vic",
     hooks: {
       upkeep: {
         pre: ({ player }) => {
@@ -274,12 +276,12 @@ export const thaiPlans = [
     cost: 3,
     baseStars: 1,
     types: ["Utility"],
-    description: "Upkeep: +⭐ for each 3⚪",
+    description: "Upkeep: :STAR: for :TOKEN::TOKEN::TOKEN:",
     hooks: {
       turn: {
-        post: ({ player }) => {
+        post: ({ player, building }) => {
           const store = player.neighbourhood.buildings.find((b) =>
-            b.name === "7/11"
+            b.name === building.name
           );
           if (!store) {
             throw new Error("No 7/11 Found in Upkeep Hook - Blame RYAN");
@@ -296,12 +298,12 @@ export const thaiPlans = [
     baseStars: 0,
     types: ["Utility"],
     description:
-      "With Amm: 3⭐ & With Air Con -2⭐. Upkeep: 25% chance of Blackout (-20⭐)",
+      ":TOKEN::TOKEN:TOKEN: with Amm & Lose :TOKEN::TOKEN: With Air Con. Upkeep: 25% chance of Blackout (-20:STAR:)",
     hooks: {
       turn: {
-        post: ({ player }) => {
+        post: ({ player, building }) => {
           const unstableGrid = player.neighbourhood.buildings.find((b) =>
-            b.name === "Unstable Electrical Grid"
+            b.name === building.name
           );
           if (!unstableGrid) {
             throw new Error(
@@ -324,9 +326,9 @@ export const thaiPlans = [
         },
       },
       upkeep: {
-        pre: ({ player }) => {
+        pre: ({ player, building }) => {
           const unstableGrid = player.neighbourhood.buildings.find((b) =>
-            b.name === "Unstable Electrical Grid"
+            b.name === building.name
           );
           if (!unstableGrid) {
             throw new Error(
@@ -349,12 +351,13 @@ export const thaiPlans = [
     cost: 3,
     baseStars: 3,
     types: ["Utility"],
-    description: "With Air Con -1⭐. Upkeep: 5% chance of Blackout (-10⭐)",
+    description:
+      "Lose :STAR: with Air Con. Upkeep: 5% chance of Blackout (-10:STAR:)",
     hooks: {
       turn: {
-        post: ({ player }) => {
+        post: ({ player, building }) => {
           const grid = player.neighbourhood.buildings.find((b) =>
-            b.name === "Electrical Grid"
+            b.name === building.name
           );
           if (!grid) {
             throw new Error(
@@ -363,9 +366,7 @@ export const thaiPlans = [
           }
 
           if (
-            player.neighbourhood.buildings.some((b) =>
-              b.name === "Electrical Grid"
-            )
+            player.neighbourhood.buildings.some((b) => b.name === building.name)
           ) {
             grid.additionalStars
               ? grid.additionalStars -= 1
@@ -374,9 +375,9 @@ export const thaiPlans = [
         },
       },
       upkeep: {
-        pre: ({ player }) => {
+        pre: ({ player, building }) => {
           const grid = player.neighbourhood.buildings.find((b) =>
-            b.name === "Electrical Grid"
+            b.name === building.name
           );
           if (!grid) {
             throw new Error("No Electrical Grid object Found in Upkeep Hook");
@@ -397,7 +398,7 @@ export const thaiPlans = [
     cost: 2,
     baseStars: 2,
     types: ["Utility"],
-    description: "Upkeep: ⚪ or ⚪⚪ if Nat/Julia",
+    description: "Upkeep: :TOKEN: or :TOKEN::TOKEN: if Nat/Julia",
     hooks: {
       upkeep: {
         pre: ({ player }) => {

@@ -4,7 +4,8 @@ import { createPlans } from "../plans.ts";
 const plansToRemove = ["Vault"];
 
 export const thaiReskinPlans = [...createPlans()]
-  .filter((p) => !plansToRemove.includes(p.name)).map((p) => {
+  .filter((p) => !plansToRemove.includes(p.name)).map((basePlan) => {
+    const p = { ...basePlan };
     switch (p.name) {
       case "Windmill":
         p.name = "Pee Beach";
@@ -19,7 +20,7 @@ export const thaiReskinPlans = [...createPlans()]
         break;
 
       case "Bridge":
-        p.name = "Speedboat";
+        p.name = "Speedboat Dock";
         break;
 
       case "Statue":
@@ -39,7 +40,7 @@ export const thaiReskinPlans = [...createPlans()]
         break;
 
       case "Stripmine":
-        p.name = `"Elephant Sanctuary"`;
+        p.name = "Strip n Pool";
         break;
 
       case "Plant":
@@ -63,7 +64,7 @@ export const thaiReskinPlans = [...createPlans()]
         break;
 
       case "Obelisk":
-        p.name = "Giant Buddha";
+        p.name = "Margo's Wang";
         break;
 
       default:
