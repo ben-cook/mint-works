@@ -1,4 +1,4 @@
-import { MintWorks, MintWorksParams } from "../src/mint_works";
+import { MintWorksEngine, MintWorksParams } from "../src/mint_works";
 import { gameLogger as logger } from "../src/logger";
 
 import inquirer from "inquirer";
@@ -75,7 +75,7 @@ async function createGame(gameInterface: GameInterface) {
       break;
   }
 
-  return new MintWorks(gameParams, () => logger.info("Game Over"));
+  return new MintWorksEngine(gameParams, () => logger.info("Game Over"));
 }
 
 main();
