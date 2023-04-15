@@ -2,14 +2,37 @@
   "name": "mint-works",
   "version": "1.0.0",
   "description": "1. Install Deno 2. `deno task run`",
-  "main": "index.ts",
-  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p tsconfig.json"
+    "lint": "eslint . --ext .ts",
+    "lint:ci": "eslint . --ext .ts --max-warnings 0",
+    "format": "prettier --config .prettierrc src/**/*.ts --write",
+    "build": "run-s clean:build && tsc -p tsconfig.module.json",
+    "git": "run-s lint:ci test:ci docs",
+    "test": "node --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings scripts/pretest --usertest && jest",
+    "test:ci": " run-s clean:coverage && node --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings scripts/pretest --usertest && jest | tee ./coverage/coverage.txt",
+    "docs": "run-s clean:docs-publish clean:docs-tmp docs:readme docs:home docs:publish clean:docs-tmp",
+    "docs:publish": "typedoc src/index.ts --out docs/v1 --readme none",
+    "docs:readme": "typedoc src/index.ts --out docs/tmp/ && cp -r docs/tmp/assets docs/assets",
+    "docs:home": "node --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings scripts/docs-home",
+    "badges": "run-p badges:*",
+    "badges:coverage": "make-coverage-badge --output-path ./.github/badges/coverage.svg",
+    "badges:jest": "jest-coverage-badges --output ./.github/badges",
+    "clean": "run-p clean:*",
+    "clean:build": "rm -rf dist/*",
+    "clean:docs-publish": "rm -rf docs/v1/",
+    "clean:docs-tmp": "rm -rf docs/tmp/",
+    "clean:coverage": "rm -rf coverage/*",
+    "clean:badges": "rm -rf .github/badges/*",
+    "prepublishOnly": "run-s test",
+    "preversion": "run-s lint test"
   },
   "repository": {
     "type": "git",
@@ -23,6 +46,7 @@
   "homepage": "https://github.com/ben-cook/mint-works#readme",
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
+    "@types/jest": "^29.5.0",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
@@ -31,9 +55,15 @@
     "eslint-plugin-jsdoc": "^41.1.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-tsdoc": "^0.2.17",
+    "execa": "^7.1.1",
+    "jest": "^29.5.0",
+    "jest-junit": "^15.0.0",
     "loglevel": "^1.8.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.8.7",
+    "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
+    "typedoc": "^0.24.1",
     "typescript": "^5.0.4"
   }
 }
