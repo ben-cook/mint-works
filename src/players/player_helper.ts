@@ -2,27 +2,33 @@ import { LocationCard } from "../location";
 import { State } from "../state";
 import { Turn } from "../turn";
 
+/**
+ *
+ */
 export class PlayerHelper {
   name;
 
+  /**
+   *
+   */
   constructor(name: string) {
     this.name = name;
   }
 
-  generateTurns(
-    state: State,
-  ): Array<Turn> {
-    const validTurns: Array<Turn> = [{
-      action: { "_type": "Pass" },
-      playerName: this.name,
-    }];
+  /**
+   *
+   */
+  generateTurns(state: State): Array<Turn> {
+    const validTurns: Array<Turn> = [
+      {
+        action: { _type: "Pass" },
+        playerName: this.name,
+      },
+    ];
 
     const builder = state.locations.find((l) => l.name === "Builder");
     if (builder?.available() && this.canAffordToBuild(state, builder)) {
-      for (
-        const plan of state.players.find((p) => p.label === this.name)!
-          .neighbourhood.plans
-      ) {
+      for (const plan of state.players.find((p) => p.label === this.name)!.neighbourhood.plans) {
         validTurns.push({
           action: {
             _type: "Build",
@@ -35,40 +41,30 @@ export class PlayerHelper {
 
     const producer = state.locations.find((l) => l.name === "Producer");
     if (producer?.available() && this.canAffordBasicLocation(state, producer)) {
-      validTurns.push(
-        {
-          action: {
-            "_type": "Produce",
-          },
-          playerName: this.name,
+      validTurns.push({
+        action: {
+          _type: "Produce",
         },
-      );
+        playerName: this.name,
+      });
     }
 
     const leadership = state.locations.find((l) => l.name === "Leadership");
-    if (
-      leadership?.available() && this.canAffordBasicLocation(state, leadership)
-    ) {
-      validTurns.push(
-        {
-          action: {
-            "_type": "Leadership",
-            playerName: this.name,
-          },
+    if (leadership?.available() && this.canAffordBasicLocation(state, leadership)) {
+      validTurns.push({
+        action: {
+          _type: "Leadership",
           playerName: this.name,
         },
-      );
+        playerName: this.name,
+      });
     }
 
     const supplier = state.locations.find((l) => l.name === "Supplier");
     if (supplier?.available() && this.canAffordToSupply(state)) {
-      for (
-        const plan of state.planSupply.filter((p) =>
-          p.cost <= state.players.find(
-            (p) => p.label === this.name,
-          )!.tokens
-        )
-      ) {
+      for (const plan of state.planSupply.filter(
+        (p) => p.cost <= state.players.find((p) => p.label === this.name)!.tokens
+      )) {
         validTurns.push({
           action: {
             _type: "Supply",
@@ -81,32 +77,26 @@ export class PlayerHelper {
 
     const lotto = state.locations.find((l) => l.name === "Lotto");
     if (
-      state.numPlansInDeck >= 1 && lotto?.available() &&
+      state.numPlansInDeck >= 1 &&
+      lotto?.available() &&
       this.canAffordBasicLocation(state, lotto)
     ) {
-      validTurns.push(
-        {
-          action: {
-            "_type": "Lotto",
-          },
-          playerName: this.name,
+      validTurns.push({
+        action: {
+          _type: "Lotto",
         },
-      );
+        playerName: this.name,
+      });
     }
 
     const wholesaler = state.locations.find((l) => l.name === "Wholesaler");
-    if (
-      wholesaler?.available() &&
-      this.canAffordBasicLocation(state, wholesaler)
-    ) {
-      validTurns.push(
-        {
-          action: {
-            "_type": "Wholesale",
-          },
-          playerName: this.name,
+    if (wholesaler?.available() && this.canAffordBasicLocation(state, wholesaler)) {
+      validTurns.push({
+        action: {
+          _type: "Wholesale",
         },
-      );
+        playerName: this.name,
+      });
     }
 
     return validTurns;
@@ -135,7 +125,7 @@ export class PlayerHelper {
       costChange -= 1;
     }
 
-    return state.planSupply.some((p) => (p.cost + costChange) <= player.tokens);
+    return state.planSupply.some((p) => p.cost + costChange <= player.tokens);
   }
 
   /** Return if the player can afford to use a basic location */

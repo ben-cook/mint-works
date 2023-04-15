@@ -8,6 +8,9 @@ export class Slot {
   /** The number of tokens on this slot */
   tokens = 0;
 
+  /**
+   *
+   */
   constructor(basePrice: number) {
     this.basePrice = basePrice;
   }
@@ -50,17 +53,18 @@ export class LocationCard {
   mappedAction?: Turn["action"]["_type"];
   slots: Slot[];
 
-  constructor(
-    {
-      name,
-      type,
-      effect,
-      slotBasePrice,
-      numberOfSlots,
-      startClosed = false,
-      mappedAction,
-    }: LocationConstructor,
-  ) {
+  /**
+   *
+   */
+  constructor({
+    name,
+    type,
+    effect,
+    slotBasePrice,
+    numberOfSlots,
+    startClosed = false,
+    mappedAction,
+  }: LocationConstructor) {
     this.name = name;
     this.type = type;
     this.effect = effect;
@@ -103,10 +107,7 @@ export class LocationCard {
   /** Populate the location with slots */
   public openLocation(): void {
     gameLogger.info(`${this.name} has opened`);
-    this.slots = Array.from(
-      { length: this.numberOfSlots },
-      () => new Slot(this.slotBasePrice),
-    );
+    this.slots = Array.from({ length: this.numberOfSlots }, () => new Slot(this.slotBasePrice));
   }
 
   /** Remove slots from the location */
@@ -125,84 +126,66 @@ export class LocationCard {
   }
 }
 
-export const Builder = new LocationCard(
-  {
-    name: "Builder",
-    mappedAction: "Build",
-    type: "Core",
-    effect: "who knows?",
-    slotBasePrice: 2,
-    numberOfSlots: 2,
-  },
-);
+export const Builder = new LocationCard({
+  name: "Builder",
+  mappedAction: "Build",
+  type: "Core",
+  effect: "who knows?",
+  slotBasePrice: 2,
+  numberOfSlots: 2,
+});
 
-export const Supplier = new LocationCard(
-  {
-    name: "Supplier",
-    mappedAction: "Supply",
-    type: "Core",
-    effect: "who knows?",
-    slotBasePrice: Infinity,
-    numberOfSlots: 2,
-  },
-);
+export const Supplier = new LocationCard({
+  name: "Supplier",
+  mappedAction: "Supply",
+  type: "Core",
+  effect: "who knows?",
+  slotBasePrice: Infinity,
+  numberOfSlots: 2,
+});
 
-export const Producer = new LocationCard(
-  {
-    name: "Producer",
-    mappedAction: "Produce",
-    type: "Core",
-    effect: "who knows?",
-    slotBasePrice: 1,
-    numberOfSlots: 2,
-  },
-);
+export const Producer = new LocationCard({
+  name: "Producer",
+  mappedAction: "Produce",
+  type: "Core",
+  effect: "who knows?",
+  slotBasePrice: 1,
+  numberOfSlots: 2,
+});
 
-export const Lotto = new LocationCard(
-  {
-    name: "Lotto",
-    mappedAction: "Lotto",
-    type: "Deed",
-    effect: "who knows?",
-    slotBasePrice: 3,
-    numberOfSlots: 1,
-    startClosed: true,
-  },
-);
+export const Lotto = new LocationCard({
+  name: "Lotto",
+  mappedAction: "Lotto",
+  type: "Deed",
+  effect: "who knows?",
+  slotBasePrice: 3,
+  numberOfSlots: 1,
+  startClosed: true,
+});
 
-export const Wholesaler = new LocationCard(
-  {
-    name: "Wholesaler",
-    mappedAction: "Wholesale",
-    type: "Deed",
-    effect: "who knows?",
-    slotBasePrice: 1,
-    numberOfSlots: 1,
-    startClosed: true,
-  },
-);
+export const Wholesaler = new LocationCard({
+  name: "Wholesaler",
+  mappedAction: "Wholesale",
+  type: "Deed",
+  effect: "who knows?",
+  slotBasePrice: 1,
+  numberOfSlots: 1,
+  startClosed: true,
+});
 
-export const Leadership = new LocationCard(
-  {
-    name: "Leadership",
-    mappedAction: "Leadership",
-    type: "Deed",
-    effect: "who knows?",
-    slotBasePrice: 1,
-    numberOfSlots: 1,
-  },
-);
+export const Leadership = new LocationCard({
+  name: "Leadership",
+  mappedAction: "Leadership",
+  type: "Deed",
+  effect: "who knows?",
+  slotBasePrice: 1,
+  numberOfSlots: 1,
+});
 
-export const Locations = [
-  Builder,
-  Supplier,
-  Producer,
-  Lotto,
-  Wholesaler,
-  Leadership,
-];
+export const Locations = [Builder, Supplier, Producer, Lotto, Wholesaler, Leadership];
 
-export const createLocations = (
-  customLocations?: Array<LocationCard>,
-): Array<LocationCard> =>
+/**
+ *
+ */
+export const createLocations = (customLocations?: Array<LocationCard>): Array<LocationCard> =>
   customLocations ? [...customLocations] : [...Locations];

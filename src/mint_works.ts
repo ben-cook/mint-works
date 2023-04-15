@@ -28,6 +28,9 @@ export interface MintWorksParams {
   deck?: Array<Plan>;
 }
 
+/**
+ *
+ */
 export class MintWorksEngine {
   roundNumber = 1;
   locations: Array<LocationCard>;
@@ -37,6 +40,9 @@ export class MintWorksEngine {
   startingPlayerToken: string;
   endHook: () => void;
 
+  /**
+   *
+   */
   constructor({ players, deck }: MintWorksParams, endHook: () => void) {
     if (!players || players.length < 1)
       throw new Error("Must provide players to MintWorks constructor");
@@ -66,10 +72,14 @@ export class MintWorksEngine {
     }
 
     this.startingPlayerToken = this.players[0].label;
-    
   }
 
+  /**
+   *
+   */
   public async play() {
+    // TODO: For the love of humanity, refactor this function so it isn't an infinite loop
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       logger.info(`Starting round ${this.roundNumber}`);
       await this.playRound();
@@ -77,6 +87,9 @@ export class MintWorksEngine {
     }
   }
 
+  /**
+   *
+   */
   public async EndGame() {
     return this.endHook();
   }
@@ -211,8 +224,10 @@ export class MintWorksEngine {
           switch (result._type) {
             case "selectPlayer":
               {
-                const selectedPlayerName = await player.player
-                  .selectPlayerForEffect(result.appliedEffect, this.players);
+                const selectedPlayerName = await player.player.selectPlayerForEffect(
+                  result.appliedEffect,
+                  this.players
+                );
                 const selectedPlayer = this.players.find((p) => {
                   return p.label === selectedPlayerName;
                 });
@@ -263,9 +278,7 @@ export class MintWorksEngine {
       logger.info(`      NAME | STARS | HOOD | TOKENS`);
       scoreboard.scores.forEach((score) => {
         const name = score.player.label.padStart(10);
-        logger.info(
-          `${name} :   ${score.stars}       ${score.plans}        ${score.tokens}`,
-        );
+        logger.info(`${name} :   ${score.stars}       ${score.plans}        ${score.tokens}`);
       });
       logger.info(`The winner is ${scoreboard.winner}`);
     } else {
@@ -275,34 +288,40 @@ export class MintWorksEngine {
     this.EndGame();
   }
 
+  /**
+   *
+   */
   public generateScoreboard() {
-    return this.players.map((player) => {
-      return {
-        player,
-        stars: player.neighbourhood.stars(),
-        plans: player.neighbourhood.size(),
-        tokens: player.tokens,
-      };
-    }).sort((a, b) => {
-      if (a.stars > b.stars) return -1;
-      else if (a.stars < b.stars) return 1;
-      else {
-        if (a.plans > b.plans) return -1;
-        else if (a.plans < b.plans) return 1;
+    return this.players
+      .map((player) => {
+        return {
+          player,
+          stars: player.neighbourhood.stars(),
+          plans: player.neighbourhood.size(),
+          tokens: player.tokens,
+        };
+      })
+      .sort((a, b) => {
+        if (a.stars > b.stars) return -1;
+        else if (a.stars < b.stars) return 1;
         else {
-          return b.tokens - a.tokens;
+          if (a.plans > b.plans) return -1;
+          else if (a.plans < b.plans) return 1;
+          else {
+            return b.tokens - a.tokens;
+          }
         }
-      }
-    });
+      });
   }
 
+  /**
+   *
+   */
   private printScoreboard() {
     logger.info(`      NAME | STARS | HOOD | TOKENS`);
     this.generateScoreboard().forEach((score) => {
       const name = score.player.label.padStart(10);
-      logger.info(
-        `${name} :   ${score.stars}       ${score.plans}        ${score.tokens}`,
-      );
+      logger.info(`${name} :   ${score.stars}       ${score.plans}        ${score.tokens}`);
     });
   }
 
@@ -311,13 +330,9 @@ export class MintWorksEngine {
     const player = this.players.find((p) => p.label === turn.playerName)!;
     const playerTokens = player.tokens;
 
-    const mappedLocation = this.locations.find((l) =>
-      l.mappedAction === turn.action._type
-    )!;
+    const mappedLocation = this.locations.find((l) => l.mappedAction === turn.action._type)!;
 
-    let actionCost = "plan" in turn.action
-      ? turn.action.plan.cost
-      : mappedLocation.minSlotPrice();
+    let actionCost = "plan" in turn.action ? turn.action.plan.cost : mappedLocation.minSlotPrice();
 
     // Find the action type and execute appropriate pre-hooks like price calculations
     switch (turn.action._type) {
@@ -370,7 +385,7 @@ export class MintWorksEngine {
 
     if (playerTokens < actionCost) {
       throw new Error(
-        `Player ${turn.playerName} does not have sufficient tokens to ${turn.action._type}. Tokens: ${playerTokens}. Required tokens: ${actionCost}`,
+        `Player ${turn.playerName} does not have sufficient tokens to ${turn.action._type}. Tokens: ${playerTokens}. Required tokens: ${actionCost}`
       );
     }
 
@@ -440,9 +455,7 @@ export class MintWorksEngine {
       case "Supply":
         {
           const plan = turn.action.plan;
-          player.neighbourhood.plans.push(
-            this.planSupply.take(plan) as HandPlan,
-          );
+          player.neighbourhood.plans.push(this.planSupply.take(plan) as HandPlan);
           player.neighbourhood.buildings.forEach((b) => {
             if (!b.hooks?.supply?.post) return;
             const result = b.hooks.supply.post({
@@ -473,15 +486,16 @@ export class MintWorksEngine {
     }
   }
 
+  /**
+   *
+   */
   private getPlayerState(playerMakingTurn: PlayerWithInformation): State {
     const players = this.players.map((anyPlayer) => {
       const isPlayerMakingTurn = playerMakingTurn.label === anyPlayer.label;
       return {
         neighbourhood: isPlayerMakingTurn
           ? playerMakingTurn.neighbourhood
-          : new PublicNeighbourhood(
-            anyPlayer.neighbourhood.getPlansAndBuildings(),
-          ),
+          : new PublicNeighbourhood(anyPlayer.neighbourhood.getPlansAndBuildings()),
         tokens: anyPlayer.tokens,
         label: anyPlayer.label,
       };
@@ -495,6 +509,9 @@ export class MintWorksEngine {
     };
   }
 
+  /**
+   *
+   */
   private linkPlansAndLocations() {
     gameLogger.info("Linking locations to plans");
     for (const location of this.locations) {

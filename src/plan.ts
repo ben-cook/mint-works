@@ -31,19 +31,25 @@ export interface HookParams {
   locations: Array<LocationCard>;
 }
 
-export type HookEffect = { _type: "tokens"; tokens: number } | {
-  _type: "tokensAll";
-  tokens: number;
-} | {
-  _type: "starsAll";
-  stars: number;
-} | {
-  _type: "tokensAllOther";
-  tokens: number;
-  playerName: string;
-} | {
-  _type: "build";
-} | { _type: "selectPlayer"; appliedEffect: HookEffect };
+export type HookEffect =
+  | { _type: "tokens"; tokens: number }
+  | {
+      _type: "tokensAll";
+      tokens: number;
+    }
+  | {
+      _type: "starsAll";
+      stars: number;
+    }
+  | {
+      _type: "tokensAllOther";
+      tokens: number;
+      playerName: string;
+    }
+  | {
+      _type: "build";
+    }
+  | { _type: "selectPlayer"; appliedEffect: HookEffect };
 
 export interface Hook {
   pre?: ({ player, building, locations }: HookParams) => void | HookEffect;
@@ -55,10 +61,16 @@ export interface HandPlan extends Plan {
   hidden: boolean;
 }
 
+/**
+ *
+ */
 export const isHandPlan = (plan: Plan): plan is HandPlan => {
   return "hidden" in plan;
 };
 
+/**
+ *
+ */
 export const isBuilding = (plan: Plan): plan is Building => {
   return "internalState" in plan;
 };

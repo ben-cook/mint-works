@@ -9,26 +9,29 @@ import { customAssets } from "../src/custom/custom";
 
 type TerminalGames = "Quick" | "Standard" | "Custom";
 
-const terminalGames = [
-  "Quick",
-  "Standard",
-  "Custom",
-] satisfies Array<TerminalGames>;
+const terminalGames = ["Quick", "Standard", "Custom"] satisfies Array<TerminalGames>;
 
 interface TerminalGameSettings {
   startingTokens?: number;
   deck?: Array<Plan>;
 }
 
-export async function createTerminalGame(
-  { numberOfPlayers }: { numberOfPlayers: number },
-): Promise<MintWorksParams> {
-  const gameChoice = await inquirer.prompt([{
-    name: "choice",
-    message: "Select a Game Type",
-    type: "list",
-    choices: terminalGames,
-  }]);
+/**
+ *
+ */
+export async function createTerminalGame({
+  numberOfPlayers,
+}: {
+  numberOfPlayers: number;
+}): Promise<MintWorksParams> {
+  const gameChoice = await inquirer.prompt([
+    {
+      name: "choice",
+      message: "Select a Game Type",
+      type: "list",
+      choices: terminalGames,
+    },
+  ]);
 
   if (!gameChoice.choice) throw new Error("No game type selected");
 
@@ -57,35 +60,43 @@ export async function createTerminalGame(
   return gameParams;
 }
 
+/**
+ *
+ */
 async function createCustomGame(): Promise<TerminalGameSettings> {
-  const customSettings = await inquirer.prompt([{
-    name: "startingTokens",
-    message: "Starting Tokens",
-    type: "number",
-    default: 3,
-  }, {
-    name: "customDecks",
-    message: "Expansion Decks",
-    type: "checkbox",
-    options: ["Base Deck", "Deeds Only"].concat(customAssets.decks.map((d) => {
-      return d.name;
-    })),
-  }, {
-    name: "topCard",
-    message: "Card at top of deck",
-    type: "input",
-    validate: (value: string) => {
-      const plans = createPlans();
-      if (
-        plans.find((p) =>
-          p.name.toLowerCase().trim() === value.toLowerCase().trim()
-        )
-      ) {
-        return true;
-      }
-      return `${value} NOT FOUND!`;
+  const customSettings = await inquirer.prompt([
+    {
+      name: "startingTokens",
+      message: "Starting Tokens",
+      type: "number",
+      default: 3,
     },
-  }]);
+    {
+      name: "customDecks",
+      message: "Expansion Decks",
+      type: "checkbox",
+      options: ["Base Deck", "Deeds Only"].concat(
+        customAssets.decks.map((d) => {
+          return d.name;
+        })
+      ),
+    },
+    {
+      name: "topCard",
+      message: "Card at top of deck",
+      type: "input",
+      /**
+       *
+       */
+      validate: (value: string) => {
+        const plans = createPlans();
+        if (plans.find((p) => p.name.toLowerCase().trim() === value.toLowerCase().trim())) {
+          return true;
+        }
+        return `${value} NOT FOUND!`;
+      },
+    },
+  ]);
 
   /* const customDecks = []
   if (customSettings.customDecks && customSettings.customDecks.length > 0) {
@@ -106,11 +117,11 @@ async function createCustomGame(): Promise<TerminalGameSettings> {
   let customDecks: Array<Array<Plan>> = [];
   const deck: Array<Plan> = [];
   if (customSettings.customDecks && customSettings.customDecks.length > 0) {
-    customDecks = customAssets.decks.filter((d) =>
-      customSettings.customDecks?.includes(d.name)
-    ).map((d) => {
-      return d.asset;
-    });
+    customDecks = customAssets.decks
+      .filter((d) => customSettings.customDecks?.includes(d.name))
+      .map((d) => {
+        return d.asset;
+      });
     if (customSettings.customDecks.includes("Base Deck")) {
       const baseDeck = plans.slice();
       customDecks.push(baseDeck);
@@ -128,44 +139,56 @@ async function createCustomGame(): Promise<TerminalGameSettings> {
     return p.name.toLowerCase().trim() !== customSettings.topCard;
   });
 
-  const foundPlan = plans.find((p) =>
-    p.name.toLowerCase().trim() === customSettings.topCard
-  )!;
+  const foundPlan = plans.find((p) => p.name.toLowerCase().trim() === customSettings.topCard)!;
 
   finalDeck.push(foundPlan);
 
   return { startingTokens: customSettings.startingTokens, deck: finalDeck };
 }
 
-async function createTerminalPlayers(
-  { gameType, numberOfPlayers, startingTokens }: {
-    gameType: TerminalGames;
-    numberOfPlayers: number;
-    startingTokens?: number;
-  },
-): Promise<Array<PlayerWithInformation>> {
+/**
+ *
+ */
+async function createTerminalPlayers({
+  gameType,
+  numberOfPlayers,
+  startingTokens,
+}: {
+  gameType: TerminalGames;
+  numberOfPlayers: number;
+  startingTokens?: number;
+}): Promise<Array<PlayerWithInformation>> {
   switch (gameType) {
     case "Standard":
     case "Custom": {
       const players = [];
       for (let i = 0; i < numberOfPlayers; i++) {
-        const player = await inquirer.prompt([{
-          name: "name",
-          message: "Player Name",
-          type: "input",
-          validate: (value: string) => {
-            if (!value || value.length < 1) return false;
-            return true;
+        const player = await inquirer.prompt([
+          {
+            name: "name",
+            message: "Player Name",
+            type: "input",
+            /**
+             *
+             */
+            validate: (value: string) => {
+              if (!value || value.length < 1) return false;
+              return true;
+            },
           },
-        }, {
-          name: "age",
-          message: "Age",
-          type: "input",
-          validate: (value: string) => {
-            if (parseInt(value) < 0) return false;
-            return true;
+          {
+            name: "age",
+            message: "Age",
+            type: "input",
+            /**
+             *
+             */
+            validate: (value: string) => {
+              if (parseInt(value) < 0) return false;
+              return true;
+            },
           },
-        }]);
+        ]);
 
         if (!player.name || !player.age) {
           throw new Error("No player name or age selected");

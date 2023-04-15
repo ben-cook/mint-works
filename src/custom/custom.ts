@@ -14,13 +14,16 @@ export interface CustomAssets {
 }
 
 export const customAssets: CustomAssets = {
-  decks: [{
-    name: "Thai Plans",
-    description: "Custom Pack 1 by Margo and Nat",
-    asset: createPlans(thaiPlans),
-  }, {
-    name: "Thai Reskin Plans",
-    description: "Reskin of default from Thai trip",
-    asset: createPlans(thaiReskinPlans),
-  }],
+  decks: [
+    {
+      name: "Thai Plans",
+      description: "Custom Pack 1 by Margo and Nat",
+      asset: createPlans(thaiPlans),
+    },
+    {
+      name: "Thai Reskin Plans",
+      description: "Reskin of default from Thai trip",
+      asset: createPlans(thaiReskinPlans),
+    },
+  ],
 };

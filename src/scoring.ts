@@ -13,9 +13,7 @@ export interface Score {
 }
 
 /** Finds the winner from a list of players */
-export const findWinner = (
-  players: Array<PlayerWithInformation>,
-): Scoreboard => {
+export const findWinner = (players: Array<PlayerWithInformation>): Scoreboard => {
   const scores: Array<Score> = players.map((p) => ({
     player: p,
     stars: p.neighbourhood.stars(),
@@ -36,9 +34,9 @@ export const findWinner = (
   });
 
   // If there is a tie
-  const scoreWinners = scores.filter((s) =>
-    s.stars === scores[0].stars && s.plans === scores[0].plans &&
-    s.tokens === scores[0].tokens
+  const scoreWinners = scores.filter(
+    (s) =>
+      s.stars === scores[0].stars && s.plans === scores[0].plans && s.tokens === scores[0].tokens
   );
 
   if (scoreWinners.length === 1) {
@@ -55,9 +53,7 @@ export const findWinner = (
   });
 
   const tiebreakerAgeWinners = tiebreakerAge.filter(
-    (p) =>
-      Math.abs(p.player.age - 42) ===
-        Math.abs(tiebreakerAge[0].player.age - 42),
+    (p) => Math.abs(p.player.age - 42) === Math.abs(tiebreakerAge[0].player.age - 42)
   );
 
   /** If only 1 player has the closest age they win */
@@ -69,9 +65,8 @@ export const findWinner = (
   }
 
   /** Tiebreaker 4 (Random) */
-  const randomWinner = tiebreakerAgeWinners[
-    Math.floor(Math.random() * tiebreakerAgeWinners.length)
-  ];
+  const randomWinner =
+    tiebreakerAgeWinners[Math.floor(Math.random() * tiebreakerAgeWinners.length)];
   return {
     winner: randomWinner.player.label,
     scores: scores,

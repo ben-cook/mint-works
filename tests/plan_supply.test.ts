@@ -12,14 +12,11 @@ Deno.test("PlanSupply initialisation", () => {
   // Plan Supply has correct number of plans
   assertEquals(planSupply.plans.length, PlanSupply.planSupplyCapacity);
   // Deck has correct number of plans
-  assertEquals(
-    planSupply.deck.length,
-    plansOriginal.length - PlanSupply.planSupplyCapacity,
-  );
+  assertEquals(planSupply.deck.length, plansOriginal.length - PlanSupply.planSupplyCapacity);
   // Plan Supply initialises with the plans from the back of the deck
   assertArrayIncludes<Plan>(
     planSupply.plans,
-    plansOriginal.slice(plansOriginal.length - PlanSupply.planSupplyCapacity),
+    plansOriginal.slice(plansOriginal.length - PlanSupply.planSupplyCapacity)
   );
 });
 

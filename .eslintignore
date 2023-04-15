@@ -1,0 +1,8 @@
+.github
+.vscode
+build
+coverage
+dist
+docs
+node_modules
+logs

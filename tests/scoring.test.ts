@@ -36,22 +36,17 @@ Deno.test("Scoring victory", async (scoreTest) => {
     },
   ];
   await scoreTest.step("Primary - Most Stars", () => {
-    mintWorks.players.find((p) => p.label === playerOneName)!.neighbourhood
-      .addBuilding("Windmill");
-    mintWorks.players.find((p) => p.label === playerTwoName)!.neighbourhood
-      .addBuilding("Statue");
+    mintWorks.players.find((p) => p.label === playerOneName)!.neighbourhood.addBuilding("Windmill");
+    mintWorks.players.find((p) => p.label === playerTwoName)!.neighbourhood.addBuilding("Statue");
     assertEquals(findWinner(mintWorks.players).winner, playerTwoName);
   });
   await scoreTest.step("Tiebreaker 1 - Largest Neighbourhood", () => {
-    mintWorks.players.find((p) => p.label === playerThreeName)!.neighbourhood
-      .addBuilding("Statue");
-    mintWorks.players.find((p) => p.label === playerThreeName)!.neighbourhood
-      .addPlan("Gardens");
+    mintWorks.players.find((p) => p.label === playerThreeName)!.neighbourhood.addBuilding("Statue");
+    mintWorks.players.find((p) => p.label === playerThreeName)!.neighbourhood.addPlan("Gardens");
     assertEquals(findWinner(mintWorks.players).winner, playerThreeName);
   });
   await scoreTest.step("Tiebreaker 2 - Most Tokens", () => {
-    mintWorks.players.find((p) => p.label === playerTwoName)!.neighbourhood
-      .addPlan("Crane");
+    mintWorks.players.find((p) => p.label === playerTwoName)!.neighbourhood.addPlan("Crane");
     mintWorks.players.find((p) => p.label === playerTwoName)!.tokens += 5;
     assertEquals(findWinner(mintWorks.players).winner, playerTwoName);
   });

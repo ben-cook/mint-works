@@ -19,23 +19,31 @@ interface NeighbourhoodView {
   stars: number;
 }
 
+/**
+ *
+ */
 export class TerminalPlayer extends PlayerHelper implements IPlayer {
+  /**
+   *
+   */
   constructor(name: string) {
     super(name);
   }
 
+  /**
+   *
+   */
   async selectPlayerForEffect(
     appliedEffect: HookEffect,
-    players: Array<PlayerWithInformation>,
+    players: Array<PlayerWithInformation>
   ): Promise<string> {
     let textAction = "";
     switch (appliedEffect._type) {
       case "tokens":
         {
           const direction = appliedEffect.tokens > 0 ? "add" : "remove";
-          const stringTokens = appliedEffect.tokens > 0
-            ? appliedEffect.tokens
-            : -appliedEffect.tokens;
+          const stringTokens =
+            appliedEffect.tokens > 0 ? appliedEffect.tokens : -appliedEffect.tokens;
           textAction = `to ${direction}${stringTokens} tokens to.`;
         }
         break;
@@ -44,18 +52,25 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
         break;
     }
 
-    const playerNames = players.map((p) => {
-      return p.label;
-    }).filter((name) => name !== this.name);
-    const selectionPrompt = await inquirer.prompt([{
-      name: "selectedPlayer",
-      message: "Select a Player " + textAction,
-      type: "list",
-      choices: playerNames,
-    }]);
+    const playerNames = players
+      .map((p) => {
+        return p.label;
+      })
+      .filter((name) => name !== this.name);
+    const selectionPrompt = await inquirer.prompt([
+      {
+        name: "selectedPlayer",
+        message: "Select a Player " + textAction,
+        type: "list",
+        choices: playerNames,
+      },
+    ]);
     return selectionPrompt.selectedPlayer ?? playerNames[0];
   }
 
+  /**
+   *
+   */
   async takeTurn(state: State): Promise<Turn> {
     const turns = this.generateTurns(state);
 
@@ -84,9 +99,7 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
     for (const location of locationsView) {
       locationsText += `|`;
       if (location.slots) {
-        locationsText += location.slots.padEnd(
-          locationPad - location.slots.length,
-        );
+        locationsText += location.slots.padEnd(locationPad - location.slots.length);
       } else {
         locationsText += "".padEnd(locationPad);
       }
@@ -117,8 +130,7 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
 
     const textSupply = this.formatPlanCards(state.planSupply);
 
-    const supplyText = "---------------- PLAN SUPPLY ----------------\n" +
-      textSupply;
+    const supplyText = "---------------- PLAN SUPPLY ----------------\n" + textSupply;
 
     const currentPlayer = state.players.find((p) => p.label === this.name)!;
 
@@ -130,7 +142,9 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
     playerLogger.info(supplyText);
     playerLogger.info(locationsText);
     playerLogger.info(
-      `${currentPlayer.label}'s Turn (${currentPlayer.neighbourhood.stars()} stars) (${currentPlayer.tokens} tokens) ${currentPlayerTokens}`,
+      `${currentPlayer.label}'s Turn (${currentPlayer.neighbourhood.stars()} stars) (${
+        currentPlayer.tokens
+      } tokens) ${currentPlayerTokens}`
     );
 
     const userTurns = turns.map((turn) => {
@@ -151,12 +165,14 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
       return text;
     });
 
-    const choice = await inquirer.prompt([{
-      name: "turn",
-      message: "Select a Turn Option",
-      type: "list",
-      choices: userTurns,
-    }]);
+    const choice = await inquirer.prompt([
+      {
+        name: "turn",
+        message: "Select a Turn Option",
+        type: "list",
+        choices: userTurns,
+      },
+    ]);
 
     if (!choice.turn) throw new Error("No turn selected");
 
@@ -170,6 +186,9 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
     return new Promise((resolve, _reject) => resolve(turn));
   }
 
+  /**
+   *
+   */
   private formatPlanCards(plans: Array<Plan>): string {
     const padAmount = 20;
 
@@ -181,9 +200,8 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
 
       let additionalStarsText = "";
 
-      const additionalStars = "additionalStars" in plan
-        ? plan.additionalStars as Building["additionalStars"]
-        : 0;
+      const additionalStars =
+        "additionalStars" in plan ? (plan.additionalStars as Building["additionalStars"]) : 0;
 
       if (additionalStars) {
         if (additionalStars > 0) {
@@ -332,9 +350,11 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
     return horizontalCards.trimEnd();
   }
 
+  /**
+   *
+   */
   private formatNeighbourhood(neighbourhood: NeighbourhoodView): string {
-    let textNeighbourhood =
-      `---------- ${neighbourhood.name}'s Neighbourhood (${neighbourhood.tokens.number} tokens) (${neighbourhood.stars} stars) ----------\n`;
+    let textNeighbourhood = `---------- ${neighbourhood.name}'s Neighbourhood (${neighbourhood.tokens.number} tokens) (${neighbourhood.stars} stars) ----------\n`;
 
     textNeighbourhood += neighbourhood.name + " ";
     textNeighbourhood += neighbourhood.tokens.icons;
@@ -349,6 +369,9 @@ export class TerminalPlayer extends PlayerHelper implements IPlayer {
     return textNeighbourhood;
   }
 
+  /**
+   *
+   */
   private formatText(text: string) {
     text = text.replaceAll(":TOKEN:", "⚪");
     text = text.replaceAll(":CULTURE:", "🌿");

@@ -15,9 +15,7 @@ export class PlanSupply {
    */
   constructor(deck: Deck) {
     this.deck = deck;
-    gameLogger.info(
-      `Creating a new plan supply with ${deck.length} plans in the deck`,
-    );
+    gameLogger.info(`Creating a new plan supply with ${deck.length} plans in the deck`);
     gameLogger.info(deck);
     this.refill();
   }
@@ -47,12 +45,18 @@ export class PlanSupply {
     return true;
   }
 
+  /**
+   *
+   */
   public lottoDeckDraw(): Plan | undefined {
     const plan = this.deck.pop();
     const hiddenPlan = plan ? { ...plan, hidden: true } : undefined;
     return hiddenPlan;
   }
 
+  /**
+   *
+   */
   public get plans() {
     return this.planSupply;
   }

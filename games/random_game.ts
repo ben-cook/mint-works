@@ -2,9 +2,14 @@ import { MintWorksParams, PlayerWithInformation } from "../src/mint_works";
 import { Neighbourhood } from "../src/neighbourhood";
 import { RandomPlayer } from "../src/players/random_player";
 
-export function createRandomGame(
-  { numberOfPlayers }: { numberOfPlayers: number },
-): MintWorksParams {
+/**
+ *
+ */
+export function createRandomGame({
+  numberOfPlayers,
+}: {
+  numberOfPlayers: number;
+}): MintWorksParams {
   const players = createRandomPlayers({
     numberOfPlayers,
   });
@@ -14,9 +19,14 @@ export function createRandomGame(
   return gameParams;
 }
 
-function createRandomPlayers(
-  { numberOfPlayers }: { numberOfPlayers: number },
-): Array<PlayerWithInformation> {
+/**
+ *
+ */
+function createRandomPlayers({
+  numberOfPlayers,
+}: {
+  numberOfPlayers: number;
+}): Array<PlayerWithInformation> {
   const players: Array<PlayerWithInformation> = [];
   for (let i = 0; i < numberOfPlayers; i++) {
     players.push({

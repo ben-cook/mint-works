@@ -6,11 +6,20 @@ import { PlayerHelper } from "./player_helper";
 import { PlayerWithInformation } from "../mint_works";
 import { HookEffect } from "../plan";
 
+/**
+ *
+ */
 export class RandomPlayer extends PlayerHelper implements IPlayer {
+  /**
+   *
+   */
   constructor(name: string) {
     super(name);
   }
 
+  /**
+   *
+   */
   takeTurn(state: State): Promise<Turn> {
     const turns = this.generateTurns(state);
     logger.info(`[${this.name}] available turns: ${JSON.stringify(turns)}`);
@@ -22,16 +31,19 @@ export class RandomPlayer extends PlayerHelper implements IPlayer {
     return new Promise((resolve, _reject) => resolve(turn));
   }
 
+  /**
+   *
+   */
   async selectPlayerForEffect(
     appliedEffect: HookEffect,
-    players: Array<PlayerWithInformation>,
+    players: Array<PlayerWithInformation>
   ): Promise<string> {
-    const playerNames = players.map((p) => {
-      return p.label;
-    }).filter((name) => name !== this.name);
-    const selectedPlayer = await playerNames.at(
-      Math.floor(Math.random() * playerNames.length),
-    )!;
+    const playerNames = players
+      .map((p) => {
+        return p.label;
+      })
+      .filter((name) => name !== this.name);
+    const selectedPlayer = await playerNames.at(Math.floor(Math.random() * playerNames.length))!;
     return selectedPlayer;
   }
 }

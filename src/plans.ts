@@ -1,6 +1,6 @@
 import { Plan } from "./plan";
 
-export type PlanName = typeof plans[number]["name"];
+export type PlanName = (typeof plans)[number]["name"];
 
 const plans = [
   // Green Cards
@@ -30,19 +30,24 @@ const plans = [
     description: ":STAR: per :CULTURE: building",
     hooks: {
       turn: {
+        /**
+         *
+         */
         post: ({ player, building }) => {
-          const museum = player.neighbourhood.buildings.find((b) =>
-            b.name === building.name
-          );
+          const museum = player.neighbourhood.buildings.find((b) => b.name === building.name);
           if (!museum) {
             throw new Error("No Museum object Found in Post-turn Hook");
           }
           const cultureBuildings = player.neighbourhood.buildings.filter((b) =>
             b.types.includes("Culture")
           );
-          const cultureMap = cultureBuildings.map((b) => {
-            return b.types.join(",");
-          }).join(",").split(",").filter((t) => t !== "");
+          const cultureMap = cultureBuildings
+            .map((b) => {
+              return b.types.join(",");
+            })
+            .join(",")
+            .split(",")
+            .filter((t) => t !== "");
           museum.additionalStars = cultureMap.length;
         },
       },
@@ -56,16 +61,15 @@ const plans = [
     description: "Upkeep: Add :TOKEN: from the Mint Supply to Gallery",
     hooks: {
       upkeep: {
+        /**
+         *
+         */
         pre: ({ player, building }) => {
-          const gallery = player.neighbourhood.buildings.find((b) =>
-            b.name === building.name
-          );
+          const gallery = player.neighbourhood.buildings.find((b) => b.name === building.name);
           if (!gallery) {
             throw new Error("No Gallery Found in Upkeep Hook - Blame RYAN");
           }
-          gallery.additionalStars
-            ? gallery.additionalStars += 1
-            : gallery.additionalStars = 1;
+          gallery.additionalStars ? (gallery.additionalStars += 1) : (gallery.additionalStars = 1);
         },
       },
     },
@@ -86,6 +90,9 @@ const plans = [
     description: "Upkeep: Gain :TOKEN:",
     hooks: {
       upkeep: {
+        /**
+         *
+         */
         pre: ({ player }) => {
           player.tokens += 1;
         },
@@ -100,6 +107,9 @@ const plans = [
     description: "Upkeep: Gain :TOKEN:",
     hooks: {
       upkeep: {
+        /**
+         *
+         */
         pre: ({ player }) => {
           player.tokens += 1;
         },
@@ -114,9 +124,15 @@ const plans = [
     description: "Upkeep: Gain :TOKEN: and choose a player to gain :TOKEN:",
     hooks: {
       upkeep: {
+        /**
+         *
+         */
         pre: ({ player }) => {
           player.tokens += 1;
         },
+        /**
+         *
+         */
         post: () => {
           return {
             _type: "selectPlayer",
@@ -134,6 +150,9 @@ const plans = [
     description: "Upkeep: Gain :TOKEN::TOKEN:",
     hooks: {
       upkeep: {
+        /**
+         *
+         */
         pre: ({ player }) => {
           player.tokens += 2;
         },
@@ -148,6 +167,9 @@ const plans = [
     description: "Upkeep: Gain :TOKEN:",
     hooks: {
       upkeep: {
+        /**
+         *
+         */
         pre: ({ player }) => {
           player.tokens += 1;
         },
@@ -162,6 +184,9 @@ const plans = [
     description: "Upkeep: Gain :TOKEN::TOKEN::TOKEN:",
     hooks: {
       upkeep: {
+        /**
+         *
+         */
         pre: ({ player }) => {
           player.tokens += 3;
         },
@@ -176,6 +201,9 @@ const plans = [
     description: "Upkeep: Gain :TOKEN: for each Building in your Neighbourhood",
     hooks: {
       upkeep: {
+        /**
+         *
+         */
         pre: ({ player }) => {
           player.tokens += player.neighbourhood.buildings.length;
         },
@@ -191,6 +219,9 @@ const plans = [
     description: "You pay :TOKEN: less at the Supplier (Minimum One)",
     hooks: {
       supply: {
+        /**
+         *
+         */
         pre: () => {
           return { _type: "tokens", tokens: -1 };
         },
@@ -206,6 +237,9 @@ const plans = [
     description: "You pay :TOKEN: less at the Builder",
     hooks: {
       build: {
+        /**
+         *
+         */
         pre: () => {
           return { _type: "tokens", tokens: -1 };
         },
@@ -221,6 +255,9 @@ const plans = [
     description: "Automatically build Plans you gain from the Supplier",
     hooks: {
       supply: {
+        /**
+         *
+         */
         post: () => {
           return { _type: "build" };
         },
@@ -232,23 +269,27 @@ const plans = [
     cost: 3,
     baseStars: 3,
     types: ["Utility"],
-    description:
-      "You gain one fewer :STAR: from each :CULTURE: Building in your Neighbourhood",
+    description: "You gain one fewer :STAR: from each :CULTURE: Building in your Neighbourhood",
     hooks: {
       turn: {
+        /**
+         *
+         */
         post: ({ player, building }) => {
-          const landfill = player.neighbourhood.buildings.find((b) =>
-            b.name === building.name
-          );
+          const landfill = player.neighbourhood.buildings.find((b) => b.name === building.name);
           if (!landfill) {
             throw new Error("No Landfill object Found in Post-turn Hook");
           }
           const cultureBuildings = player.neighbourhood.buildings.filter((b) =>
             b.types.includes("Culture")
           );
-          const cultureMap = cultureBuildings.map((b) => {
-            return b.types.join(",");
-          }).join(",").split(",").filter((t) => t !== "");
+          const cultureMap = cultureBuildings
+            .map((b) => {
+              return b.types.join(",");
+            })
+            .join(",")
+            .split(",")
+            .filter((t) => t !== "");
           landfill.additionalStars = -cultureMap.length;
         },
       },
@@ -262,10 +303,11 @@ const plans = [
     description: ":STAR::STAR: per Plan in your Neighbourhood",
     hooks: {
       turn: {
+        /**
+         *
+         */
         post: ({ player, building }) => {
-          const vault = player.neighbourhood.buildings.find((b) =>
-            b.name === building.name
-          );
+          const vault = player.neighbourhood.buildings.find((b) => b.name === building.name);
           if (!vault) {
             throw new Error("No Vault object Found in Post-turn Hook");
           }
@@ -282,10 +324,11 @@ const plans = [
     description: ":STAR: per Building in your Neighbourhood",
     hooks: {
       turn: {
+        /**
+         *
+         */
         post: ({ player, building }) => {
-          const obelisk = player.neighbourhood.buildings.find((b) =>
-            b.name === building.name
-          );
+          const obelisk = player.neighbourhood.buildings.find((b) => b.name === building.name);
           if (!obelisk) {
             throw new Error("No Obelisk object Found in Post-turn Hook");
           }
@@ -303,6 +346,9 @@ const plans = [
     description: "You are the Owner of the Wholesaler location",
     hooks: {
       upkeep: {
+        /**
+         *
+         */
         pre: ({ player, building, locations }) => {
           const wholesaler = locations.find((l) => l.name === building.name);
           if (!wholesaler) {
@@ -314,12 +360,13 @@ const plans = [
         },
       },
       build: {
+        /**
+         *
+         */
         post: ({ locations, building }) => {
           const wholesaler = locations.find((l) => l.name === building.name);
           if (!wholesaler) {
-            throw new Error(
-              "NO wholesaler FOUND IN Wholesaler POST BUILD HOOK",
-            );
+            throw new Error("NO wholesaler FOUND IN Wholesaler POST BUILD HOOK");
           }
           if (wholesaler.isClosed()) wholesaler.openLocation();
         },
@@ -334,6 +381,9 @@ const plans = [
     description: "You are the Owner of the Lotto location",
     hooks: {
       upkeep: {
+        /**
+         *
+         */
         pre: ({ player, building, locations }) => {
           const lotto = locations.find((l) => l.name === building.name);
           if (!lotto) {
@@ -345,6 +395,9 @@ const plans = [
         },
       },
       build: {
+        /**
+         *
+         */
         post: ({ locations, building }) => {
           const lotto = locations.find((l) => l.name === building.name);
           if (!lotto) {
@@ -357,6 +410,8 @@ const plans = [
   },
 ] as const satisfies ReadonlyArray<Plan>;
 
-export const createPlans = (
-  customPlans?: Array<Plan> | ReadonlyArray<Plan>,
-): Array<Plan> => customPlans ? [...customPlans] : [...plans];
+/**
+ *
+ */
+export const createPlans = (customPlans?: Array<Plan> | ReadonlyArray<Plan>): Array<Plan> =>
+  customPlans ? [...customPlans] : [...plans];

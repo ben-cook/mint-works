@@ -1,6 +1,9 @@
 import { Building, HandPlan } from "./plan";
 import { createPlans, PlanName } from "./plans";
 
+/**
+ *
+ */
 export class Neighbourhood {
   public plans: Array<HandPlan> = [];
 
@@ -30,7 +33,7 @@ export class Neighbourhood {
   /** Add a plan to the neighbourhood */
   public addPlan(name: PlanName, hidden?: boolean): void {
     const plans = createPlans();
-    const plan = (plans.find((p) => p.name === name)) as HandPlan | undefined;
+    const plan = plans.find((p) => p.name === name) as HandPlan | undefined;
     if (!plan) throw new Error("Plan not found" + name);
 
     const handPlan = {
@@ -57,9 +60,7 @@ export class Neighbourhood {
 
     if (building) building.linkedLocation?.closeLocation();
 
-    this.buildings = this.buildings.filter((building) =>
-      building.name !== name
-    );
+    this.buildings = this.buildings.filter((building) => building.name !== name);
   }
 
   /** Convert a plan into a building */
@@ -81,11 +82,10 @@ export class Neighbourhood {
 
   /** Calculate the current stars in the neighbourhood */
   public stars(): number {
-    return this.buildings
-      .reduce(
-        (total, plan) => total + plan.baseStars + (plan.additionalStars ?? 0),
-        0,
-      );
+    return this.buildings.reduce(
+      (total, plan) => total + plan.baseStars + (plan.additionalStars ?? 0),
+      0
+    );
   }
 
   /** Calculate the number of plans and buildings in the neighbourhood */
@@ -94,23 +94,25 @@ export class Neighbourhood {
   }
 }
 
+/**
+ *
+ */
 export class PublicNeighbourhood extends Neighbourhood {
-  constructor(
-    { plans, buildings }: {
-      plans?: Array<HandPlan>;
-      buildings?: Array<Building>;
-    },
-  ) {
+  /**
+   *
+   */
+  constructor({ plans, buildings }: { plans?: Array<HandPlan>; buildings?: Array<Building> }) {
     super();
     this.buildings = buildings ?? [];
-    this.plans = plans?.map((plan) => {
-      if (plan.hidden) {
-        return {
-          name: "HIDDEN",
-        } as HandPlan;
-      } else {
-        return plan;
-      }
-    }) ?? [];
+    this.plans =
+      plans?.map((plan) => {
+        if (plan.hidden) {
+          return {
+            name: "HIDDEN",
+          } as HandPlan;
+        } else {
+          return plan;
+        }
+      }) ?? [];
   }
 }

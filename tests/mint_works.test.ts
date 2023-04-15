@@ -23,10 +23,7 @@ Deno.test("MintWorks", async (t) => {
       },
     ];
     mintWorks.players[0].neighbourhood.addPlan("Windmill");
-    assertEquals(
-      mintWorks.players[0].neighbourhood.getPlan("Windmill")?.name,
-      "Windmill",
-    );
+    assertEquals(mintWorks.players[0].neighbourhood.getPlan("Windmill")?.name, "Windmill");
   });
 });
 

@@ -13,7 +13,7 @@ export interface IPlayer {
    */
   selectPlayerForEffect: (
     appliedEffect: HookEffect,
-    players: Array<PlayerWithInformation>,
+    players: Array<PlayerWithInformation>
   ) => Promise<string>;
   /** The `update` method is called to inform a given player of the other player's moves.
    * This could be used to update a UI, to train a model, etc.

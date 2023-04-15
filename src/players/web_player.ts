@@ -10,15 +10,24 @@ export interface WebHooks {
   getPlayerSelectionFromUser: (players: Array<string>) => Promise<string>;
 }
 
+/**
+ *
+ */
 export class WebPlayer extends PlayerHelper implements IPlayer {
   webHooks: WebHooks;
 
+  /**
+   *
+   */
   constructor({ name, webHooks }: { name: string; webHooks: WebHooks }) {
     super(name);
 
     this.webHooks = webHooks;
   }
 
+  /**
+   *
+   */
   async takeTurn(state: State): Promise<Turn> {
     const turns = this.generateTurns(state);
 
@@ -27,6 +36,9 @@ export class WebPlayer extends PlayerHelper implements IPlayer {
     return new Promise((resolve, _reject) => resolve(turn));
   }
 
+  /**
+   *
+   */
   async selectPlayerForEffect(
     appliedEffect: HookEffect,
     players: Array<PlayerWithInformation>
@@ -36,9 +48,7 @@ export class WebPlayer extends PlayerHelper implements IPlayer {
         return p.label;
       })
       .filter((name) => name !== this.name);
-    const selectedPlayerName = await this.webHooks.getPlayerSelectionFromUser(
-      playerNames
-    );
+    const selectedPlayerName = await this.webHooks.getPlayerSelectionFromUser(playerNames);
     const validPlayer = players.some((p) => p.label === selectedPlayerName);
     if (!validPlayer) throw new Error("Player not found");
 
