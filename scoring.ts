@@ -1,4 +1,4 @@
-import type { PlayerWithInformation } from "./mint_works.ts";
+import type { PlayerWithInformation } from "./mint_works";
 
 export interface Scoreboard {
   winner: string;

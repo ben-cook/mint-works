@@ -1,5 +1,5 @@
-import { playerLogger } from "../logger.ts";
-import { Plan } from "../plan.ts";
+import { playerLogger } from "../logger";
+import { Plan } from "../plan";
 
 export const thaiPlans = [
   {

@@ -1,5 +1,5 @@
-import { gameLogger } from "./logger.ts";
-import { Turn } from "./turn.ts";
+import { gameLogger } from "./logger";
+import { Turn } from "./turn";
 
 /** A slot that holds tokens when the are played */
 export class Slot {

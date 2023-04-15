@@ -1,7 +1,7 @@
-import { Plan } from "../plan.ts";
-import { createPlans } from "../plans.ts";
-import { thaiPlans } from "./thai_plans.ts";
-import { thaiReskinPlans } from "./thai_reskin_plans.ts";
+import { Plan } from "../plan";
+import { createPlans } from "../plans";
+import { thaiPlans } from "./thai_plans";
+import { thaiReskinPlans } from "./thai_reskin_plans";
 
 export interface CustomAsset {
   name: string;

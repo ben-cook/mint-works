@@ -1,8 +1,0 @@
-{
-  "tasks": {
-    "run": "deno run --allow-write main.ts",
-    "dev": "deno run --watch main.ts",
-    "test": "deno test --allow-write",
-    "coverage": "deno test --allow-write --coverage=coverage && deno coverage --lcov --output=coverage/lcov.info coverage/"
-  }
-}

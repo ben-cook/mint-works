@@ -1,7 +1,7 @@
-import { PlayerWithInformation } from "./mint_works.ts";
-import { HookEffect } from "./plan.ts";
-import { State } from "./state.ts";
-import { Turn } from "./turn.ts";
+import { PlayerWithInformation } from "./mint_works";
+import { HookEffect } from "./plan";
+import { State } from "./state";
+import { Turn } from "./turn";
 
 export interface IPlayer {
   /** The `takeTurn` method is called when it is this player's turn.

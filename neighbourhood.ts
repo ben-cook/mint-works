@@ -1,5 +1,5 @@
-import { Building, HandPlan } from "./plan.ts";
-import { createPlans, PlanName } from "./plans.ts";
+import { Building, HandPlan } from "./plan";
+import { createPlans, PlanName } from "./plans";
 
 export class Neighbourhood {
   public plans: Array<HandPlan> = [];

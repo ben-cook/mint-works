@@ -1,5 +1,5 @@
-import { MintWorks, MintWorksParams } from "./mint_works.ts";
-import { gameLogger as logger } from "./logger.ts";
+import { MintWorks, MintWorksParams } from "./mint_works";
+import { gameLogger as logger } from "./logger";
 
 import {
   Checkbox,
@@ -9,8 +9,8 @@ import {
   prompt,
   Select,
 } from "https://deno.land/x/cliffy@v0.25.7/prompt/mod.ts";
-import { createTerminalGame } from "./games/terminal_game.ts";
-import { createRandomGame } from "./games/random_game.ts";
+import { createTerminalGame } from "./games/terminal_game";
+import { createRandomGame } from "./games/random_game";
 
 type GameInterface =
   | "Random"

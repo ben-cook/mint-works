@@ -1,6 +1,6 @@
-import { MintWorksParams, PlayerWithInformation } from "../mint_works.ts";
-import { Neighbourhood } from "../neighbourhood.ts";
-import { RandomPlayer } from "../players/random_player.ts";
+import { MintWorksParams, PlayerWithInformation } from "../mint_works";
+import { Neighbourhood } from "../neighbourhood";
+import { RandomPlayer } from "../players/random_player";
 
 export function createRandomGame(
   { numberOfPlayers }: { numberOfPlayers: number },

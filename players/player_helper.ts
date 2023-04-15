@@ -1,6 +1,6 @@
-import { LocationCard } from "../location.ts";
-import { State } from "../state.ts";
-import { Turn } from "../turn.ts";
+import { LocationCard } from "../location";
+import { State } from "../state";
+import { Turn } from "../turn";
 
 export class PlayerHelper {
   name;

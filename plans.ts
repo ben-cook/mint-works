@@ -1,5 +1,4 @@
-import { gameLogger } from "./logger.ts";
-import { Plan } from "./plan.ts";
+import { Plan } from "./plan";
 
 export type PlanName = typeof plans[number]["name"];
 

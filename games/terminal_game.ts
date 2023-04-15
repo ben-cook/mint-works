@@ -1,6 +1,6 @@
-import { MintWorksParams, PlayerWithInformation } from "../mint_works.ts";
-import { Neighbourhood } from "../neighbourhood.ts";
-import { TerminalPlayer } from "../players/terminal_player.ts";
+import { MintWorksParams, PlayerWithInformation } from "../mint_works";
+import { Neighbourhood } from "../neighbourhood";
+import { TerminalPlayer } from "../players/terminal_player";
 
 import {
   Checkbox,
@@ -9,10 +9,10 @@ import {
   Number,
   prompt,
   Select,
-} from "https://deno.land/x/cliffy@v0.25.7/prompt/mod.ts";
-import { createPlans } from "../plans.ts";
-import { Plan } from "../plan.ts";
-import { customAssets } from "../custom/custom.ts";
+} from "https://deno.land/x/cliffy@v0.25.7/prompt/mod";
+import { createPlans } from "../plans";
+import { Plan } from "../plan";
+import { customAssets } from "../custom/custom";
 
 type TerminalGames = "Quick" | "Standard" | "Custom";
 

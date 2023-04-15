@@ -1,4 +1,4 @@
-import { HandPlan, Plan } from "./plan.ts";
+import { HandPlan, Plan } from "./plan";
 
 export interface Turn {
   playerName: string;

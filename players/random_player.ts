@@ -1,10 +1,10 @@
-import { IPlayer } from "../player.ts";
-import { Turn } from "../turn.ts";
-import { playerLogger as logger } from "../logger.ts";
-import { State } from "../state.ts";
-import { PlayerHelper } from "./player_helper.ts";
-import { PlayerWithInformation } from "../mint_works.ts";
-import { HookEffect } from "../plan.ts";
+import { IPlayer } from "../player";
+import { Turn } from "../turn";
+import { playerLogger as logger } from "../logger";
+import { State } from "../state";
+import { PlayerHelper } from "./player_helper";
+import { PlayerWithInformation } from "../mint_works";
+import { HookEffect } from "../plan";
 
 export class RandomPlayer extends PlayerHelper implements IPlayer {
   constructor(name: string) {

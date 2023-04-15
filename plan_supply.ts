@@ -1,5 +1,5 @@
-import { gameLogger } from "./logger.ts";
-import { Plan } from "./plan.ts";
+import { gameLogger } from "./logger";
+import { Plan } from "./plan";
 
 type Deck = Array<Plan>;
 

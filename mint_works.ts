@@ -1,15 +1,14 @@
-import { IPlayer } from "./player.ts";
-import { RandomPlayer } from "./players/random_player.ts";
-import { Turn } from "./turn.ts";
-import { gameLogger, gameLogger as logger } from "./logger.ts";
-import { State } from "./state.ts";
-import { createPlans, PlanName } from "./plans.ts";
-import { createLocations, LocationCard } from "./location.ts";
-import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood.ts";
-import { PlanSupply } from "./plan_supply.ts";
-import { findWinner } from "./scoring.ts";
-import { shuffleArray } from "./utils.ts";
-import { HandPlan, Plan } from "./plan.ts";
+import { IPlayer } from "./player";
+import { Turn } from "./turn";
+import { gameLogger, gameLogger as logger } from "./logger";
+import { State } from "./state";
+import { createPlans, PlanName } from "./plans";
+import { createLocations, LocationCard } from "./location";
+import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood";
+import { PlanSupply } from "./plan_supply";
+import { findWinner } from "./scoring";
+import { shuffleArray } from "./utils";
+import { HandPlan, Plan } from "./plan";
 
 interface PlayerInformation {
   tokens: number;
@@ -36,25 +35,16 @@ export class MintWorks {
   planSupply: PlanSupply;
   /** The player with the starting player token starts each round in the Development phase */
   startingPlayerToken: string;
+  endHook: () => void;
 
-  constructor({ players, deck }: MintWorksParams) {
+  constructor({ players, deck }: MintWorksParams, endHook: () => void) {
+    if (!players || players.length < 1)
+      throw new Error("Must provide players to MintWorks constructor");
+
+    this.endHook = endHook;
+
     // Set up players of the game
-    this.players = players ?? [
-      {
-        player: new RandomPlayer("Bob"),
-        tokens: 3,
-        label: "Bob",
-        age: 34,
-        neighbourhood: new Neighbourhood(),
-      },
-      {
-        player: new RandomPlayer("Alice"),
-        tokens: 3,
-        label: "Alice",
-        age: 21,
-        neighbourhood: new Neighbourhood(),
-      },
-    ];
+    this.players = players;
 
     if (!deck) {
       const plans = createPlans();
@@ -71,7 +61,12 @@ export class MintWorks {
     // TODO: investigate if this is needed anymore
     // this.linkPlansAndLocations();
 
+    if (!this.players || this.players.length < 1 || !this.players[0]) {
+      throw new Error("No players provided to MintWorks constructor");
+    }
+
     this.startingPlayerToken = this.players[0].label;
+    
   }
 
   public async play() {
@@ -80,6 +75,10 @@ export class MintWorks {
       await this.playRound();
       this.roundNumber++;
     }
+  }
+
+  public async EndGame() {
+    return this.endHook();
   }
 
   /** Each round consists of the Development phase followed by the Upkeep phase */
@@ -126,7 +125,7 @@ export class MintWorks {
         }
       } catch (err) {
         logger.error(`Invalid turn! Error: ${err}`);
-        Deno.exit(1);
+        this.EndGame();
       }
 
       // Execute any end of turn hooks (post-turn hooks)
@@ -270,10 +269,10 @@ export class MintWorks {
       });
       logger.info(`The winner is ${scoreboard.winner}`);
     } else {
-      logger.warning("No winner was found");
+      logger.warn("No winner was found");
     }
     this.printScoreboard();
-    Deno.exit();
+    this.EndGame();
   }
 
   public generateScoreboard() {

@@ -1,5 +1,5 @@
-import { LocationCard } from "./location.ts";
-import { PlayerWithInformation } from "./mint_works.ts";
+import { LocationCard } from "./location";
+import { PlayerWithInformation } from "./mint_works";
 
 /** Represents a plan in the deck */
 export interface Plan {

@@ -1,5 +1,5 @@
-import { Plan } from "../plan.ts";
-import { createPlans } from "../plans.ts";
+import { Plan } from "../plan";
+import { createPlans } from "../plans";
 
 const plansToRemove = ["Vault"];
 
