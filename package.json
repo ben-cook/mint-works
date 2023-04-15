@@ -16,6 +16,7 @@
     "format": "prettier --config .prettierrc src/**/*.ts --write",
     "build": "run-s clean:build && tsc -p tsconfig.module.json",
     "git": "run-s lint:ci test:ci docs",
+    "play:terminal": "node --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings scripts/play_terminal",
     "test": "node --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings scripts/pretest --usertest && jest",
     "test:ci": " run-s clean:coverage && node --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings scripts/pretest --usertest && jest | tee ./coverage/coverage.txt",
     "docs": "run-s clean:docs-publish clean:docs-tmp docs:readme docs:home docs:publish clean:docs-tmp",
@@ -46,6 +47,7 @@
   "homepage": "https://github.com/ben-cook/mint-works#readme",
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
+    "@types/inquirer": "^9.0.3",
     "@types/jest": "^29.5.0",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
@@ -56,6 +58,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-tsdoc": "^0.2.17",
     "execa": "^7.1.1",
+    "inquirer": "^9.1.5",
     "jest": "^29.5.0",
     "jest-junit": "^15.0.0",
     "loglevel": "^1.8.1",

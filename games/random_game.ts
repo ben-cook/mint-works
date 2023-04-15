@@ -1,6 +1,6 @@
-import { MintWorksParams, PlayerWithInformation } from "../mint_works";
-import { Neighbourhood } from "../neighbourhood";
-import { RandomPlayer } from "../players/random_player";
+import { MintWorksParams, PlayerWithInformation } from "../src/mint_works";
+import { Neighbourhood } from "../src/neighbourhood";
+import { RandomPlayer } from "../src/players/random_player";
 
 export function createRandomGame(
   { numberOfPlayers }: { numberOfPlayers: number },
@@ -17,7 +17,7 @@ export function createRandomGame(
 function createRandomPlayers(
   { numberOfPlayers }: { numberOfPlayers: number },
 ): Array<PlayerWithInformation> {
-  const players = [];
+  const players: Array<PlayerWithInformation> = [];
   for (let i = 0; i < numberOfPlayers; i++) {
     players.push({
       player: new RandomPlayer(`Player ${i + 1}`),

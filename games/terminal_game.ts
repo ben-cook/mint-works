@@ -1,18 +1,11 @@
-import { MintWorksParams, PlayerWithInformation } from "../mint_works";
-import { Neighbourhood } from "../neighbourhood";
-import { TerminalPlayer } from "../players/terminal_player";
+import { MintWorksParams, PlayerWithInformation } from "../src/mint_works";
+import { Neighbourhood } from "../src/neighbourhood";
+import { TerminalPlayer } from "./terminal_player";
 
-import {
-  Checkbox,
-  Confirm,
-  Input,
-  Number,
-  prompt,
-  Select,
-} from "https://deno.land/x/cliffy@v0.25.7/prompt/mod";
-import { createPlans } from "../plans";
-import { Plan } from "../plan";
-import { customAssets } from "../custom/custom";
+import inquirer from "inquirer";
+import { createPlans } from "../src/plans";
+import { Plan } from "../src/plan";
+import { customAssets } from "../src/custom/custom";
 
 type TerminalGames = "Quick" | "Standard" | "Custom";
 
@@ -30,11 +23,11 @@ interface TerminalGameSettings {
 export async function createTerminalGame(
   { numberOfPlayers }: { numberOfPlayers: number },
 ): Promise<MintWorksParams> {
-  const gameChoice = await prompt([{
+  const gameChoice = await inquirer.prompt([{
     name: "choice",
     message: "Select a Game Type",
-    type: Select,
-    options: terminalGames,
+    type: "list",
+    choices: terminalGames,
   }]);
 
   if (!gameChoice.choice) throw new Error("No game type selected");
@@ -65,22 +58,22 @@ export async function createTerminalGame(
 }
 
 async function createCustomGame(): Promise<TerminalGameSettings> {
-  const customSettings = await prompt([{
+  const customSettings = await inquirer.prompt([{
     name: "startingTokens",
     message: "Starting Tokens",
-    type: Number,
+    type: "number",
     default: 3,
   }, {
     name: "customDecks",
     message: "Expansion Decks",
-    type: Checkbox,
+    type: "checkbox",
     options: ["Base Deck", "Deeds Only"].concat(customAssets.decks.map((d) => {
       return d.name;
     })),
   }, {
     name: "topCard",
     message: "Card at top of deck",
-    type: Input,
+    type: "input",
     validate: (value: string) => {
       const plans = createPlans();
       if (
@@ -156,10 +149,10 @@ async function createTerminalPlayers(
     case "Custom": {
       const players = [];
       for (let i = 0; i < numberOfPlayers; i++) {
-        const player = await prompt([{
+        const player = await inquirer.prompt([{
           name: "name",
           message: "Player Name",
-          type: Input,
+          type: "input",
           validate: (value: string) => {
             if (!value || value.length < 1) return false;
             return true;
@@ -167,7 +160,7 @@ async function createTerminalPlayers(
         }, {
           name: "age",
           message: "Age",
-          type: Input,
+          type: "input",
           validate: (value: string) => {
             if (parseInt(value) < 0) return false;
             return true;
