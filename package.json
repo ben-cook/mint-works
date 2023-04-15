@@ -1,7 +1,7 @@
 {
   "name": "mint-works",
   "version": "1.0.0",
-  "description": "1. Install Deno 2. `deno task run`",
+  "description": "A game engine for the Mint Works game.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
