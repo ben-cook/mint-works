@@ -1,9 +1,9 @@
-import { MintWorks, PlayerWithInformation } from "./mint_works";
+import { MintWorksEngine, PlayerWithInformation } from "./mint_works";
 import { Neighbourhood } from "./neighbourhood";
 import { WebHooks, WebPlayer } from "./players/web_player";
 
-export class GameEngine {
-  gameEngine?: MintWorks;
+export class MintWorks {
+  gameEngine?: MintWorksEngine;
   players?: Array<PlayerWithInformation>;
   webHooks: WebHooks;
 
@@ -28,7 +28,7 @@ export class GameEngine {
 
   createGame(): boolean {
     if (!this.players) return false;
-    this.gameEngine = new MintWorks({ players: this.players }, this.endGame);
+    this.gameEngine = new MintWorksEngine({ players: this.players }, this.endGame);
     return true;
   }
 
