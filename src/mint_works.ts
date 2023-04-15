@@ -28,7 +28,7 @@ export interface MintWorksParams {
   deck?: Array<Plan>;
 }
 
-export class MintWorks {
+export class MintWorksEngine {
   roundNumber = 1;
   locations: Array<LocationCard>;
   players: Array<PlayerWithInformation>;
