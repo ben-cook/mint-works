@@ -1,7 +1,6 @@
-import * as log from "loglevel";
+import log from "loglevel";
 
-log.setLevel(log.levels.DEBUG);
-
+log.setLevel("debug");
 
 
 
