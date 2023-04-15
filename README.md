@@ -1,4 +1,10 @@
-# Usage
+# Mint Works
 
-1. Install Deno
-2. `deno task run`
+## Setup
+
+1. Install [Node.js](http://nodejs.org/).
+2. Install dependencies: `npm install`
+
+## Play
+
+- Run `npm run play:terminal` to play in the terminal.
