@@ -29,7 +29,7 @@ export interface MintWorksParams {
 }
 
 /**
- *
+ * The main class for the Mint Works game engine. This class is responsible for managing the game state and orchestrating the game.
  */
 export class MintWorksEngine {
   roundNumber = 1;
@@ -41,7 +41,9 @@ export class MintWorksEngine {
   endHook: () => void;
 
   /**
-   *
+   * Create a new Mint Works game
+   * @param players - The players in the game
+   * @param deck - The deck of plans to use in the game
    */
   constructor({ players, deck }: MintWorksParams, endHook: () => void) {
     if (!players || players.length < 1)
@@ -75,9 +77,9 @@ export class MintWorksEngine {
   }
 
   /**
-   * 
+   * Play the game until it is over.
    */
-  public async play() {
+  public async play(): Promise<void> {
     // TODO: For the love of humanity, refactor this function so it isn't an infinite loop
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -88,14 +90,16 @@ export class MintWorksEngine {
   }
 
   /**
-   *
+   * End the game by calling the endHook.
    */
-  public async EndGame() {
+  public async EndGame(): Promise<void> {
     return this.endHook();
   }
 
-  /** Each round consists of the Development phase followed by the Upkeep phase */
-  private async playRound() {
+  /**
+   * Each round consists of the Development phase followed by the Upkeep phase.
+   */
+  private async playRound(): Promise<void> {
     await this.development();
     await this.upkeep();
   }
@@ -106,7 +110,7 @@ export class MintWorksEngine {
    * - A player has two options on their turn. They may choose either the Place or Pass action. After completing one of these actions , the turn is passed clockwise to the next player.
    * - The Development phase repeats until all players consecutively pass, ending the phase. Then proceed to the Upkeep phase.
    */
-  private async development() {
+  private async development(): Promise<void> {
     const numPlayers = this.players.length;
     let numConsecutivePasses = 0;
     let i = this.players.findIndex((p) => p.label === this.startingPlayerToken);
@@ -169,7 +173,7 @@ export class MintWorksEngine {
    * - Each player gains one Mint Token.
    * - Proceed to the next Development phase.
    */
-  public async upkeep() {
+  public async upkeep(): Promise<void> {
     // If any player has seven or more stars provided by Buildings in their Neighbourhood, the game ends and Scoring takes place.
     if (this.players.some((p) => p.neighbourhood.stars() >= 7)) {
       this.scoring();
@@ -272,7 +276,7 @@ export class MintWorksEngine {
   /** # Scoring
    * Decide who the winner is.
    */
-  private scoring() {
+  private scoring(): void {
     const scoreboard = findWinner(this.players);
     if (scoreboard) {
       logger.info(`      NAME | STARS | HOOD | TOKENS`);
@@ -289,9 +293,14 @@ export class MintWorksEngine {
   }
 
   /**
-   *
+   * Generate a scoreboard for the current game
    */
-  public generateScoreboard() {
+  public generateScoreboard(): Array<{
+    player: PlayerWithInformation;
+    stars: number;
+    plans: number;
+    tokens: number;
+  }> {
     return this.players
       .map((player) => {
         return {
@@ -315,9 +324,9 @@ export class MintWorksEngine {
   }
 
   /**
-   *
+   * Print the current scoreboard to the console
    */
-  private printScoreboard() {
+  private printScoreboard(): void {
     logger.info(`      NAME | STARS | HOOD | TOKENS`);
     this.generateScoreboard().forEach((score) => {
       const name = score.player.label.padStart(10);
@@ -325,8 +334,11 @@ export class MintWorksEngine {
     });
   }
 
-  /** Simulate taking a turn */
-  private simulateTurn(turn: Turn) {
+  /**
+   * Simulate taking a turn
+   * @param turn - The turn to simulate
+   */
+  private simulateTurn(turn: Turn): void {
     const player = this.players.find((p) => p.label === turn.playerName)!;
     const playerTokens = player.tokens;
 

@@ -48,7 +48,6 @@ export class InterfacePlayer extends PlayerHelper implements IPlayer {
     const turns = this.generateTurns(state);
 
     const turn = await this.interactionHooks.getTurnFromInterface(turns);
-    console.log(turn);
     return new Promise((resolve, _reject) => resolve(turn));
   }
 
