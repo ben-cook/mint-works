@@ -116,7 +116,7 @@ export class MintWorksEngine {
     let i = this.players.findIndex((p) => p.label === this.startingPlayerToken);
 
     while (numConsecutivePasses < numPlayers) {
-      const player = this.players[i]!;
+      const player = this.players[i];
       logger.info(`Player ${i}: (${player.label}'s turn)`);
 
       // Execute any start of turn hooks (pre-turn hooks)
@@ -339,10 +339,12 @@ export class MintWorksEngine {
    * @param turn - The turn to simulate
    */
   private simulateTurn(turn: Turn): void {
-    const player = this.players.find((p) => p.label === turn.playerName)!;
+    const player = this.players.find((p) => p.label === turn.playerName);
+    if (!player) throw new Error("Player not found");
     const playerTokens = player.tokens;
 
-    const mappedLocation = this.locations.find((l) => l.mappedAction === turn.action._type)!;
+    const mappedLocation = this.locations.find((l) => l.mappedAction === turn.action._type);
+    if (!mappedLocation) throw new Error("Location not found");
 
     let actionCost = "plan" in turn.action ? turn.action.plan.cost : mappedLocation.minSlotPrice();
 

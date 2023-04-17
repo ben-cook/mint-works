@@ -3,13 +3,13 @@ import type { State, StatePlayer } from "../state";
 import type { Turn } from "../turn";
 
 /**
- *
+ * A helper class for players that provides some common functionality.
  */
 export class PlayerHelper {
   name;
 
   /**
-   *
+   * @param name - The name of the player
    */
   constructor(name: string) {
     this.name = name;
@@ -21,6 +21,9 @@ export class PlayerHelper {
    * @returns The list of valid turns
    */
   generateTurns(state: State): Array<Turn> {
+    const player = state.players.find((p) => p.label === this.name);
+    if (!player) throw new Error("Player not found");
+
     const validTurns: Array<Turn> = [
       {
         action: { _type: "Pass" },
@@ -30,7 +33,7 @@ export class PlayerHelper {
 
     const builder = state.locations.find((l) => l.name === "Builder");
     if (builder?.available() && this.canAffordToBuild(state, builder)) {
-      for (const plan of state.players.find((p) => p.label === this.name)!.neighbourhood.plans) {
+      for (const plan of player.neighbourhood.plans) {
         validTurns.push({
           action: {
             _type: "Build",
@@ -64,9 +67,7 @@ export class PlayerHelper {
 
     const supplier = state.locations.find((l) => l.name === "Supplier");
     if (supplier?.available() && this.canAffordToSupply(state)) {
-      for (const plan of state.planSupply.filter(
-        (p) => p.cost <= state.players.find((p) => p.label === this.name)!.tokens
-      )) {
+      for (const plan of state.planSupply.filter((p) => p.cost <= player.tokens)) {
         validTurns.push({
           action: {
             _type: "Supply",
@@ -156,6 +157,8 @@ export class PlayerHelper {
    * @returns The player object
    */
   thisPlayer(state: State): StatePlayer {
-    return state.players.find((p) => p.label === this.name)!;
+    const player = state.players.find((p) => p.label === this.name);
+    if (!player) throw new Error("Player not found");
+    return player;
   }
 }
