@@ -501,7 +501,9 @@ export class MintWorksEngine {
   }
 
   /**
-   *
+   * Get the current state of the game for a given player
+   * @param playerMakingTurn - The player making the turn
+   * @returns The current state of the game
    */
   private getPlayerState(playerMakingTurn: PlayerWithInformation): State {
     const players = this.players.map((anyPlayer) => {
