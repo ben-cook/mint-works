@@ -26,7 +26,7 @@ export class Slot {
   }
 
   /** Empty the slot */
-  public empty() {
+  public empty(): void {
     this.tokens = 0;
   }
 }
@@ -88,7 +88,7 @@ export class LocationCard {
   }
 
   /** Empty all the slots */
-  public emptySlots() {
+  public emptySlots(): void {
     for (const slot of this.slots) {
       slot.empty();
     }

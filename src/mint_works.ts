@@ -75,7 +75,7 @@ export class MintWorksEngine {
   }
 
   /**
-   *
+   * 
    */
   public async play() {
     // TODO: For the love of humanity, refactor this function so it isn't an infinite loop

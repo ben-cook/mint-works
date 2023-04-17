@@ -6,3 +6,4 @@ dist
 docs
 node_modules
 logs
+*.test.ts

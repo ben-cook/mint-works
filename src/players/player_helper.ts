@@ -1,6 +1,6 @@
-import { LocationCard } from "../location";
-import { State } from "../state";
-import { Turn } from "../turn";
+import type { LocationCard } from "../location";
+import type { State, StatePlayer } from "../state";
+import type { Turn } from "../turn";
 
 /**
  *
@@ -16,7 +16,9 @@ export class PlayerHelper {
   }
 
   /**
-   *
+   * Generate a list of valid turns for the player given the current state.
+   * @param state - The current game state
+   * @returns The list of valid turns
    */
   generateTurns(state: State): Array<Turn> {
     const validTurns: Array<Turn> = [
@@ -102,7 +104,12 @@ export class PlayerHelper {
     return validTurns;
   }
 
-  /** Return if the player can afford to build any of their plans */
+  /**
+   * Return if the player can afford to build a plan.
+   * @param state - The current game state
+   * @param builder - The builder location card
+   * @returns True if the player can afford to build a plan
+   */
   canAffordToBuild(state: State, builder: LocationCard): boolean {
     const player = this.thisPlayer(state);
 
@@ -115,7 +122,11 @@ export class PlayerHelper {
     return player.tokens >= cost;
   }
 
-  /** Return if the player can afford to supply any of the plan supply plans */
+  /**
+   * Return if the player can afford to supply a plan.
+   * @param state - The current game state
+   * @returns True if the player can afford to supply a plan
+   */
   canAffordToSupply(state: State): boolean {
     const player = this.thisPlayer(state);
 
@@ -128,14 +139,23 @@ export class PlayerHelper {
     return state.planSupply.some((p) => p.cost + costChange <= player.tokens);
   }
 
-  /** Return if the player can afford to use a basic location */
+  /**
+   * Return if the player can afford a basic location card.
+   * @param state - The current game state
+   * @param location - The location card
+   * @returns True if the player can afford the location card
+   */
   canAffordBasicLocation(state: State, location: LocationCard): boolean {
     const player = this.thisPlayer(state);
     return player.tokens >= location.minSlotPrice();
   }
 
-  /** Return this player's information from a state object */
-  thisPlayer(state: State) {
+  /**
+   * Return the player object for the current player.
+   * @param state - The current game state
+   * @returns The player object
+   */
+  thisPlayer(state: State): StatePlayer {
     return state.players.find((p) => p.label === this.name)!;
   }
 }
