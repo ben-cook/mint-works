@@ -59,7 +59,7 @@ export const thaiPlans = [
     cost: 3,
     baseStars: 1,
     types: ["Culture"],
-    description: "Upkeep: :TOKEN: per :STAR::STAR:⭐",
+    description: "Upkeep: :TOKEN: per :STAR: :STAR:⭐",
     hooks: {
       upkeep: {
         /**
@@ -77,7 +77,7 @@ export const thaiPlans = [
     cost: 3,
     baseStars: 3,
     types: ["Culture"],
-    description: "Upkeep for 2 rounds: Lose :TOKEN::TOKEN: & :STAR:. Becomes STATUE after.",
+    description: "Upkeep for 2 rounds: Lose :TOKEN: :TOKEN: & :STAR:. Becomes STATUE after.",
     hooks: {
       upkeep: {
         /**
@@ -162,7 +162,7 @@ export const thaiPlans = [
     baseStars: 0,
     types: ["Culture"],
     description:
-      "Lose all and gain no :TOKEN: until end of next development phase. :STAR::STAR:STAR:STAR: gained at end",
+      "Lose all and gain no :TOKEN: until end of next development phase. :STAR: :STAR: :STAR: :STAR: gained at end",
     hooks: {
       turn: {
         /**
@@ -300,7 +300,7 @@ export const thaiPlans = [
     cost: 3,
     baseStars: 1,
     types: ["Utility"],
-    description: "Upkeep: :STAR: for :TOKEN::TOKEN::TOKEN:",
+    description: "Upkeep: :STAR: for :TOKEN: :TOKEN: :TOKEN:",
     hooks: {
       turn: {
         /**
@@ -323,7 +323,7 @@ export const thaiPlans = [
     baseStars: 0,
     types: ["Utility"],
     description:
-      ":TOKEN::TOKEN:TOKEN: with Amm & Lose :TOKEN::TOKEN: With Air Con. Upkeep: 25% chance of Blackout (-20:STAR:)",
+      ":TOKEN: :TOKEN: :TOKEN: with Amm & Lose :TOKEN: :TOKEN: With Air Con. Upkeep: 25% chance of Blackout (-20 :STAR: )",
     hooks: {
       turn: {
         /**
@@ -412,7 +412,7 @@ export const thaiPlans = [
     cost: 2,
     baseStars: 2,
     types: ["Utility"],
-    description: "Upkeep: :TOKEN: or :TOKEN::TOKEN: if Nat/Julia",
+    description: "Upkeep: :TOKEN: or :TOKEN: :TOKEN: if Nat/Julia",
     hooks: {
       upkeep: {
         /**

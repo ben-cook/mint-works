@@ -147,7 +147,7 @@ const plans = [
     cost: 5,
     baseStars: 2,
     types: ["Production"],
-    description: "Upkeep: Gain :TOKEN::TOKEN:",
+    description: "Upkeep: Gain :TOKEN: :TOKEN:",
     hooks: {
       upkeep: {
         /**
@@ -181,7 +181,7 @@ const plans = [
     cost: 4,
     baseStars: 0,
     types: ["Production"],
-    description: "Upkeep: Gain :TOKEN::TOKEN::TOKEN:",
+    description: "Upkeep: Gain :TOKEN: :TOKEN: :TOKEN:",
     hooks: {
       upkeep: {
         /**
@@ -300,7 +300,7 @@ const plans = [
     cost: 5,
     baseStars: 1,
     types: ["Utility"],
-    description: ":STAR::STAR: per Plan in your Neighbourhood",
+    description: ":STAR: :STAR: per Plan in your Neighbourhood",
     hooks: {
       turn: {
         /**
