@@ -1,2 +1,7 @@
 log/*
 coverage
+node_modules
+lib
+build/
+dist/
+.env
