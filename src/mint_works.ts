@@ -41,6 +41,7 @@ export class MintWorksEngine {
   /** The player with the starting player token starts each round in the Development phase */
   startingPlayerToken: string;
   endHook: () => void;
+  playing = false;
 
   /**
    * Create a new Mint Works game
@@ -139,11 +140,26 @@ export class MintWorksEngine {
   public async play(): Promise<void> {
     // TODO: For the love of humanity, refactor this function so it isn't an infinite loop
     // eslint-disable-next-line no-constant-condition
-    while (true) {
+    this.playing = true;
+    while (this.playing) {
       logger.info(`Starting round ${this.roundNumber}`);
       await this.playRound();
       this.roundNumber++;
     }
+  }
+
+  /**
+   * Pause the game.
+   */
+  public pause(): void {
+    this.playing = false;
+  }
+
+  /**
+   * Resume the game.
+   */
+  public resume(): void {
+    this.playing = true;
   }
 
   /**
