@@ -9,15 +9,30 @@ export class PlanSupply {
   public deck: Deck;
   private planSupply: Deck = [];
 
-  /** Creates a new `PlanSupply`.
+  /**
+   * Creates a new PlanSupply with a deck of plans and a optional prefilled supply of plans.
+   * @param deck - The deck of plans to draw from.
+   * @param prefilledSupply - The prefilled supply of plans - if this is not provided, the plan supply will be refilled from the deck.
    *
-   * The `deck` is used as-is, so for a real game the deck should be shuffled before the `PlanSupply` is instantiated.
+   * @remarks
+   *
+   * The Plan Supply will be refilled with plans from the deck up to its capacity if the prefilled supply is not provided or if the prefilled supply is less than the capacity of the Plan Supply.
    */
-  constructor(deck: Deck) {
+  constructor(deck: Deck, prefilledSupply: Deck = [], preventInitialPlanSupplyRefill = false) {
     this.deck = deck;
     gameLogger.info(`Creating a new plan supply with ${deck.length} plans in the deck`);
     gameLogger.info(deck);
-    this.refill();
+
+    this.planSupply = prefilledSupply;
+    if (prefilledSupply) {
+      gameLogger.info(`Initialising the plan supply with ${prefilledSupply.length} plans`);
+      gameLogger.info(prefilledSupply);
+    }
+
+    if (!preventInitialPlanSupplyRefill) {
+      gameLogger.info(`Refilling the plan supply on initialisation`);
+      this.refill();
+    }
   }
 
   /** Takes a plan from the plan supply */
