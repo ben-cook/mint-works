@@ -6,7 +6,11 @@ import {
   PlayerWithInformation,
 } from "./mint_works";
 import { Neighbourhood } from "./neighbourhood";
+import { Turn } from "./turn";
 import { PlayerHelper } from "./players/player_helper";
+import cloneDeep from "lodash/cloneDeep";
+import { Plan } from "./plan";
+import { LocationCard } from "./location";
 
 /**
  *
@@ -144,3 +148,180 @@ export class MintWorksTurnFactory {
   }
 }
 
+type MintWorksStateManagerEngineParams = Required<Omit<MintWorksParams, "plans">>;
+
+/**
+ * A class to manage the state of the game.
+ *
+ * @remarks
+ *
+ * This class is used to manage the state of the game. It can simulate a given turn from any game state.
+ */
+export class MintWorksStateManager {
+  private gameEngine?: MintWorksEngine;
+  private initialState: MintWorksEngineState;
+  private turn: Turn;
+
+  /**
+   * Create a game state manager
+   * @param state - The state of the game
+   * @param turn - The turn to simulate
+   */
+  constructor({ state, turn }: { state: MintWorksEngineState; turn: Turn }) {
+    if (!MintWorksTurnFactory.validateTurn({ turn, state })) throw new Error("Invalid turn");
+    this.initialState = cloneDeep(state);
+    this.turn = turn;
+  }
+
+  /**
+   * Construct the player interaction hooks.
+   * @param turn - The turn to simulate
+   * @param returnStateHook - A hook to return the state of the game
+   *
+   * @returns The player interaction hooks
+   */
+  private constructPlayerInteractionHooks({
+    turn,
+    returnStateHook,
+  }: {
+    turn: Turn;
+    returnStateHook: () => void;
+  }): InteractionHooks {
+    return {
+      /** Applies the pre-determined player turn if its their turn, otherwise return the game state using the returnStateHook */
+      getTurnFromInterface: async (turns: Array<Turn>): Promise<Turn> => {
+        if (turns[0].playerName === turn.playerName) {
+          return turn;
+        }
+        await returnStateHook();
+        return turns[0];
+      },
+      /** TODO: Implement a proper solution for this */
+      getPlayerSelectionFromInterface: async (players: Array<string>): Promise<string> => {
+        return players[0];
+      },
+    };
+  }
+
+  /**
+   * Construct the players with information
+   * @param state - The state of the game
+   * @param turn - The turn to simulate
+   * @param returnStateHook - A hook to return the state of the game
+   *
+   * @returns The players with information
+   */
+  private constructPlayersWithInformation({
+    state,
+    turn,
+    returnStateHook,
+  }: {
+    state: MintWorksEngineState;
+    turn: Turn;
+    returnStateHook: () => void;
+  }): Array<PlayerWithInformation> {
+    return state.players.map((player) => {
+      return {
+        label: player.label,
+        neighbourhood: player.neighbourhood as Neighbourhood,
+        player: new InterfacePlayer({
+          name: player.label,
+          interactionHooks: this.constructPlayerInteractionHooks({ turn, returnStateHook }),
+        }),
+        tokens: player.tokens,
+        age: 18,
+      };
+    });
+  }
+
+  /**
+   * Construct the locations
+   * @param state - The state of the game
+   *
+   * @returns An array of locations
+   */
+  private constructLocations({ state }: { state: MintWorksEngineState }): Array<LocationCard> {
+    return state.locations;
+  }
+
+  /**
+   * Construct the deck
+   * @param state - The state of the game
+   *
+   * @returns An array of plans
+   */
+  private constructDeck({ state }: { state: MintWorksEngineState }): Array<Plan> {
+    return state.deck;
+  }
+
+  /**
+   * Construct the plan supply
+   * @param state - The state of the game
+   *
+   * @returns An array of plans
+   */
+  private constructPlanSupply({ state }: { state: MintWorksEngineState }): Array<Plan> {
+    return state.planSupply;
+  }
+
+  /**
+   * Construct the engine params
+   * @param state - The state of the game
+   * @param turn - The turn to simulate
+   * @param returnStateHook - A hook to return the state of the game
+   *
+   * @returns The engine params
+   */
+  private constructEngineParams({
+    state,
+    turn,
+    returnStateHook,
+  }: {
+    state: MintWorksEngineState;
+    turn: Turn;
+    returnStateHook: () => void;
+  }): MintWorksStateManagerEngineParams {
+    return {
+      players: this.constructPlayersWithInformation({ state, turn, returnStateHook }),
+      locations: this.constructLocations({ state }),
+      deck: this.constructDeck({ state }),
+      prefilledPlanSupply: this.constructPlanSupply({ state }),
+      preventInitialPlanSupplyRefill: true,
+    };
+  }
+
+  /**
+   * Create a game
+   * @param engineParams - The engine params
+   */
+  private createGame(engineParams: MintWorksStateManagerEngineParams): void {
+    if (this.gameEngine) throw new Error("Game already created");
+    this.gameEngine = new MintWorksEngine(engineParams, () => {
+      delete this.gameEngine;
+    });
+  }
+
+  /**
+   * Simulate a turn
+   *
+   * @returns The state of the game after the turn has been simulated
+   */
+  public async simulateTurn(): Promise<MintWorksEngineState> {
+    return new Promise((resolve) => {
+      const engineParams = this.constructEngineParams({
+        state: this.initialState,
+        turn: this.turn,
+        /** Called to return the engine state */
+        returnStateHook: () => {
+          if (!this.gameEngine) throw new Error("No game created");
+          resolve(this.gameEngine.getEngineState());
+          this.gameEngine.pause();
+        },
+      });
+
+      this.createGame(engineParams);
+      if (!this.gameEngine) throw new Error("No game created");
+      this.gameEngine.play();
+    });
+  }
+}
