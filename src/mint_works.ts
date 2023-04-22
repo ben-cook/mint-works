@@ -22,10 +22,12 @@ export interface PlayerWithInformation extends PlayerInformation {
 }
 
 export interface MintWorksParams {
-  players?: Array<PlayerWithInformation>;
+  players: Array<PlayerWithInformation>;
   plans?: Array<Plan>;
   locations?: Array<LocationCard>;
   deck?: Array<Plan>;
+  prefilledPlanSupply?: Array<Plan>;
+  preventInitialPlanSupplyRefill?: boolean;
 }
 
 /**
@@ -43,37 +45,89 @@ export class MintWorksEngine {
   /**
    * Create a new Mint Works game
    * @param players - The players in the game
+   * @param plans - The plans to use in the game
+   * @param locations - The locations to use in the game
    * @param deck - The deck of plans to use in the game
+   * @param prefilledPlanSupply - The plan supply to use in the game
+   * @param preventInitialPlanSupplyRefill - Whether to prevent the plan supply from being refilled from the deck when it is created
+   * @param endHook - The function to call when the game ends
+   *
+   * @remarks
+   *
+   * - If no plans are provided, the default plans are used.
+   * - If no locations are provided, the default locations are used.
+   * - If no deck is provided, a new deck is created from the plans and shuffled.
+   * - If no prefilledPlanSupply is provided or if it contains fewer plans than the plan supply capacity, the plan supply is refilled from the deck until it reaches capacity. Unless preventInitialPlanSupplyRefill is true.
+   * - If preventInitialPlanSupplyRefill is true, the plan supply is not refilled from the deck when it is created.
+   *
+   * @remarks
+   *
+   * preventInitialPlanSupplyRefill is used to prevent the plan supply from being refilled from the deck when the game is created. This is useful for initialising the game state in a time where the plan supply should not be refilled from the deck. For example, when the game is being initialised in the middle of the development phase.
+   *
+   * @example
+   *
+   * // Create a new game with the default plans and locations
+   * const engine = new MintWorksEngine({
+   *   players: [
+   *     {
+   *       player: new MyPlayer(),
+   *       tokens: 3,
+   *       label: "Player 1",
+   *       age: 18,
+   *       neighbourhood: new Neighbourhood(),
+   *     },
+   *     {
+   *       player: new MyPlayer(),
+   *       tokens: 3,
+   *       label: "Player 2",
+   *       age: 18,
+   *       neighbourhood: new Neighbourhood(),
+   *     },
+   *   ],
+   * });
+   *
+   * // Create a new game from a game state (saved in a database for example)
+   * const { players, locations, deck, prefilledPlanSupply } = await getGameStateFromDatabase();
+   * const engine = new MintWorksEngine({
+   *   players,
+   *   locations,
+   *   deck,
+   *   prefilledPlanSupply,
+   *   preventInitialPlanSupplyRefill: true,
+   * });
+   *
    */
-  constructor({ players, deck }: MintWorksParams, endHook: () => void) {
-    if (!players || players.length < 1)
-      throw new Error("Must provide players to MintWorks constructor");
-
-    this.endHook = endHook;
-
+  constructor(
+    {
+      players,
+      plans = createPlans(),
+      locations = createLocations(),
+      deck,
+      prefilledPlanSupply = [],
+      preventInitialPlanSupplyRefill = false,
+    }: MintWorksParams,
+    endHook: () => void
+  ) {
     // Set up players of the game
     this.players = players;
-
-    if (!deck) {
-      const plans = createPlans();
-      deck = plans.slice();
-    }
-    shuffleArray(deck);
-
-    // Set up the plan deck
-    this.locations = createLocations();
-
-    // Set up the plan supply
-    this.planSupply = new PlanSupply(deck);
-
-    // TODO: investigate if this is needed anymore
-    // this.linkPlansAndLocations();
-
     if (!this.players || this.players.length < 1 || !this.players[0]) {
       throw new Error("No players provided to MintWorks constructor");
     }
 
     this.startingPlayerToken = this.players[0].label;
+
+    this.endHook = endHook;
+
+    // Set up the deck of plans. If no deck is provided, create a new one from the plans and shuffle it.
+    if (!deck) {
+      deck = plans.slice();
+      shuffleArray(deck);
+    }
+
+    this.locations = locations;
+
+    // Set up the plan supply
+    this.planSupply = new PlanSupply(deck, prefilledPlanSupply, preventInitialPlanSupplyRefill);
   }
 
   /**
