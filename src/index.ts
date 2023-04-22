@@ -8,7 +8,6 @@ import {
 import { Neighbourhood } from "./neighbourhood";
 import { Turn } from "./turn";
 import { PlayerHelper } from "./players/player_helper";
-import cloneDeep from "lodash/cloneDeep";
 import { Plan } from "./plan";
 import { LocationCard } from "./location";
 
@@ -169,7 +168,7 @@ export class MintWorksStateManager {
    */
   constructor({ state, turn }: { state: MintWorksEngineState; turn: Turn }) {
     if (!MintWorksTurnFactory.validateTurn({ turn, state })) throw new Error("Invalid turn");
-    this.initialState = cloneDeep(state);
+    this.initialState = state;
     this.turn = turn;
   }
 
