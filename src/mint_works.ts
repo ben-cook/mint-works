@@ -65,8 +65,8 @@ export class MintWorksEngine {
    * preventInitialPlanSupplyRefill is used to prevent the plan supply from being refilled from the deck when the game is created. This is useful for initialising the game state in a time where the plan supply should not be refilled from the deck. For example, when the game is being initialised in the middle of the development phase.
    *
    * @example
-   *
-   * // Create a new game with the default plans and locations
+   * Create a new game with the default plans and locations:
+   * ```
    * const engine = new MintWorksEngine({
    *   players: [
    *     {
@@ -85,8 +85,11 @@ export class MintWorksEngine {
    *     },
    *   ],
    * });
+   *```
    *
-   * // Create a new game from a game state (saved in a database for example)
+   * @example
+   * Create a new game from a game state (saved in a database for example):
+   * ```
    * const { players, locations, deck, prefilledPlanSupply } = await getGameStateFromDatabase();
    * const engine = new MintWorksEngine({
    *   players,
@@ -95,7 +98,7 @@ export class MintWorksEngine {
    *   prefilledPlanSupply,
    *   preventInitialPlanSupplyRefill: true,
    * });
-   *
+   *```
    */
   constructor(
     {
