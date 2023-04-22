@@ -1,7 +1,7 @@
 import { IPlayer } from "./player";
 import { Turn } from "./turn";
 import { gameLogger, gameLogger as logger } from "./logger";
-import { State } from "./state";
+import { State, StatePlayer } from "./state";
 import { createPlans, PlanName } from "./plans";
 import { createLocations, LocationCard } from "./location";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood";
