@@ -1,5 +1,8 @@
 import { LocationCard, createLocationsFromState } from "../location";
 import { MintWorksEngineState } from "../mint_works";
+import { Neighbourhood } from "../neighbourhood";
+import { HandPlan, Building } from "../plan";
+import { addHooksToPlans } from "../plans";
 import type { State, StatePlayer } from "../state";
 import type { Turn } from "../turn";
 
@@ -168,7 +171,14 @@ export class PlayerHelper {
       locations: createLocationsFromState(state.locations),
       planSupply: state.planSupply,
       numPlansInDeck: state.numPlansInDeck,
-      players: state.players,
+      players: state.players.map((p) => ({
+        label: p.label,
+        tokens: p.tokens,
+        neighbourhood: new Neighbourhood({
+          plans: addHooksToPlans(p.neighbourhood.plans) as Array<HandPlan>,
+          buildings: addHooksToPlans(p.neighbourhood.buildings) as Array<Building>,
+        }),
+      })),
     };
   }
 }
