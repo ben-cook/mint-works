@@ -8,8 +8,9 @@ import {
 import { Neighbourhood } from "./neighbourhood";
 import { Turn } from "./turn";
 import { PlayerHelper } from "./players/player_helper";
-import { Plan } from "./plan";
+import { Building, HandPlan, Plan } from "./plan";
 import { LocationCard, createLocationsFromState } from "./location";
+import { addHooksToPlans } from "./plans";
 
 /**
  *
@@ -223,7 +224,10 @@ export class MintWorksStateManager {
     return state.players.map((player) => {
       return {
         label: player.label,
-        neighbourhood: player.neighbourhood as Neighbourhood,
+        neighbourhood: new Neighbourhood({
+          plans: addHooksToPlans(player.neighbourhood.plans) as Array<HandPlan>,
+          buildings: addHooksToPlans(player.neighbourhood.buildings) as Array<Building>,
+        }),
         player: new InterfacePlayer({
           name: player.label,
           interactionHooks: this.constructPlayerInteractionHooks({ turn, returnStateHook }),
@@ -261,7 +265,7 @@ export class MintWorksStateManager {
    * @returns An array of plans
    */
   private constructPlanSupply({ state }: { state: MintWorksEngineState }): Array<Plan> {
-    return state.planSupply;
+    return addHooksToPlans(state.planSupply);
   }
 
   /**
