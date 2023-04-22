@@ -3,7 +3,13 @@ import { Turn } from "./turn";
 import { gameLogger, gameLogger as logger } from "./logger";
 import { State, StatePlayer } from "./state";
 import { createPlans, PlanName } from "./plans";
-import { createLocations, LocationCard } from "./location";
+import {
+  createLocations,
+  createLocationsConstructor,
+  createLocationsFromState,
+  LocationCard,
+  LocationConstructor,
+} from "./location";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood";
 import { PlanSupply } from "./plan_supply";
 import { findWinner } from "./scoring";
@@ -30,7 +36,11 @@ export interface MintWorksParams {
   preventInitialPlanSupplyRefill?: boolean;
 }
 
-export interface MintWorksEngineState extends State {
+export interface MintWorksEngineState {
+  locations: Array<LocationConstructor>;
+  planSupply: Array<Plan>;
+  numPlansInDeck: number;
+  players: Array<StatePlayer>;
   roundNumber: number;
   playerToTakeTurn?: string;
   startingPlayerToken: string;
@@ -650,7 +660,7 @@ export class MintWorksEngine {
    */
   public getEngineState(): MintWorksEngineState {
     const engineState = {
-      locations: this.locations,
+      locations: createLocationsConstructor(this.locations),
       planSupply: this.planSupply.plans,
       numPlansInDeck: this.planSupply.numPlansLeftInDeck,
       players: this.constructEngineStatePlayers({ players: this.players }),

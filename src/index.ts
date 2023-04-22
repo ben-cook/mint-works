@@ -9,7 +9,7 @@ import { Neighbourhood } from "./neighbourhood";
 import { Turn } from "./turn";
 import { PlayerHelper } from "./players/player_helper";
 import { Plan } from "./plan";
-import { LocationCard } from "./location";
+import { LocationCard, createLocationsFromState } from "./location";
 
 /**
  *
@@ -121,7 +121,8 @@ export class MintWorksTurnFactory {
    * @returns The turns that the player can take.
    */
   public getTurns(): Array<Turn> {
-    return this.playerHelper.generateTurns(this.state);
+    const parsedState = this.playerHelper.parseStateFromEngineState(this.state);
+    return this.playerHelper.generateTurns(parsedState);
   }
 
   /**
@@ -240,7 +241,7 @@ export class MintWorksStateManager {
    * @returns An array of locations
    */
   private constructLocations({ state }: { state: MintWorksEngineState }): Array<LocationCard> {
-    return state.locations;
+    return createLocationsFromState(state.locations);
   }
 
   /**

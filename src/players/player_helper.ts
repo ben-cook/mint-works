@@ -1,4 +1,5 @@
-import type { LocationCard } from "../location";
+import { LocationCard, createLocationsFromState } from "../location";
+import { MintWorksEngineState } from "../mint_works";
 import type { State, StatePlayer } from "../state";
 import type { Turn } from "../turn";
 
@@ -160,5 +161,14 @@ export class PlayerHelper {
     const player = state.players.find((p) => p.label === this.name);
     if (!player) throw new Error("Player not found");
     return player;
+  }
+
+  parseStateFromEngineState(state: MintWorksEngineState): State {
+    return {
+      locations: createLocationsFromState(state.locations),
+      planSupply: state.planSupply,
+      numPlansInDeck: state.numPlansInDeck,
+      players: state.players,
+    };
   }
 }
