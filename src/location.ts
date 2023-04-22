@@ -6,13 +6,14 @@ export class Slot {
   /** The price to use this token */
   basePrice: number;
   /** The number of tokens on this slot */
-  tokens = 0;
+  tokens: number;
 
   /**
    *
    */
-  constructor(basePrice: number) {
+  constructor(basePrice: number, tokens = 0) {
     this.basePrice = basePrice;
+    this.tokens = tokens;
   }
 
   /** Return if the slot is available */
@@ -41,6 +42,7 @@ export interface LocationConstructor {
   numberOfSlots: number;
   mappedAction?: Turn["action"]["_type"];
   startClosed?: boolean;
+  startingSlots?: Array<{ basePrice: number; token: number }>;
 }
 
 /** Location cards are where players can place mint tokens. */
@@ -64,6 +66,7 @@ export class LocationCard {
     numberOfSlots,
     startClosed = false,
     mappedAction,
+    startingSlots = [],
   }: LocationConstructor) {
     this.name = name;
     this.type = type;
@@ -71,7 +74,7 @@ export class LocationCard {
     this.slotBasePrice = slotBasePrice;
     this.numberOfSlots = numberOfSlots;
     this.mappedAction = mappedAction;
-    this.slots = [];
+    this.slots = startingSlots.map((slot) => new Slot(slot.basePrice, slot.token));
     if (!startClosed) this.openLocation();
   }
 
@@ -189,3 +192,23 @@ export const Locations = [Builder, Supplier, Producer, Lotto, Wholesaler, Leader
  */
 export const createLocations = (customLocations?: Array<LocationCard>): Array<LocationCard> =>
   customLocations ? [...customLocations] : [...Locations];
+
+export const createLocationsFromState = (state: Array<LocationConstructor>): Array<LocationCard> =>
+  state.map((location) => new LocationCard(location));
+
+export const createLocationsConstructor = (
+  locations: Array<LocationCard>
+): Array<LocationConstructor> => {
+  return locations.map((location) => ({
+    name: location.name,
+    type: location.type,
+    effect: location.effect,
+    slotBasePrice: location.slotBasePrice,
+    numberOfSlots: location.numberOfSlots,
+    mappedAction: location.mappedAction,
+    startingSlots: location.slots.map((slot) => ({
+      basePrice: slot.basePrice,
+      token: slot.tokens,
+    })),
+  }));
+};
