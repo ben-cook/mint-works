@@ -19,8 +19,8 @@
     "build": "run-s clean:build && tsc -p tsconfig.module.json",
     "git": "run-s lint:ci test:ci docs",
     "play:terminal": "node --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings scripts/play_terminal",
-    "test": "node --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings scripts/pretest --usertest && jest",
-    "test:ci": " run-s clean:coverage && node --loader ts-node/esm --experimental-specifier-resolution=node --no-warnings scripts/pretest --usertest && jest | tee ./coverage/coverage.txt",
+    "test": "jest src",
+    "test:ci": " run-s clean:coverage && jest src | tee ./coverage/coverage.txt",
     "docs": "run-s clean:docs-publish clean:docs-tmp docs:readme docs:home docs:publish clean:docs-tmp",
     "docs:publish": "typedoc src/index.ts --out docs/v1 --readme none",
     "docs:readme": "typedoc src/index.ts --out docs/tmp/ && cp -r docs/tmp/assets docs/assets",
@@ -50,6 +50,7 @@
     "@tsconfig/node16": "^1.0.3",
     "@types/inquirer": "^9.0.3",
     "@types/jest": "^29.5.0",
+    "@types/lodash": "^4.14.194",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
@@ -70,6 +71,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "loglevel": "^1.8.1"
   }
 }
