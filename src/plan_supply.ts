@@ -35,7 +35,10 @@ export class PlanSupply {
     }
   }
 
-  /** Takes a plan from the plan supply */
+  /**
+   * Takes a plan from the plan supply.
+   * @param plan - The plan to take from the plan supply.
+   */
   public take(plan: Plan) {
     const index = this.planSupply.findIndex((p) => p.name === plan.name);
     const foundPlan = this.planSupply.at(index);
@@ -43,10 +46,12 @@ export class PlanSupply {
     return foundPlan;
   }
 
-  /** Refills the plan supply with plans from the top of the deck.
+  /**
+   * Refills the plan supply with plans from the top of the deck.
+   *
    * @returns a boolean indicating whether or not the refill was successful
    */
-  public refill() {
+  public refill(): boolean {
     gameLogger.info("plan sup len" + this.planSupply.length);
     gameLogger.info("plan sup cap" + PlanSupply.planSupplyCapacity);
     while (this.planSupply.length < PlanSupply.planSupplyCapacity) {
@@ -61,7 +66,9 @@ export class PlanSupply {
   }
 
   /**
+   * Draws a plan from the top of the deck. The plan is hidden.
    *
+   * @returns The plan drawn from the top of the deck, or undefined if the deck is empty.
    */
   public lottoDeckDraw(): Plan | undefined {
     const plan = this.deck.pop();
@@ -70,14 +77,20 @@ export class PlanSupply {
   }
 
   /**
+   * Gets the plan supply plans (face-up plans in the plan supply, not the deck).
    *
+   * @returns The plan supply plans
    */
-  public get plans() {
+  public get plans(): Deck {
     return this.planSupply;
   }
 
-  /** The number of plans in the deck (not counting face-up plans in the plan supply) */
-  public get numPlansLeftInDeck() {
+  /**
+   * The number of plans in the deck (not counting face-up plans in the plan supply)
+   *
+   * @returns The number of plans in the deck
+   */
+  public get numPlansLeftInDeck(): number {
     return this.deck.length;
   }
 }
