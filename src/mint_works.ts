@@ -30,6 +30,13 @@ export interface MintWorksParams {
   preventInitialPlanSupplyRefill?: boolean;
 }
 
+export interface MintWorksEngineState extends State {
+  roundNumber: number;
+  playerToTakeTurn?: string;
+  startingPlayerToken: string;
+  deck: Array<Plan>;
+}
+
 /**
  * The main class for the Mint Works game engine. This class is responsible for managing the game state and orchestrating the game.
  */
@@ -42,6 +49,7 @@ export class MintWorksEngine {
   startingPlayerToken: string;
   endHook: () => void;
   playing = false;
+  playerToTakeTurn?: string;
 
   /**
    * Create a new Mint Works game
@@ -204,7 +212,9 @@ export class MintWorksEngine {
 
       const playerState = this.getPlayerState(player);
 
+      this.playerToTakeTurn = player.label;
       const turn = await player.player.takeTurn(playerState);
+      delete this.playerToTakeTurn;
 
       try {
         if (turn.action._type === "Pass") {
@@ -611,5 +621,45 @@ export class MintWorksEngine {
         }
       });
     }
+  }
+
+  /**
+   * Construct the players for the engine state.
+   * @param players - The players to construct the state for
+   *
+   * @returns The players for the engine state
+   */
+  private constructEngineStatePlayers({
+    players,
+  }: {
+    players: Array<PlayerWithInformation>;
+  }): Array<StatePlayer> {
+    return players.map((player) => {
+      return {
+        label: player.label,
+        neighbourhood: player.neighbourhood,
+        tokens: player.tokens,
+      };
+    });
+  }
+
+  /**
+   * Get the current state of the engine.
+   *
+   * @returns The current state of the engine.
+   */
+  public getEngineState(): MintWorksEngineState {
+    const engineState = {
+      locations: this.locations,
+      planSupply: this.planSupply.plans,
+      numPlansInDeck: this.planSupply.numPlansLeftInDeck,
+      players: this.constructEngineStatePlayers({ players: this.players }),
+      roundNumber: this.roundNumber,
+      playerToTakeTurn: this.playerToTakeTurn,
+      startingPlayerToken: this.startingPlayerToken,
+      deck: this.planSupply.deck,
+    } satisfies MintWorksEngineState;
+    gameLogger.info("Engine state", engineState);
+    return engineState;
   }
 }
