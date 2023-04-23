@@ -6,7 +6,6 @@ import { createPlans, PlanName } from "./plans";
 import {
   createLocations,
   createLocationsConstructor,
-  createLocationsFromState,
   LocationCard,
   LocationConstructor,
 } from "./location";
@@ -131,6 +130,8 @@ export class MintWorksEngine {
       deck,
       prefilledPlanSupply = [],
       preventInitialPlanSupplyRefill = false,
+      startingPlayerToken,
+      playerToTakeTurn,
     }: MintWorksParams,
     endHook: () => void
   ) {
@@ -140,7 +141,9 @@ export class MintWorksEngine {
       throw new Error("No players provided to MintWorks constructor");
     }
 
-    this.startingPlayerToken = this.players[0].label;
+    this.startingPlayerToken = startingPlayerToken ?? this.players[0].label;
+    this.playerToTakeTurn = playerToTakeTurn ?? this.startingPlayerToken;
+    this.playerToTakeTurnIndex = this.players.findIndex((p) => p.label === this.playerToTakeTurn);
 
     this.endHook = endHook;
 
@@ -207,10 +210,10 @@ export class MintWorksEngine {
    */
   private async development(): Promise<void> {
     const numPlayers = this.players.length;
-    let numConsecutivePasses = 0;
+    this.numConsecutivePasses = 0;
     let i = this.players.findIndex((p) => p.label === this.startingPlayerToken);
 
-    while (numConsecutivePasses < numPlayers) {
+    while (this.numConsecutivePasses < numPlayers) {
       const player = this.players[i];
       logger.info(`Player ${i}: (${player.label}'s turn)`);
 
@@ -228,15 +231,9 @@ export class MintWorksEngine {
 
       this.playerToTakeTurn = player.label;
       const turn = await player.player.takeTurn(playerState);
-      delete this.playerToTakeTurn;
 
       try {
-        if (turn.action._type === "Pass") {
-          numConsecutivePasses++;
-        } else {
-          numConsecutivePasses = 0;
-          this.simulateTurn(turn);
-        }
+        await this.simulateTurn(turn);
       } catch (err) {
         logger.error(`Invalid turn! Error: ${err}`);
         this.EndGame();
