@@ -66,7 +66,7 @@ export class LocationCard {
     numberOfSlots,
     startClosed = false,
     mappedAction,
-    startingSlots = [],
+    startingSlots,
   }: LocationConstructor) {
     this.name = name;
     this.type = type;
@@ -74,8 +74,13 @@ export class LocationCard {
     this.slotBasePrice = slotBasePrice;
     this.numberOfSlots = numberOfSlots;
     this.mappedAction = mappedAction;
-    this.slots = startingSlots.map((slot) => new Slot(slot.basePrice, slot.token));
-    if (!startClosed) this.openLocation();
+    this.slots = [];
+    if (!startClosed)
+      this.openLocation(
+        startingSlots
+          ? startingSlots.map((slot) => new Slot(slot.basePrice, slot.token))
+          : undefined
+      );
   }
 
   /** Return if a location has at least one free slot */
@@ -108,9 +113,10 @@ export class LocationCard {
   }
 
   /** Populate the location with slots */
-  public openLocation(): void {
+  public openLocation(slots?: Array<Slot>): void {
     gameLogger.info(`${this.name} has opened`);
-    this.slots = Array.from({ length: this.numberOfSlots }, () => new Slot(this.slotBasePrice));
+    this.slots =
+      slots ?? Array.from({ length: this.numberOfSlots }, () => new Slot(this.slotBasePrice));
   }
 
   /** Remove slots from the location */
