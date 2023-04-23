@@ -34,6 +34,8 @@ export interface MintWorksParams {
   deck?: Array<Plan>;
   prefilledPlanSupply?: Array<Plan>;
   preventInitialPlanSupplyRefill?: boolean;
+  startingPlayerToken?: string;
+  playerToTakeTurn?: string;
 }
 
 export interface MintWorksEngineState {
@@ -42,7 +44,7 @@ export interface MintWorksEngineState {
   numPlansInDeck: number;
   players: Array<StatePlayer>;
   roundNumber: number;
-  playerToTakeTurn?: string;
+  playerToTakeTurn: string;
   startingPlayerToken: string;
   deck: Array<Plan>;
 }
@@ -59,7 +61,9 @@ export class MintWorksEngine {
   startingPlayerToken: string;
   endHook: () => void;
   playing = false;
-  playerToTakeTurn?: string;
+  playerToTakeTurn: string;
+  playerToTakeTurnIndex: number;
+  numConsecutivePasses = 0;
 
   /**
    * Create a new Mint Works game
@@ -431,7 +435,31 @@ export class MintWorksEngine {
    * Simulate taking a turn
    * @param turn - The turn to simulate
    */
-  private simulateTurn(turn: Turn): void {
+  public async simulateTurn(turn: Turn): Promise<void> {
+    logger.info(`Simulating turn for ${turn.playerName}...`, turn);
+
+    if (turn.action._type === "Pass") {
+      this.numConsecutivePasses++;
+      if (this.numConsecutivePasses < this.players.length) {
+        if (this.playerToTakeTurnIndex === this.players.length - 1) {
+          this.playerToTakeTurnIndex = 0;
+        } else {
+          this.playerToTakeTurnIndex++;
+        }
+        this.playerToTakeTurn = this.players[this.playerToTakeTurnIndex].label;
+      } else {
+        this.playerToTakeTurnIndex = this.players.findIndex(
+          (p) => p.label === this.startingPlayerToken
+        );
+        this.playerToTakeTurn = this.players[this.playerToTakeTurnIndex].label;
+        await this.upkeep();
+      }
+
+      return;
+    } else {
+      this.numConsecutivePasses = 0;
+    }
+
     const player = this.players.find((p) => p.label === turn.playerName);
     if (!player) throw new Error("Player not found");
     const playerTokens = player.tokens;
@@ -548,9 +576,6 @@ export class MintWorksEngine {
         }
         break;
 
-      case "Pass":
-        throw new Error("Pass action should not be handled here");
-
       case "Produce":
         player.tokens += 2;
         break;
@@ -591,6 +616,21 @@ export class MintWorksEngine {
       default:
         throw new Error("Unknown action type");
     }
+
+    if (this.numConsecutivePasses < this.players.length) {
+      if (this.playerToTakeTurnIndex === this.players.length - 1) {
+        this.playerToTakeTurnIndex = 0;
+      } else {
+        this.playerToTakeTurnIndex++;
+      }
+    } else {
+      this.playerToTakeTurnIndex = this.players.findIndex(
+        (p) => p.label === this.startingPlayerToken
+      );
+      this.upkeep();
+    }
+
+    this.playerToTakeTurn = this.players[this.playerToTakeTurnIndex].label;
   }
 
   /**
