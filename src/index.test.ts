@@ -89,6 +89,21 @@ function getFirstValidTurn({ state }: { state: MintWorksEngineState }): Turn {
   return mintWorksTurnFactory.getTurns()[0];
 }
 
+function getTurn({
+  state,
+  turnActionType,
+}: {
+  state: MintWorksEngineState;
+  turnActionType: Turn["action"]["_type"];
+}): Turn | undefined {
+  const mintWorksTurnFactory = new MintWorksTurnFactory({
+    state,
+  });
+  const turns = mintWorksTurnFactory.getTurns();
+  const turn = turns.find((turn) => turn.action._type === turnActionType);
+  return turn;
+}
+
 const initialGameStateTurn = getFirstValidTurn({
   state: initialGameState,
 });
@@ -133,17 +148,79 @@ describe("MintWorksStateManager", () => {
       const mintWorksStateManager = new MintWorksStateManager(initialStateParams);
       const newState = await mintWorksStateManager.simulateTurn();
       expect(newState).toBeDefined();
+
+      const newStateTurn = getFirstValidTurn({
+        state: newState,
+      });
       const mintWorksStateManger2 = new MintWorksStateManager({
         state: newState,
-        turn: getFirstValidTurn({
-          state: newState,
-        }),
+        turn: newStateTurn,
       });
 
       const newState2 = await mintWorksStateManger2.simulateTurn();
 
+      const newState2Turn = getFirstValidTurn({
+        state: newState2,
+      });
+
       expect(newState2).toBeDefined();
-      expect(newState.playerToTakeTurn).not.toEqual(newState2.playerToTakeTurn);
+      expect(newState.playerToTakeTurn).toEqual(newStateTurn.playerName);
+      expect(newState2.playerToTakeTurn).toEqual(newState2Turn.playerName);
+      expect(newState2.playerToTakeTurn).not.toEqual(newState.playerToTakeTurn);
+    });
+    it("players can only produce a number of times equal to the number of slots in the producer", async () => {
+      const initialProdEngine = new MintWorks();
+      initialProdEngine.addPlayer(players[0][0]);
+      initialProdEngine.addPlayer(players[1][0]);
+      initialProdEngine.createGame();
+      const initialProdGameState = initialProdEngine.gameEngine?.getEngineState()!;
+      const initialProduce = getTurn({
+        state: initialGameState,
+        turnActionType: "Produce",
+      });
+      const mintWorksStateManager = new MintWorksStateManager({
+        state: initialProdGameState,
+        turn: initialProduce!,
+      });
+      const newState = await mintWorksStateManager.simulateTurn();
+      expect(newState).toBeDefined();
+
+      const newStateTurn = getTurn({
+        state: newState,
+        turnActionType: "Produce",
+      });
+
+      expect(newStateTurn).toBeDefined();
+
+      const mintWorksStateManger2 = new MintWorksStateManager({
+        state: newState,
+        turn: newStateTurn!,
+      });
+
+      const newState2 = await mintWorksStateManger2.simulateTurn();
+
+      const newState2Turn = getTurn({
+        state: newState2,
+        turnActionType: "Produce",
+      });
+
+      expect(newState2Turn).toBeUndefined();
+
+      console.log(
+        "Producer",
+        initialProdGameState.locations.find((l) => l.name === "Producer")?.startingSlots
+      );
+
+      console.log("Producer", newState.locations.find((l) => l.name === "Producer")?.startingSlots);
+
+      console.log(
+        "Producer",
+        newState2.locations.find((l) => l.name === "Producer")?.startingSlots
+      );
+
+      expect(newState2).toBeDefined();
+      expect(newState.playerToTakeTurn).toEqual(newStateTurn!.playerName);
+      expect(newState2.playerToTakeTurn).not.toEqual(newState.playerToTakeTurn);
     });
   });
 });

@@ -181,20 +181,13 @@ export class MintWorksStateManager {
    *
    * @returns The player interaction hooks
    */
-  private constructPlayerInteractionHooks({
-    turn,
-    returnStateHook,
-  }: {
-    turn: Turn;
-    returnStateHook: () => void;
-  }): InteractionHooks {
+  private constructPlayerInteractionHooks({ turn }: { turn: Turn }): InteractionHooks {
     return {
       /** Applies the pre-determined player turn if its their turn, otherwise return the game state using the returnStateHook */
       getTurnFromInterface: async (turns: Array<Turn>): Promise<Turn> => {
         if (turns[0].playerName === turn.playerName) {
           return turn;
         }
-        await returnStateHook();
         return turns[0];
       },
       /** TODO: Implement a proper solution for this */
@@ -215,11 +208,9 @@ export class MintWorksStateManager {
   private constructPlayersWithInformation({
     state,
     turn,
-    returnStateHook,
   }: {
     state: MintWorksEngineState;
     turn: Turn;
-    returnStateHook: () => void;
   }): Array<PlayerWithInformation> {
     return state.players.map((player) => {
       return {
@@ -230,7 +221,7 @@ export class MintWorksStateManager {
         }),
         player: new InterfacePlayer({
           name: player.label,
-          interactionHooks: this.constructPlayerInteractionHooks({ turn, returnStateHook }),
+          interactionHooks: this.constructPlayerInteractionHooks({ turn }),
         }),
         tokens: player.tokens,
         age: 18,
@@ -279,18 +270,18 @@ export class MintWorksStateManager {
   private constructEngineParams({
     state,
     turn,
-    returnStateHook,
   }: {
     state: MintWorksEngineState;
     turn: Turn;
-    returnStateHook: () => void;
   }): MintWorksStateManagerEngineParams {
     return {
-      players: this.constructPlayersWithInformation({ state, turn, returnStateHook }),
+      players: this.constructPlayersWithInformation({ state, turn }),
       locations: this.constructLocations({ state }),
       deck: this.constructDeck({ state }),
       prefilledPlanSupply: this.constructPlanSupply({ state }),
       preventInitialPlanSupplyRefill: true,
+      startingPlayerToken: state.startingPlayerToken,
+      playerToTakeTurn: state.playerToTakeTurn,
     };
   }
 
@@ -311,21 +302,15 @@ export class MintWorksStateManager {
    * @returns The state of the game after the turn has been simulated
    */
   public async simulateTurn(): Promise<MintWorksEngineState> {
-    return new Promise((resolve) => {
-      const engineParams = this.constructEngineParams({
-        state: this.initialState,
-        turn: this.turn,
-        /** Called to return the engine state */
-        returnStateHook: () => {
-          if (!this.gameEngine) throw new Error("No game created");
-          resolve(this.gameEngine.getEngineState());
-          this.gameEngine.pause();
-        },
-      });
-
-      this.createGame(engineParams);
-      if (!this.gameEngine) throw new Error("No game created");
-      this.gameEngine.play();
+    const engineParams = this.constructEngineParams({
+      state: this.initialState,
+      turn: this.turn,
     });
+
+    this.createGame(engineParams);
+    if (!this.gameEngine) throw new Error("No game created");
+
+    await this.gameEngine.simulateTurn(this.turn);
+    return this.gameEngine.getEngineState();
   }
 }
