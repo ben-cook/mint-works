@@ -35,6 +35,8 @@ export interface MintWorksParams {
   preventInitialPlanSupplyRefill?: boolean;
   startingPlayerToken?: string;
   playerToTakeTurn?: string;
+  numConsecutivePasses?: number;
+  roundNumber?: number;
 }
 
 export interface MintWorksEngineState {
@@ -45,6 +47,7 @@ export interface MintWorksEngineState {
   roundNumber: number;
   playerToTakeTurn: string;
   startingPlayerToken: string;
+  numConsecutivePasses: number;
   deck: Array<Plan>;
 }
 
@@ -52,7 +55,7 @@ export interface MintWorksEngineState {
  * The main class for the Mint Works game engine. This class is responsible for managing the game state and orchestrating the game.
  */
 export class MintWorksEngine {
-  roundNumber = 1;
+  roundNumber: number;
   locations: Array<LocationCard>;
   players: Array<PlayerWithInformation>;
   planSupply: PlanSupply;
@@ -62,7 +65,7 @@ export class MintWorksEngine {
   playing = false;
   playerToTakeTurn: string;
   playerToTakeTurnIndex: number;
-  numConsecutivePasses = 0;
+  numConsecutivePasses: number;
 
   /**
    * Create a new Mint Works game
@@ -132,6 +135,8 @@ export class MintWorksEngine {
       preventInitialPlanSupplyRefill = false,
       startingPlayerToken,
       playerToTakeTurn,
+      roundNumber = 1,
+      numConsecutivePasses = 0,
     }: MintWorksParams,
     endHook: () => void
   ) {
@@ -144,6 +149,8 @@ export class MintWorksEngine {
     this.startingPlayerToken = startingPlayerToken ?? this.players[0].label;
     this.playerToTakeTurn = playerToTakeTurn ?? this.startingPlayerToken;
     this.playerToTakeTurnIndex = this.players.findIndex((p) => p.label === this.playerToTakeTurn);
+    this.roundNumber = roundNumber;
+    this.numConsecutivePasses = numConsecutivePasses;
 
     this.endHook = endHook;
 
@@ -705,6 +712,7 @@ export class MintWorksEngine {
       playerToTakeTurn: this.playerToTakeTurn,
       startingPlayerToken: this.startingPlayerToken,
       deck: this.planSupply.deck,
+      numConsecutivePasses: this.numConsecutivePasses,
     } satisfies MintWorksEngineState;
     gameLogger.info("Engine state", engineState);
     return engineState;

@@ -282,6 +282,8 @@ export class MintWorksStateManager {
       preventInitialPlanSupplyRefill: true,
       startingPlayerToken: state.startingPlayerToken,
       playerToTakeTurn: state.playerToTakeTurn,
+      roundNumber: state.roundNumber,
+      numConsecutivePasses: state.numConsecutivePasses,
     };
   }
 
