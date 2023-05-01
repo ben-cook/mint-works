@@ -429,6 +429,30 @@ export class MintWorksEngine {
   }
 
   /**
+   * Set the next player to take a turn
+   */
+  private nextPlayer(): void {
+    if (this.playerToTakeTurnIndex === this.players.length - 1) {
+      this.playerToTakeTurnIndex = 0;
+    } else {
+      this.playerToTakeTurnIndex++;
+    }
+    this.playerToTakeTurn = this.players[this.playerToTakeTurnIndex].label;
+  }
+
+  /**
+   * Completes the round by setting the player to take turn to the player with the starting token
+   */
+  private async completeRound(): Promise<void> {
+    this.numConsecutivePasses = 0;
+    this.playerToTakeTurnIndex = this.players.findIndex(
+      (p) => p.label === this.startingPlayerToken
+    );
+    this.playerToTakeTurn = this.players[this.playerToTakeTurnIndex].label;
+    await this.upkeep();
+  }
+
+  /**
    * Simulate taking a turn
    * @param turn - The turn to simulate
    */
@@ -438,21 +462,10 @@ export class MintWorksEngine {
     if (turn.action._type === "Pass") {
       this.numConsecutivePasses++;
       if (this.numConsecutivePasses < this.players.length) {
-        if (this.playerToTakeTurnIndex === this.players.length - 1) {
-          this.playerToTakeTurnIndex = 0;
-        } else {
-          this.playerToTakeTurnIndex++;
-        }
-        this.playerToTakeTurn = this.players[this.playerToTakeTurnIndex].label;
+        return this.nextPlayer();
       } else {
-        this.playerToTakeTurnIndex = this.players.findIndex(
-          (p) => p.label === this.startingPlayerToken
-        );
-        this.playerToTakeTurn = this.players[this.playerToTakeTurnIndex].label;
-        await this.upkeep();
+        return await this.completeRound();
       }
-
-      return;
     } else {
       this.numConsecutivePasses = 0;
     }
@@ -614,20 +627,7 @@ export class MintWorksEngine {
         throw new Error("Unknown action type");
     }
 
-    if (this.numConsecutivePasses < this.players.length) {
-      if (this.playerToTakeTurnIndex === this.players.length - 1) {
-        this.playerToTakeTurnIndex = 0;
-      } else {
-        this.playerToTakeTurnIndex++;
-      }
-    } else {
-      this.playerToTakeTurnIndex = this.players.findIndex(
-        (p) => p.label === this.startingPlayerToken
-      );
-      this.upkeep();
-    }
-
-    this.playerToTakeTurn = this.players[this.playerToTakeTurnIndex].label;
+    return this.nextPlayer();
   }
 
   /**
