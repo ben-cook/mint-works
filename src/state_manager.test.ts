@@ -1,6 +1,7 @@
-import { MintWorks, MintWorksStateManager, MintWorksTurnFactory } from ".";
-import { MintWorksEngineState } from "./mint_works";
+import { MintWorks, MintWorksStateManager } from "./state_manager";
+import { MintWorksEngineState } from "./engine";
 import { Turn } from "./turn";
+import { MintWorksTurnFactory } from "./turn_factory";
 
 const players: Array<Parameters<MintWorks["addPlayer"]>> = [
   [
@@ -68,19 +69,6 @@ initialEngine.addPlayer(players[0][0]);
 initialEngine.addPlayer(players[1][0]);
 initialEngine.createGame();
 const initialGameState = initialEngine.gameEngine?.getEngineState()!;
-
-describe("MintWorksTurnFactory", () => {
-  describe("getTurns", () => {
-    it("should return a list of turns", () => {
-      const mintWorksTurnFactory = new MintWorksTurnFactory({
-        state: initialGameState,
-        playerName: players[0][0].name,
-      });
-      const turns = mintWorksTurnFactory.getTurns();
-      expect(turns.length).toBeGreaterThanOrEqual(1);
-    });
-  });
-});
 
 function getFirstValidTurn({ state }: { state: MintWorksEngineState }): Turn {
   const mintWorksTurnFactory = new MintWorksTurnFactory({
