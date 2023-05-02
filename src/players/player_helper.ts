@@ -1,4 +1,8 @@
-import type { LocationCard } from "../location";
+import { LocationCard, createLocationsFromState } from "../location";
+import { MintWorksEngineState } from "../engine";
+import { Neighbourhood } from "../neighbourhood";
+import { HandPlan, Building } from "../plan";
+import { addHooksToPlans } from "../plans";
 import type { State, StatePlayer } from "../state";
 import type { Turn } from "../turn";
 
@@ -160,5 +164,21 @@ export class PlayerHelper {
     const player = state.players.find((p) => p.label === this.name);
     if (!player) throw new Error("Player not found");
     return player;
+  }
+
+  parseStateFromEngineState(state: MintWorksEngineState): State {
+    return {
+      locations: createLocationsFromState(state.locations),
+      planSupply: state.planSupply,
+      numPlansInDeck: state.numPlansInDeck,
+      players: state.players.map((p) => ({
+        label: p.label,
+        tokens: p.tokens,
+        neighbourhood: new Neighbourhood({
+          plans: addHooksToPlans(p.neighbourhood.plans) as Array<HandPlan>,
+          buildings: addHooksToPlans(p.neighbourhood.buildings) as Array<Building>,
+        }),
+      })),
+    };
   }
 }

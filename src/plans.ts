@@ -1,4 +1,4 @@
-import { Plan } from "./plan";
+import { Building, HandPlan, Plan } from "./plan";
 
 export type PlanName = (typeof plans)[number]["name"];
 
@@ -415,3 +415,16 @@ const plans = [
  */
 export const createPlans = (customPlans?: Array<Plan> | ReadonlyArray<Plan>): Array<Plan> =>
   customPlans ? [...customPlans] : [...plans];
+
+export function addHooksToPlans(
+  plans: Array<Plan | HandPlan | Building>
+): Array<Plan | HandPlan | Building> {
+  const possiblePlans = createPlans(plans);
+  return possiblePlans.map((plan) => {
+    const foundPlan = plans.find((p) => p.name === plan.name);
+    if (!foundPlan) {
+      throw new Error(`Plan not found: ${plan.name}`);
+    }
+    return { ...plan, hooks: foundPlan.hooks };
+  });
+}

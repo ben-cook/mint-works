@@ -5,9 +5,14 @@ import { createPlans, PlanName } from "./plans";
  *
  */
 export class Neighbourhood {
-  public plans: Array<HandPlan> = [];
+  public plans: Array<HandPlan>;
 
-  public buildings: Array<Building> = [];
+  public buildings: Array<Building>;
+
+  constructor(params?: { plans?: Array<HandPlan>; buildings?: Array<Building> }) {
+    this.plans = params?.plans ?? [];
+    this.buildings = params?.buildings ?? [];
+  }
 
   /** Search for a plan by name and return it if it exists */
   public getPlan(name: PlanName): HandPlan | undefined {

@@ -1,4 +1,4 @@
-import type { PlayerWithInformation } from "./mint_works";
+import type { PlayerWithInformation } from "./types";
 
 export interface Scoreboard {
   winner: string;

@@ -2,7 +2,7 @@ import { IPlayer } from "../player";
 import { Turn } from "../turn";
 import { State } from "../state";
 import { PlayerHelper } from "./player_helper";
-import { PlayerWithInformation } from "../mint_works";
+import { PlayerWithInformation } from "../types";
 import { HookEffect } from "../plan";
 
 /**

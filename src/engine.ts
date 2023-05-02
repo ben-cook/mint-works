@@ -1,79 +1,159 @@
 import { IPlayer } from "./player";
 import { Turn } from "./turn";
 import { gameLogger, gameLogger as logger } from "./logger";
-import { State } from "./state";
+import { State, StatePlayer } from "./state";
 import { createPlans, PlanName } from "./plans";
-import { createLocations, LocationCard } from "./location";
+import {
+  createLocations,
+  createLocationsConstructor,
+  LocationCard,
+  LocationConstructor,
+} from "./location";
 import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood";
 import { PlanSupply } from "./plan_supply";
 import { findWinner } from "./scoring";
 import { shuffleArray } from "./utils";
 import { HandPlan, Plan } from "./plan";
-
-interface PlayerInformation {
-  tokens: number;
-  label: string;
-  age: number;
-  neighbourhood: Neighbourhood;
-}
-
-export interface PlayerWithInformation extends PlayerInformation {
-  player: IPlayer;
-}
+import { PlayerWithInformation } from "./types";
 
 export interface MintWorksParams {
-  players?: Array<PlayerWithInformation>;
+  players: Array<PlayerWithInformation>;
   plans?: Array<Plan>;
   locations?: Array<LocationCard>;
   deck?: Array<Plan>;
+  prefilledPlanSupply?: Array<Plan>;
+  preventInitialPlanSupplyRefill?: boolean;
+  startingPlayerToken?: string;
+  playerToTakeTurn?: string;
+  numConsecutivePasses?: number;
+  roundNumber?: number;
+}
+
+export interface MintWorksEngineState {
+  locations: Array<LocationConstructor>;
+  planSupply: Array<Plan>;
+  numPlansInDeck: number;
+  players: Array<StatePlayer>;
+  roundNumber: number;
+  playerToTakeTurn: string;
+  startingPlayerToken: string;
+  numConsecutivePasses: number;
+  deck: Array<Plan>;
 }
 
 /**
  * The main class for the Mint Works game engine. This class is responsible for managing the game state and orchestrating the game.
  */
 export class MintWorksEngine {
-  roundNumber = 1;
+  roundNumber: number;
   locations: Array<LocationCard>;
   players: Array<PlayerWithInformation>;
   planSupply: PlanSupply;
   /** The player with the starting player token starts each round in the Development phase */
   startingPlayerToken: string;
   endHook: () => void;
+  playing = false;
+  playerToTakeTurn: string;
+  playerToTakeTurnIndex: number;
+  numConsecutivePasses: number;
 
   /**
    * Create a new Mint Works game
    * @param players - The players in the game
+   * @param plans - The plans to use in the game
+   * @param locations - The locations to use in the game
    * @param deck - The deck of plans to use in the game
+   * @param prefilledPlanSupply - The plan supply to use in the game
+   * @param preventInitialPlanSupplyRefill - Whether to prevent the plan supply from being refilled from the deck when it is created
+   * @param endHook - The function to call when the game ends
+   *
+   * @remarks
+   *
+   * - If no plans are provided, the default plans are used.
+   * - If no locations are provided, the default locations are used.
+   * - If no deck is provided, a new deck is created from the plans and shuffled.
+   * - If no prefilledPlanSupply is provided or if it contains fewer plans than the plan supply capacity, the plan supply is refilled from the deck until it reaches capacity. Unless preventInitialPlanSupplyRefill is true.
+   * - If preventInitialPlanSupplyRefill is true, the plan supply is not refilled from the deck when it is created.
+   *
+   * @remarks
+   *
+   * preventInitialPlanSupplyRefill is used to prevent the plan supply from being refilled from the deck when the game is created. This is useful for initialising the game state in a time where the plan supply should not be refilled from the deck. For example, when the game is being initialised in the middle of the development phase.
+   *
+   * @example
+   * Create a new game with the default plans and locations:
+   * ```
+   * const engine = new MintWorksEngine({
+   *   players: [
+   *     {
+   *       player: new MyPlayer(),
+   *       tokens: 3,
+   *       label: "Player 1",
+   *       age: 18,
+   *       neighbourhood: new Neighbourhood(),
+   *     },
+   *     {
+   *       player: new MyPlayer(),
+   *       tokens: 3,
+   *       label: "Player 2",
+   *       age: 18,
+   *       neighbourhood: new Neighbourhood(),
+   *     },
+   *   ],
+   * });
+   *```
+   *
+   * @example
+   * Create a new game from a game state (saved in a database for example):
+   * ```
+   * const { players, locations, deck, prefilledPlanSupply } = await getGameStateFromDatabase();
+   * const engine = new MintWorksEngine({
+   *   players,
+   *   locations,
+   *   deck,
+   *   prefilledPlanSupply,
+   *   preventInitialPlanSupplyRefill: true,
+   * });
+   *```
    */
-  constructor({ players, deck }: MintWorksParams, endHook: () => void) {
-    if (!players || players.length < 1)
-      throw new Error("Must provide players to MintWorks constructor");
-
-    this.endHook = endHook;
-
+  constructor(
+    {
+      players,
+      plans = createPlans(),
+      locations = createLocations(),
+      deck,
+      prefilledPlanSupply = [],
+      preventInitialPlanSupplyRefill = false,
+      startingPlayerToken,
+      playerToTakeTurn,
+      roundNumber = 1,
+      numConsecutivePasses = 0,
+    }: MintWorksParams,
+    endHook: () => void
+  ) {
     // Set up players of the game
     this.players = players;
-
-    if (!deck) {
-      const plans = createPlans();
-      deck = plans.slice();
-    }
-    shuffleArray(deck);
-
-    // Set up the plan deck
-    this.locations = createLocations();
-
-    // Set up the plan supply
-    this.planSupply = new PlanSupply(deck);
-
-    // TODO: investigate if this is needed anymore
-    // this.linkPlansAndLocations();
-
     if (!this.players || this.players.length < 1 || !this.players[0]) {
       throw new Error("No players provided to MintWorks constructor");
     }
 
-    this.startingPlayerToken = this.players[0].label;
+    this.startingPlayerToken = startingPlayerToken ?? this.players[0].label;
+    this.playerToTakeTurn = playerToTakeTurn ?? this.startingPlayerToken;
+    this.playerToTakeTurnIndex = this.players.findIndex((p) => p.label === this.playerToTakeTurn);
+    this.roundNumber = roundNumber;
+    this.numConsecutivePasses = numConsecutivePasses;
+
+    this.endHook = endHook;
+
+    // Set up the deck of plans. If no deck is provided, create a new one from the plans and shuffle it.
+    if (!deck) {
+      deck = plans.slice();
+      shuffleArray(deck);
+    }
+
+    this.locations = locations;
+
+    // Set up the plan supply
+    this.planSupply = new PlanSupply(deck, prefilledPlanSupply, preventInitialPlanSupplyRefill);
   }
 
   /**
@@ -82,11 +162,26 @@ export class MintWorksEngine {
   public async play(): Promise<void> {
     // TODO: For the love of humanity, refactor this function so it isn't an infinite loop
     // eslint-disable-next-line no-constant-condition
-    while (true) {
+    this.playing = true;
+    while (this.playing) {
       logger.info(`Starting round ${this.roundNumber}`);
       await this.playRound();
       this.roundNumber++;
     }
+  }
+
+  /**
+   * Pause the game.
+   */
+  public pause(): void {
+    this.playing = false;
+  }
+
+  /**
+   * Resume the game.
+   */
+  public resume(): void {
+    this.playing = true;
   }
 
   /**
@@ -112,10 +207,10 @@ export class MintWorksEngine {
    */
   private async development(): Promise<void> {
     const numPlayers = this.players.length;
-    let numConsecutivePasses = 0;
+    this.numConsecutivePasses = 0;
     let i = this.players.findIndex((p) => p.label === this.startingPlayerToken);
 
-    while (numConsecutivePasses < numPlayers) {
+    while (this.numConsecutivePasses < numPlayers) {
       const player = this.players[i];
       logger.info(`Player ${i}: (${player.label}'s turn)`);
 
@@ -131,15 +226,11 @@ export class MintWorksEngine {
 
       const playerState = this.getPlayerState(player);
 
+      this.playerToTakeTurn = player.label;
       const turn = await player.player.takeTurn(playerState);
 
       try {
-        if (turn.action._type === "Pass") {
-          numConsecutivePasses++;
-        } else {
-          numConsecutivePasses = 0;
-          this.simulateTurn(turn);
-        }
+        await this.simulateTurn(turn);
       } catch (err) {
         logger.error(`Invalid turn! Error: ${err}`);
         this.EndGame();
@@ -335,10 +426,47 @@ export class MintWorksEngine {
   }
 
   /**
+   * Set the next player to take a turn
+   */
+  private nextPlayer(): void {
+    if (this.playerToTakeTurnIndex === this.players.length - 1) {
+      this.playerToTakeTurnIndex = 0;
+    } else {
+      this.playerToTakeTurnIndex++;
+    }
+    this.playerToTakeTurn = this.players[this.playerToTakeTurnIndex].label;
+  }
+
+  /**
+   * Completes the round by setting the player to take turn to the player with the starting token
+   */
+  private async completeRound(): Promise<void> {
+    this.numConsecutivePasses = 0;
+    this.playerToTakeTurnIndex = this.players.findIndex(
+      (p) => p.label === this.startingPlayerToken
+    );
+    this.playerToTakeTurn = this.players[this.playerToTakeTurnIndex].label;
+    await this.upkeep();
+  }
+
+  /**
    * Simulate taking a turn
    * @param turn - The turn to simulate
    */
-  private simulateTurn(turn: Turn): void {
+  public async simulateTurn(turn: Turn): Promise<void> {
+    logger.info(`Simulating turn for ${turn.playerName}...`, turn);
+
+    if (turn.action._type === "Pass") {
+      this.numConsecutivePasses++;
+      if (this.numConsecutivePasses < this.players.length) {
+        return this.nextPlayer();
+      } else {
+        return await this.completeRound();
+      }
+    } else {
+      this.numConsecutivePasses = 0;
+    }
+
     const player = this.players.find((p) => p.label === turn.playerName);
     if (!player) throw new Error("Player not found");
     const playerTokens = player.tokens;
@@ -455,9 +583,6 @@ export class MintWorksEngine {
         }
         break;
 
-      case "Pass":
-        throw new Error("Pass action should not be handled here");
-
       case "Produce":
         player.tokens += 2;
         break;
@@ -498,6 +623,8 @@ export class MintWorksEngine {
       default:
         throw new Error("Unknown action type");
     }
+
+    return this.nextPlayer();
   }
 
   /**
@@ -538,5 +665,46 @@ export class MintWorksEngine {
         }
       });
     }
+  }
+
+  /**
+   * Construct the players for the engine state.
+   * @param players - The players to construct the state for
+   *
+   * @returns The players for the engine state
+   */
+  private constructEngineStatePlayers({
+    players,
+  }: {
+    players: Array<PlayerWithInformation>;
+  }): Array<StatePlayer> {
+    return players.map((player) => {
+      return {
+        label: player.label,
+        neighbourhood: player.neighbourhood,
+        tokens: player.tokens,
+      };
+    });
+  }
+
+  /**
+   * Get the current state of the engine.
+   *
+   * @returns The current state of the engine.
+   */
+  public getEngineState(): MintWorksEngineState {
+    const engineState = {
+      locations: createLocationsConstructor(this.locations),
+      planSupply: this.planSupply.plans,
+      numPlansInDeck: this.planSupply.numPlansLeftInDeck,
+      players: this.constructEngineStatePlayers({ players: this.players }),
+      roundNumber: this.roundNumber,
+      playerToTakeTurn: this.playerToTakeTurn,
+      startingPlayerToken: this.startingPlayerToken,
+      deck: this.planSupply.deck,
+      numConsecutivePasses: this.numConsecutivePasses,
+    } satisfies MintWorksEngineState;
+    gameLogger.info("Engine state", engineState);
+    return engineState;
   }
 }
