@@ -36,7 +36,7 @@
     "clean:coverage": "rm -rf coverage/*",
     "clean:badges": "rm -rf .github/badges/*",
     "prepublishOnly": "run-s test",
-    "preversion": "run-s clean:build"
+    "preversion": "run-s build"
   },
   "repository": {
     "type": "git",
