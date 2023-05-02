@@ -1,6 +1,6 @@
 {
   "name": "mint-works",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A game engine for the Mint Works game.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
