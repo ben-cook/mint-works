@@ -1,4 +1,4 @@
-import { MintWorksEngineState } from "./mint_works";
+import { MintWorksEngineState } from "./engine";
 import { PlayerHelper } from "./players/player_helper";
 import { Turn } from "./turn";
 
