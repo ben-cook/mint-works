@@ -1,4 +1,4 @@
-import { PlayerWithInformation } from "./mint_works";
+import { PlayerWithInformation } from "./types";
 import { HookEffect } from "./plan";
 import { State } from "./state";
 import { Turn } from "./turn";

@@ -1,7 +1,8 @@
-import { MintWorks, MintWorksStateManager } from "./state_manager";
+import { MintWorksStateManager } from "./state_manager";
 import { MintWorksEngineState } from "./engine";
 import { Turn } from "./turn";
 import { MintWorksTurnFactory } from "./turn_factory";
+import { MintWorks } from "./mint_works";
 
 const players: Array<Parameters<MintWorks["addPlayer"]>> = [
   [
