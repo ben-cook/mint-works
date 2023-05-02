@@ -1,5 +1,5 @@
 import { LocationCard, createLocationsFromState } from "../location";
-import { MintWorksEngineState } from "../mint_works";
+import { MintWorksEngineState } from "../engine";
 import { Neighbourhood } from "../neighbourhood";
 import { HandPlan, Building } from "../plan";
 import { addHooksToPlans } from "../plans";

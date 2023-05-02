@@ -3,7 +3,7 @@ import { Turn } from "../turn";
 import { playerLogger as logger } from "../logger";
 import { State } from "../state";
 import { PlayerHelper } from "./player_helper";
-import { PlayerWithInformation } from "../mint_works";
+import { PlayerWithInformation } from "../types";
 import { HookEffect } from "../plan";
 
 /**

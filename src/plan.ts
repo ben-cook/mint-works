@@ -1,5 +1,5 @@
 import { LocationCard } from "./location";
-import { PlayerWithInformation } from "./mint_works";
+import { PlayerWithInformation } from "./types";
 
 /** Represents a plan in the deck */
 export interface Plan {

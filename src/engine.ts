@@ -14,17 +14,7 @@ import { PlanSupply } from "./plan_supply";
 import { findWinner } from "./scoring";
 import { shuffleArray } from "./utils";
 import { HandPlan, Plan } from "./plan";
-
-interface PlayerInformation {
-  tokens: number;
-  label: string;
-  age: number;
-  neighbourhood: Neighbourhood;
-}
-
-export interface PlayerWithInformation extends PlayerInformation {
-  player: IPlayer;
-}
+import { PlayerWithInformation } from "./types";
 
 export interface MintWorksParams {
   players: Array<PlayerWithInformation>;
