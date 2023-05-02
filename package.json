@@ -35,7 +35,8 @@
     "clean:docs-tmp": "rm -rf docs/tmp/",
     "clean:coverage": "rm -rf coverage/*",
     "clean:badges": "rm -rf .github/badges/*",
-    "prepublishOnly": "run-s test"
+    "prepublishOnly": "run-s test",
+    "preversion": "run-s clean:build"
   },
   "repository": {
     "type": "git",
