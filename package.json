@@ -1,6 +1,6 @@
 {
   "name": "mint-works",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A game engine for the Mint Works game.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -35,7 +35,8 @@
     "clean:docs-tmp": "rm -rf docs/tmp/",
     "clean:coverage": "rm -rf coverage/*",
     "clean:badges": "rm -rf .github/badges/*",
-    "prepublishOnly": "run-s test"
+    "prepublishOnly": "run-s test",
+    "preversion": "run-s build"
   },
   "repository": {
     "type": "git",

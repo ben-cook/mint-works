@@ -1,4 +1,4 @@
-import { MintWorks } from "./state_manager";
+import { MintWorks } from "./mint_works";
 import { Turn } from "./turn";
 import { MintWorksTurnFactory } from "./turn_factory";
 
