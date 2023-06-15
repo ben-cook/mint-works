@@ -38,8 +38,11 @@ export interface LocationConstructor {
   name: string;
   type: LocationType;
   effect: string;
+  ownerUpkeep?: string;
+  numberOfPlayers: number;
   slotBasePrice: number;
   numberOfSlots: number;
+  numberOfSlotsFourPlayers?: number;
   mappedAction?: Turn["action"]["_type"];
   startClosed?: boolean;
   startingSlots?: Array<{ basePrice: number; token: number }>;
@@ -64,6 +67,8 @@ export class LocationCard {
     effect,
     slotBasePrice,
     numberOfSlots,
+    numberOfSlotsFourPlayers,
+    numberOfPlayers = 2,
     startClosed = false,
     mappedAction,
     startingSlots,
@@ -72,7 +77,8 @@ export class LocationCard {
     this.type = type;
     this.effect = effect;
     this.slotBasePrice = slotBasePrice;
-    this.numberOfSlots = numberOfSlots;
+    this.numberOfSlots =
+      numberOfPlayers < 4 ? numberOfSlots : numberOfSlotsFourPlayers ?? numberOfSlots;
     this.mappedAction = mappedAction;
     this.slots = [];
     if (!startClosed)
@@ -135,74 +141,88 @@ export class LocationCard {
   }
 }
 
-export const Builder = new LocationCard({
+export const Builder = {
   name: "Builder",
   mappedAction: "Build",
   type: "Core",
-  effect: "who knows?",
+  effect: "Build one of your Plans",
   slotBasePrice: 2,
   numberOfSlots: 2,
-});
+  numberOfSlotsFourPlayers: 3,
+} satisfies Omit<LocationConstructor, "numberOfPlayers">;
 
-export const Supplier = new LocationCard({
+export const Supplier = {
   name: "Supplier",
   mappedAction: "Supply",
   type: "Core",
-  effect: "who knows?",
+  effect: "Get a Plan from the Plan Supply",
   slotBasePrice: Infinity,
   numberOfSlots: 2,
-});
+  numberOfSlotsFourPlayers: 3,
+} satisfies Omit<LocationConstructor, "numberOfPlayers">;
 
-export const Producer = new LocationCard({
+export const Producer = {
   name: "Producer",
   mappedAction: "Produce",
   type: "Core",
-  effect: "who knows?",
+  effect: "Gain :TOKEN: :TOKEN:",
   slotBasePrice: 1,
   numberOfSlots: 2,
-});
+  numberOfSlotsFourPlayers: 3,
+} satisfies Omit<LocationConstructor, "numberOfPlayers">;
 
-export const Lotto = new LocationCard({
+export const Lotto = {
   name: "Lotto",
   mappedAction: "Lotto",
   type: "Deed",
-  effect: "who knows?",
+  effect: "Gain the top Plan from the Plan Deck",
+  ownerUpkeep: "Upkeep: If occupied. Gain :TOKEN:",
   slotBasePrice: 3,
   numberOfSlots: 1,
   startClosed: true,
-});
+} satisfies Omit<LocationConstructor, "numberOfPlayers">;
 
-export const Wholesaler = new LocationCard({
+export const Wholesaler = {
   name: "Wholesaler",
   mappedAction: "Wholesale",
   type: "Deed",
-  effect: "who knows?",
+  effect: "Gain :TOKEN: :TOKEN:",
+  ownerUpkeep: "Upkeep: If occupied. Gain :TOKEN:",
   slotBasePrice: 1,
   numberOfSlots: 1,
   startClosed: true,
-});
+} satisfies Omit<LocationConstructor, "numberOfPlayers">;
 
-export const Leadership = new LocationCard({
+export const Leadership = {
   name: "Leadership",
   mappedAction: "Leadership",
   type: "Deed",
-  effect: "who knows?",
+  effect: "Take the Starting Player Token and gain :TOKEN:",
   slotBasePrice: 1,
   numberOfSlots: 1,
-});
+} satisfies Omit<LocationConstructor, "numberOfPlayers">;
 
 export const Locations = [Builder, Supplier, Producer, Lotto, Wholesaler, Leadership];
 
 /**
+ * Create a new array of locations
  *
+ * @param customLocations - An array of custom locations
+ * @param numberOfPlayers - The number of players in the game
  */
-export const createLocations = (customLocations?: Array<LocationCard>): Array<LocationCard> =>
-  customLocations ? [...customLocations] : [...Locations];
+export const createLocations = (
+  numberOfPlayers: number,
+  customLocations?: Array<Omit<LocationConstructor, "numberOfPlayers">>
+): Array<LocationCard> => {
+  const locations = customLocations ? customLocations : Locations;
+  return locations.map((location) => new LocationCard({ numberOfPlayers, ...location }));
+};
 
 export const createLocationsFromState = (state: Array<LocationConstructor>): Array<LocationCard> =>
   state.map((location) => new LocationCard(location));
 
 export const createLocationsConstructor = (
+  numberOfPlayers: number,
   locations: Array<LocationCard>
 ): Array<LocationConstructor> => {
   return locations.map((location) => ({
@@ -212,6 +232,7 @@ export const createLocationsConstructor = (
     slotBasePrice: location.slotBasePrice,
     numberOfSlots: location.numberOfSlots,
     mappedAction: location.mappedAction,
+    numberOfPlayers,
     startingSlots: location.slots.map((slot) => ({
       basePrice: slot.basePrice,
       token: slot.tokens,

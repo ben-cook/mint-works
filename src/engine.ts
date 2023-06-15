@@ -119,7 +119,7 @@ export class MintWorksEngine {
     {
       players,
       plans = createPlans(),
-      locations = createLocations(),
+      locations,
       deck,
       prefilledPlanSupply = [],
       preventInitialPlanSupplyRefill = false,
@@ -150,7 +150,7 @@ export class MintWorksEngine {
       shuffleArray(deck);
     }
 
-    this.locations = locations;
+    this.locations = locations ?? createLocations(players.length);
 
     // Set up the plan supply
     this.planSupply = new PlanSupply(deck, prefilledPlanSupply, preventInitialPlanSupplyRefill);
@@ -694,7 +694,7 @@ export class MintWorksEngine {
    */
   public getEngineState(): MintWorksEngineState {
     const engineState = {
-      locations: createLocationsConstructor(this.locations),
+      locations: createLocationsConstructor(this.players.length, this.locations),
       planSupply: this.planSupply.plans,
       numPlansInDeck: this.planSupply.numPlansLeftInDeck,
       players: this.constructEngineStatePlayers({ players: this.players }),

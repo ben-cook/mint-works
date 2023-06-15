@@ -1,7 +1,7 @@
-import { Builder } from "./location";
+import { Builder, LocationCard } from "./location";
 
 describe("Location", () => {
-  const location = Builder;
+  const location = new LocationCard({ numberOfPlayers: 2, ...Builder });
 
   it("Initialises as available", () => {
     expect(location.available()).toEqual(true);
