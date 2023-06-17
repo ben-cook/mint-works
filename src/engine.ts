@@ -1,4 +1,3 @@
-import { IPlayer } from "./player";
 import { Turn } from "./turn";
 import { gameLogger, gameLogger as logger } from "./logger";
 import { State, StatePlayer } from "./state";
@@ -9,7 +8,7 @@ import {
   LocationCard,
   LocationConstructor,
 } from "./location";
-import { Neighbourhood, PublicNeighbourhood } from "./neighbourhood";
+import { PublicNeighbourhood } from "./neighbourhood";
 import { PlanSupply } from "./plan_supply";
 import { findWinner } from "./scoring";
 import { shuffleArray } from "./utils";

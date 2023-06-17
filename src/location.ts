@@ -53,6 +53,7 @@ export class LocationCard {
   name: string;
   type: LocationType;
   effect: string;
+  ownerUpkeep?: string;
   slotBasePrice: number;
   numberOfSlots: number;
   mappedAction?: Turn["action"]["_type"];
@@ -65,6 +66,7 @@ export class LocationCard {
     name,
     type,
     effect,
+    ownerUpkeep,
     slotBasePrice,
     numberOfSlots,
     numberOfSlotsFourPlayers,
@@ -76,6 +78,7 @@ export class LocationCard {
     this.name = name;
     this.type = type;
     this.effect = effect;
+    this.ownerUpkeep = ownerUpkeep;
     this.slotBasePrice = slotBasePrice;
     this.numberOfSlots =
       numberOfPlayers < 4 ? numberOfSlots : numberOfSlotsFourPlayers ?? numberOfSlots;
@@ -229,6 +232,7 @@ export const createLocationsConstructor = (
     name: location.name,
     type: location.type,
     effect: location.effect,
+    ownerUpkeep: location.ownerUpkeep,
     slotBasePrice: location.slotBasePrice,
     numberOfSlots: location.numberOfSlots,
     mappedAction: location.mappedAction,
